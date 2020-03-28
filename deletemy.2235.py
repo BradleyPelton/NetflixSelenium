@@ -92,14 +92,10 @@ for show in shows:
     my_list_button = driver.find_element_by_css_selector('a[data-uia="myListButton"]')
 
     if my_list_button.get_attribute('aria-label') == 'Remove from My List':
-        anime_shows_dict[[show.text]['is_in_my_list'] = 'T'  # True
+        anime_shows_dict['is_in_my_list'] = 'T'  # True
     else:
-        anime_shows_dict[show.text]['is_in_my_list'] = 'F'  # False
+        anime_shows_dict['is_in_my_list'] = 'F'  # False
     #
-    #
-    #
-    # RECORD CAST, GENRE, TAGS TODO- convert this to a function that takes in
-    # show elements 
     meta_lists_element = driver.find_element_by_css_selector('div.meta-lists')
     nested_lists = meta_lists_element.find_elements_by_tag_name('p')
     if len(nested_lists) != 3:

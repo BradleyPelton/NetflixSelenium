@@ -9,3 +9,9 @@ https://www.selenium.dev/documentation/en/support_packages/working_with_cookies/
 https://stackoverflow.com/questions/33225947/can-a-website-detect-when-you-are-using-selenium-with-chromedriver/41904453#41904453
 https://stackoverflow.com/questions/53039551/selenium-webdriver-modifying-navigator-webdriver-flag-to-prevent-selenium-detec/53040904#53040904
 https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.chrome.options
+
+
+### TOPICS TO EXPLORE:
+- ActionChains class
+- https://en.wikipedia.org/wiki/Microsoft_UI_Automation
+- Netflix uses a cool UIA ID of the form `data-uia="myListButton"`
