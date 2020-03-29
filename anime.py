@@ -25,14 +25,10 @@ from selenium.common.exceptions import NoSuchElementException
 
 #IN PROGRESS
 
-
-
-
-
-time.sleep(3)    # TODO- is this necessary?
-
 # login
 user_login(secrets.bradleys_email,secrets.bradleys_password)
+time.sleep(3)
+driver.get('https://Netflix.com/browse/my-list')
 driver.get('https://www.netflix.com/browse/genre/7424')
 
 # change sort to a-z to force all shows to load
@@ -49,20 +45,6 @@ current_sort_option = driver.find_element_by_css_selector('div.nfDropDown.widthR
 print(f"Currently sourting by {current_sort_option.text}")
 
 shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
-
-
-my_list_button = driver.find_element_by_css_selector('a[data-uia="myListButton"]')
-my_list_button.click()
-
-if my_list_button.get_attribute('aria-label') == 'Remove from My List':
-    anime_shows_dict['is_in_my_list'] = 'true'
-else:
-    anime_shows_dict['is_in_my_list'] = 'false'
-    
-
-
-
-
 
 #FINISHED SCRIPT
 anime_shows_dict = defaultdict(dict)
@@ -88,14 +70,14 @@ for show in shows:
         pass
         #
     
-    # CHECK IF A SHOW IS IN my-list
-    my_list_button = driver.find_element_by_css_selector('a[data-uia="myListButton"]')
+    # TODO- CLEAN THIS UP, USE mylisttools.is_in_my_list(driver, show_element)
+    # my_list_button = driver.find_element_by_css_selector('a[data-uia="myListButton"]')
 
-    if my_list_button.get_attribute('aria-label') == 'Remove from My List':
-        anime_shows_dict[[show.text]['is_in_my_list'] = 'T'  # True
-    else:
-        anime_shows_dict[show.text]['is_in_my_list'] = 'F'  # False
-    #
+    # if my_list_button.get_attribute('aria-label') == 'Remove from My List':
+    #     anime_shows_dict[[show.text]['is_in_my_list'] = 'T'  # True
+    # else:
+    #     anime_shows_dict[show.text]['is_in_my_list'] = 'F'  # False
+    # #
     #
     #
     # RECORD CAST, GENRE, TAGS TODO- convert this to a function that takes in
