@@ -6,8 +6,11 @@ import time
 # from selenium.common.exceptions import NoSuchElementException
 import secrets
 
-# SET YOUR PATH TO YOUR CHROMEDRIVER 
+# SET YOUR PATH TO YOUR CHROMEDRIVER
 chromedriver_path = secrets.chromedriver_path
+# THIS WILL LAUNCH THE DRIVER EVERY TIME LOGIN IS IMPORTE
+# SINCE EVERYTHING IS LOCKED BEHIND A USER BEING-LOGGED IN,
+# LOGIN IS A NECESSARY AND REQUISITE STEP FOR EVERY TEST
 driver = webdriver.Chrome(executable_path=chromedriver_path)
 
 

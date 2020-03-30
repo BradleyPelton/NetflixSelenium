@@ -21,6 +21,7 @@ def show_has_saved_progress(driver, show_element, JAWBONE_OPEN=False) -> bool:
 def has_new_episodes(driver, show_element, JAWBONE_OPEN=False) -> bool:
     """ IF A SHOW HAS the "NEW EPISODES" tile added to the image, return True
     false if else"""
+    # 
     pass
 
 def is_netflix_original(driver, show_element, JAWBONE_OPEN=False) -> bool:
