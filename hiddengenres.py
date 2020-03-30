@@ -1,3 +1,6 @@
+# TODO- SORT THIS LIST BY ID
+# TODO- FILL THIS ENIRELIST (100,000+ lines though)
+
 
 Action & Adventure: 1365
 Action Comedies: 43040

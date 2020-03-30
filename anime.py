@@ -1,11 +1,14 @@
-from login import driver, user_login
-import secrets
 import time
 from collections import defaultdict
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-import time
 from selenium.common.exceptions import NoSuchElementException
+
+from login import driver, user_login
+import secrets
+import mylisttools
+import showtools
 
 # len(shows) has been returning 144. 144 total animes in genre 7424
 
@@ -23,13 +26,12 @@ from selenium.common.exceptions import NoSuchElementException
 #     if not v:
 #             print(k)
 
-#IN PROGRESS
 
 # login
 user_login(secrets.bradleys_email,secrets.bradleys_password)
 time.sleep(3)
 driver.get('https://Netflix.com/browse/my-list')
-driver.get('https://www.netflix.com/browse/genre/7424')
+# driver.get('https://www.netflix.com/browse/genre/7424')
 
 # change sort to a-z to force all shows to load
 switch_to_grid_view_button = driver.find_element_by_css_selector('button.aro-grid-toggle')
@@ -47,45 +49,39 @@ print(f"Currently sourting by {current_sort_option.text}")
 shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
 
 #FINISHED SCRIPT
+#TODO- GENERALIZE ThiS TO GENRE_SCRAPE FUCNTION
+# EVERYTHING BELOW WOULD JUST BE GENRE_SCRAPE(GENRE_ID=7424)   ### 7424=ANIME
 anime_shows_dict = defaultdict(dict)
 for show in shows:
-    anime_shows_dict[show.text] = {}  #add show title to 
+    title = show.text
+    anime_shows_dict[title] = {}  #add show title to 
     # OPEN JAWBONE
     show.click()
     # Let jawbone load
     time.sleep(3)
     #
-    # CHECK IF SHOW HAS SAVED PROGRESS
-    try:
-        progress_summary = driver.find_element_by_css_selector('span.summary')
-        print(f"show {show.text} has saved progress. {progress_summary.text} remain")
-        a = driver.find_element_by_id('tab-ShowDetails')
-        ###### TODO- SINCE SHOW DETAILS ARE NOT DISPLAYED FROM THE OVERVIEW TAB
-        # BECAUSE THE MOVIE HAS PROGRESS SAVED, I NEED TO NAVIGATE TO DETAILS
-        #  menu = driver.find_element_by_css_selector('.menu')
-        # issue with clicking the details button
-        continue
-        # print('continue')
-    except NoSuchElementException:
-        pass
-        #
-    
-    # TODO- CLEAN THIS UP, USE mylisttools.is_in_my_list(driver, show_element)
-    # my_list_button = driver.find_element_by_css_selector('a[data-uia="myListButton"]')
-
-    # if my_list_button.get_attribute('aria-label') == 'Remove from My List':
-    #     anime_shows_dict[[show.text]['is_in_my_list'] = 'T'  # True
-    # else:
-    #     anime_shows_dict[show.text]['is_in_my_list'] = 'F'  # False
-    # #
+    if showtools.show_has_saved_progress(driver, show, JAWBONE_OPEN=True):
+        anime_shows_dict[[title]['progress'] = 'T'
+    else:
+        anime_shows_dict[[title]['progress'] = 'F'
     #
+    if mylisttools.is_in_my_list(driver, show, JAWBONE_OPEN=True):
+        anime_shows_dict[[title]['is_in_my_list'] = 'T'
+    else:
+        anime_shows_dict[title]['is_in_my_list'] = 'F'
+    #
+    #
+    ###### TODO- SINCE SHOW DETAILS ARE NOT DISPLAYED FROM THE OVERVIEW TAB
+    # BECAUSE THE MOVIE HAS PROGRESS SAVED, I NEED TO NAVIGATE TO DETAILS
+    #  menu = driver.find_element_by_css_selector('.menu')
+    # issue with clicking the details button
     #
     # RECORD CAST, GENRE, TAGS TODO- convert this to a function that takes in
     # show elements 
     meta_lists_element = driver.find_element_by_css_selector('div.meta-lists')
     nested_lists = meta_lists_element.find_elements_by_tag_name('p')
     if len(nested_lists) != 3:
-        print(f"show {show.text} is missing a meta_list ")
+        print(f"show {title} is missing a meta_list ")
         continue
     cast_element_list = nested_lists[0]
     genre_element_list = nested_lists[1]
@@ -100,10 +96,35 @@ for show in shows:
     tags_elements = tags_element_list.find_elements_by_tag_name('a')
     tags = [element.text for element in tags_elements]
     #
-    anime_shows_dict[show.text]['actors'] = actors
-    anime_shows_dict[show.text]['genres'] = genres
-    anime_shows_dict[show.text]['tags'] = tags
+    anime_shows_dict[title]['actors'] = actors
+    anime_shows_dict[title]['genres'] = genres
+    anime_shows_dict[title]['tags'] = tags
     #
     jawBone_close_button = driver.find_element_by_css_selector('button.close-button.icon-close')
     jawBone_close_button.click()
     time.sleep(3)
+
+
+
+# WORKSPACE. EVERYTHING BELOW SHOULD BE COMMENTED OUT
+# OR DELETED BEFORE PUBLISHING 
+
+import time
+from collections import defaultdict
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
+
+from login import driver, user_login
+import secrets
+import mylisttools
+import showtools
+
+
+user_login(secrets.bradleys_email,secrets.bradleys_password)
+driver.get('https://Netflix.com/browse/my-list')
+driver.get('https://www.netflix.com/browse/genre/452?so=az')
+shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
+
+temp = shows[0]
