@@ -7,18 +7,20 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from login import driver, user_login, wait
+from login import driver, user_login
 import secrets
 import mylisttools
 import showtools
 
-### MOVIES AND SHOWS HAVE HIDDEN GENRES AND PUBLIC GENRES
-### A PUBLIC GENRE IS SOMETHING LIKE "ROMANCE", "ACTION", "HORROR"
-### A HIDDEN GENRE IS ASSIGNED BY NETFLIX AND DISPLAYED IN THE URL
-### E.G https://www.netflix.com/browse/genre/83 FOR "Tv Shows"
+# MOVIES AND SHOWS HAVE HIDDEN GENRES AND PUBLIC GENRES
+# A PUBLIC GENRE IS SOMETHING LIKE "ROMANCE", "ACTION", "HORROR"
+# A HIDDEN GENRE IS ASSIGNED BY NETFLIX AND DISPLAYED IN THE U
+# E.G https://www.netflix.com/browse/genre/83 FOR "Tv Shows"
 
 # TODO- There are three other sort methods: Suggested for you, Z-A, Year Released
 # CREATE FUCNTIONS FOR EACH OF THESE
+#
+
 
 def switch_to_grid(driver):
     """
