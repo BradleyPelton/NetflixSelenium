@@ -32,6 +32,8 @@ def get_recommended_genres(driver) -> list:
     # ASSUMES DRIVER IS ALREADY AT THE HOME PAGE 
 
     # SCROLL TO THE BUTTOM OF THE HOME PAGE
+    # 10 lazy loads by netflix. Have to scroll to the bottom, then more loads
+    # repeat 10 times
     for i in range(10):
         driver.execute_script("window.scrollTo(0, 10000000)")
         print(i)

@@ -1,5 +1,6 @@
 import time
 from selenium.common.exceptions import NoSuchElementException
+from typing import List
 
 
 
@@ -40,6 +41,57 @@ def get_maturity_rating(driver,show_element, JAWBONE_OPEN=False) -> str:
 def get_show_match_percentage(driver,show_element, JAWBONE_OPEN=False) -> int:
     """ returns the match percentage e.g. '99% Match' for Castlevania"""
     pass
+
+def get_actors_list(driver, show_element, JAWBONE_OPEN=False) -> List:
+    """ returns list of actors. TODO- IF actors arent available from JAWBONE,
+    write the logic to navigate to the details tab of the jawbone, scrape the 
+    top 3 actors, and then return that.
+    """
+    if not JAWBONE_OPEN:
+        show_element.click()
+        wait = WebDriverWait(driver,10)
+        meta_lists_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.meta-lists')))
+
+    try:
+        # not sure why I cant just add " > a" to the end of the css selector for cast _element
+        # 
+        cast_element_list = driver.find_element_by_css_selector('div.meta-lists > p.cast.inline-list')
+        actors_elements = cast_element_list.find_elements_by_tag_name('a')
+        actors = [element.text for element in actors_elements]
+        return(actors)
+    except NoSuchElementException:
+        return(["COULD NOT FIND ACTORS"])
+
+
+def get_genre_list(driver, show_element, JAWBONE_OPEN=False) -> List:
+    """ return a genre list if available. TODO- if not avaiable, scrape details"""
+    if not JAWBONE_OPEN:
+        show_element.click()
+        wait = WebDriverWait(driver,10)
+        meta_lists_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.meta-lists')))
+
+    try:
+        genre_element_list = driver.find_element_by_css_selector('div.meta-lists > p.genres.inline-list')
+        genres_a_tags = genre_element_list.find_elements_by_tag_name('a')
+        genres = [element.text for element in genres_a_tags]
+        return(genres)
+    except NoSuchElementException:
+        return(["COULD NOT FIND GENRES"])
+
+def get_tags_list(driver, show_element, JAWBONE_OPEN=False) -> List:
+    """ return a tags list if available. TODO- if not avaiable, scrape details"""
+    if not JAWBONE_OPEN:
+        show_element.click()
+        wait = WebDriverWait(driver,10)
+        meta_lists_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.meta-lists')))
+    
+    try:
+        tags_element_list = driver.find_element_by_css_selector('div.meta-lists > p.tags.inline-list')
+        tags_a_elements = tags_element_list.find_elements_by_tag_name('a')
+        tags = [element.text for element in tags_a_elements]
+        return(tags)
+    except NoSuchElementException:
+        return(["COULD NOT FIND TAG"])
 
 def get_release_date():
     pass
