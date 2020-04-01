@@ -34,13 +34,14 @@ def play_show(driver, show_element, JAWBONE_OPEN=False):
     play_button.click()
 
 def is_show(driver, show_element, JAWBONE_OPEN=False):
+    """ not sure about needed this function or not. Leaving it here just in case"""
     pass
 
 
 def is_movie(driver, show_element, JAWBONE_OPEN=False) -> str:
     """ movie is defined as not TV show. Everything is either a series episodes or a movie"""   
-    """ RETURNS STR, maybe I should convert '1h 27m' to just a float such as '1.45' hours, TBD"""
-    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+    pass
+
 
 def get_duration(driver, show_element, JAWBONE_OPEN=False) -> str:
     """ RETURNS STR, e.g.'1h 27m' FOR MOVIE, '1 Season' FOR SHOW """
