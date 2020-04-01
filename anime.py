@@ -64,7 +64,7 @@ import genrepagetools
 
 user_login(secrets.bradleys_email,secrets.bradleys_password)
 
-driver.get('https://www.netflix.com/browse/genre/8124')
+driver.get('https://www.netflix.com/browse/genre/7424')
 
 # change sort to a-z to force all shows to load
 genrepagetools.switch_to_grid(driver)
@@ -77,3 +77,4 @@ print(f"Currently sourting by {current_sort_option.text}")
 shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
 
 
+temp = shows[2]

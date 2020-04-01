@@ -32,4 +32,5 @@ def play_random_show():
 
 if __name__ == "__main__":
     user_login(secrets.bradleys_email, secrets.bradleys_password)
+    # TODO- ADD LOGIC HERE THAT NAVIGATES TO MY-LIST
     play_random_show()

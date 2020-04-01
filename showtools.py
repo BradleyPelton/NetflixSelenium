@@ -7,12 +7,48 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from login import driver, user_login
+# from login import driver, user_login
 import secrets
 import mylisttools
 import showtools
 
+### NOTE- CTRL +K CTRL + 0 TO FOLD ALL, CTRL + K CTRL J TO UNFOLD ALL 
 
+
+
+#########################################################################
+#########################################################################
+#########################################################################
+"""TODO- ORGANIZE THESE FUNCTIONS BASED ON THE ORDER THE ELEMENTS APPEAR IN THE JAWBONE"""
+#########################################################################
+#########################################################################
+#########################################################################
+
+
+def play_show(driver, show_element, JAWBONE_OPEN=False):
+    """ Plays the show passed in as the parameter show_element """
+    """ NOT TESTED, TODO- TEST """
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+    
+    play_button = driver.find_element_by_css_selector('a[data-uia="play-button"] > span')
+    play_button.click()
+
+def is_show(driver, show_element, JAWBONE_OPEN=False):
+    pass
+
+
+def is_movie(driver, show_element, JAWBONE_OPEN=False) -> str:
+    """ movie is defined as not TV show. Everything is either a series episodes or a movie"""   
+    """ RETURNS STR, maybe I should convert '1h 27m' to just a float such as '1.45' hours, TBD"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+
+def get_duration(driver, show_element, JAWBONE_OPEN=False) -> str:
+    """ RETURNS STR, e.g.'1h 27m' FOR MOVIE, '1 Season' FOR SHOW """
+    """ NOT TESTED- TODO- THIS SHOULD RECIEVE EXTRA ATTENTION TO TEST"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+
+    duration = driver.find_element_by_css_selector('span.duration')
+    return(duration.text)
 
 def show_has_saved_progress(driver, show_element, JAWBONE_OPEN=False) -> bool:
     """ CHECK IF SHOW HAS SAVED PROGRESS, if so return False, else False"""
@@ -28,7 +64,10 @@ def show_has_saved_progress(driver, show_element, JAWBONE_OPEN=False) -> bool:
 def has_new_episodes(driver, show_element, JAWBONE_OPEN=False) -> bool:
     """ IF A SHOW HAS the "NEW EPISODES" tile added to the image, return True
     false if else"""
-    # 
+    # Might be equally as hard to determine as _is_netflix_original
+    # Netflix adds a "new episodes" box ontop of the the boxart
+    # My only idea for runny this function is to improt some module
+    # that can determine which pixels are supposed to be the netflix red
     pass
 
 
@@ -42,25 +81,60 @@ def is_netflix_original(driver, show_element, JAWBONE_OPEN=False) -> bool:
     pass
 
 
+def has_audio_description_available(driver, show_element, JAWBONE_OPEN=False) -> bool:
+    """ return True if the show has an audio description available, False if else"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+
+    try:
+        # used used web element that is found
+        audio_description_badge = driver.find_element_by_css_selector(
+            'span.audio-description-badge')
+        return(True)
+    except NoSuchElementException:
+        return(False)
+
 def get_maturity_rating(driver, show_element, JAWBONE_OPEN=False) -> str:
     """ return the maturity rating for a show, E.G. 'PG', 'PG-13', 'TV-MA'"""
     """ UNTESTED, TODO- TEST"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+
     rating = driver.find_element_by_css_selector('span.maturity-rating > span.maturity-number')
     return(rating.text)
 
 
-def get_show_match_percentage(driver, show_element, JAWBONE_OPEN=False) -> int:
+def get_show_match_percentage(driver, show_element, JAWBONE_OPEN=False) -> str:
     """ returns the match percentage e.g. '99% Match' for Castlevania"""
     """ EDGE CASE: match percentage doesnt seem to always show"""
-    pass
+    """ NOT TESTED, TODO- TEST"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
 
-def get_release_date():
+    match_score = driver.find_element_by_css_selector('span.match-score')
+    # if no match score is displayed, driver will still find the match_score element,
+    # but it will just return '' when match_score.text is called. 
+    if match_score.text == '':
+        return("No match score displayed")
+    else:
+        return(match_score.text)
+
+def get_synopsis(driver, show_element, JAWBONE_OPEN=False) -> str:
+    """NOT TESTED, TODO- TEST"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+
+    synopsis = driver.find_element_by_css_selector('div.synopsis')
+    return(synopsis.text)
+
+
+def get_release_date(driver, show_element, JAWBONE_OPEN=False):
     """UNTESTED TODO-TEST"""
+    open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
+
     year = driver.find_element_by_css_selector('span.year')
     return(year.text)
 
-def get_number_of_seasons_and_episodes():
+def get_number_of_episodes():
+    """not sure if this is going to be hard or not. """
     pass
+
 
 
 def get_actors_list(driver, show_element, JAWBONE_OPEN=False) -> List:
@@ -164,5 +238,6 @@ def downvote_show(driver, show_element, JAWBONE_OPEN=False):
 def open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN):
     if not JAWBONE_OPEN:
         show_element.click()
+        # WAIT UNTIL JAWBONE FINISHES LOADING
         wait = WebDriverWait(driver,10)
         meta_lists_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.meta-lists')))
