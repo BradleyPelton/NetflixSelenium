@@ -55,6 +55,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 from login import driver, user_login
 import secrets
@@ -69,12 +71,13 @@ driver.get('https://www.netflix.com/browse/genre/7424')
 # change sort to a-z to force all shows to load
 genrepagetools.switch_to_grid(driver)
 genrepagetools.switch_to_alpha_sort(driver)
-
-
 current_sort_option = driver.find_element_by_css_selector('div.nfDropDown.widthRestricted.theme-aro > div')
 print(f"Currently sourting by {current_sort_option.text}")
-
 shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
-
-
 temp = shows[2]
+
+
+# unrelated. messing around with actionchains
+action = ActionChains(driver)
+action.key_down(Keys.CONTROL).send_keys('f').key_up(Keys.CONTROL).perform()
+# Apparently I have to action.reset_actions() ????

@@ -13,6 +13,11 @@ https://selenium-python.readthedocs.io/waits.html#explicit-waits
 
 ### TOPICS TO EXPLORE:
 - ActionChains class
+    - https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.common.action_chains
 - Optimal explicit waits 
 - https://en.wikipedia.org/wiki/Microsoft_UI_Automation
 - Netflix uses a cool UIA ID of the form `data-uia="myListButton"`
+
+
+action = ActionChains(driver)
+action.key_down(Keys.CONTROL).key_down(Keys.F).key_up(Keys.CONTROL).perform()

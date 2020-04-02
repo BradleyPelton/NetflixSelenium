@@ -14,7 +14,8 @@ chromedriver_path = secrets.chromedriver_path
 # SINCE EVERYTHING IS LOCKED BEHIND A USER BEING-LOGGED IN,
 # LOGIN IS A NECESSARY AND REQUISITE STEP FOR EVERY TEST
 driver = webdriver.Chrome(executable_path=chromedriver_path)
-
+	
+# driver.set_window_size(800,600) TODO- ADD THIS IN?
 
 
 
