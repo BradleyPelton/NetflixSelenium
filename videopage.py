@@ -45,29 +45,16 @@ import genrepagetools
 ############################################################################################
 ############################################################################################
 
-
-
-
-def add_english_subtitles():
-    pass
-
-
-def remove_subtitles():
-    pass
-
-def change_all_settings(**KWARGS):
+def player_is_idle(driver):
     """ change to full screen, add subtitles, max volume, and any other options user wants"""
     pass
-
-
-def player_is_idle(driver):
     """ return bool is player is idle"""
     """ if player is playing, it is considered idle"""
     """ IDLE IF AND ONLY IF BUTTONS ARE BEING DISPLAYED"""
     # TODO- change the definition of idle? maybe player_is_showing_buttons ? palyer_is_showing_UI ?
     seek_forward_button = driver.find_element_by_css_selector('button[aria-label="Seek Forward"]')
     if seek_forward_button.is_displayed():
-        print(" player is NNNNOOOOOTTTT idle")
+        print(" player is NOT idle")
         return(False)  # VIDEO PLAYER IS NOT IDLE
     else:
         print("player is idle")
@@ -168,6 +155,109 @@ def make_normal_screen(driver):
         normal_screen = driver.find_element_by_css_selector('button[aria-label="Exit full screen"]')
         normal_screen.click()
 
+
+def player_is_muted(driver):
+    """ return true if muted, false if else"""
+    wake_up_if_idle(driver)
+    try:
+        muted_button = driver.find_element_by_css_selector('button[aria-label="Muted"]')
+        return(True)
+    except NoSuchElementException:
+        pass
+    try:
+        volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
+        return(False)
+    except NoSuchElementException:
+        pass
+    print("player_is_muted couldnt find either the muted or volume button. SOMETHING IS WRONG")
+
+def mute_player(driver):
+    """ mute if unmuted. if already muted, do nothing"""
+    wake_up_if_idle(driver)
+    if player_is_muted(driver):
+        print("player is already muted, mute_player not executing")
+    else:
+        volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
+        volume_button.click()
+        # small problem appeared. Muted the player causes the volume bar to stay open for
+        # TODO- CLEAN THIS UP
+
+def unmute_player(driver):
+    """ unmute player if muted. If alraedy unmuted, do nothing"""
+    wake_up_if_idle(driver)
+    if player_is_muted(driver):
+        muted_button = driver.find_element_by_css_selector('button[aria-label="Muted"]')
+        muted_button.click()
+        # small problem appeared. Muted the player causes the volume bar to stay open for
+        # TODO- CLEAN THIS UP
+    else:
+        print("player is already unmuted, unmute_player not executing")
+
+def skip_backward(driver):
+    """ rewind the player 10 seconds using the seek back button. SHOULD WORK PAUSED OR UNPAUSED"""
+    wake_up_if_idle(driver)
+    #
+    seek_back_button = driver.find_element_by_css_selector('button[aria-label="Seek Back"]')
+    seek_back_button.click()
+
+
+def skip_forward(driver):
+    """ skip forward 10 seconds using the seek forward button. SHOULD WORK PAUSED OR UNPAUSED"""
+    wake_up_if_idle(driver)
+    #
+    seek_forward_button = driver.find_element_by_css_selector('button[aria-label="Seek Forward"]')
+    seek_forward_button.click()
+
+
+
+# def report_issue(driver):
+#     """ It was once considered to add the ability to automate the process of reporting issues.
+#     After consideration, the possibility of it being used for nefarious acts against Netflix led
+#     to this function being scrapped """
+
+
+def has_subtitles(driver):
+    """ return true if the player already has subtitles enabled (OF ANY LANGUAGE). False if else"""
+    wake_up_if_idle(driver)
+    subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
+    subtitles_button.click()  #clicking launches the subtitles modal, but clicking again doesnt close 
+    #
+    wait = WebDriverWait(driver,10)
+    wait.until(EC.visibility_of_element_located(
+        (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')))
+    subtitles_languages_list = driver.find_element_by_css_selector(
+        'div.track-list.structural.track-list-subtitles')
+    # TODO- THIS IS LOOKS HORRIBLE. CLEAN THIS UP.
+    actual_list = subtitles_languages_list.find_element_by_tag_name('ul')
+    languages = actual_list.find_elements_by_tag_name('li')
+    print(len(languages))
+
+    for language in languages:
+        if 'selected' in language.get_attribute('class'):
+            if language.text == 'Off':
+                print("subtitles are turned off")
+                return(False)
+            else:
+                print(f"found subtitle with language {language.text}")
+                return(True)
+
+def add_english_subtitles(driver):
+    # TODO- IT WORKS BUT SEEMS SKETCHY. NEEDS TO BE TESTED. I THOUGHT SINCE THE SUBTITLE MODAL
+    # WAS ALREADY OPENT THA OPENING IT AGAIN WITH SUBTITLES_BUTTON.CLICK() WAS GOING TO CAUSE A
+    # PROBLEM. INVESTIGATE
+    wake_up_if_idle(driver)
+
+    ### opens subtitle menu
+    subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
+    subtitles_button.click()  #
+    #
+    # spanish = driver.find_element_by_css_selector('li[data-uia="track-subtitle-Spanish"]')
+    english = driver.find_element_by_css_selector('li[data-uia="track-subtitle-English"]')
+    english.click()
+
+
+def change_all_settings(**KWARGS):
+    """ a super function that takes in a list of options and performs them"""
 
 
 # video_player_container = driver.find_element_by_css_selector('div.nfp.AkiraPlayer')
