@@ -15,10 +15,6 @@ import mylisttools
 import showtools
 import genrepagetools
 
-### this page will house all of the functions for the VIDEO PAGE
-### NAME TBD
-### the page in which you actually stream the video content
-
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
 
@@ -35,11 +31,15 @@ import genrepagetools
 
 # IDLE PHASE 1.5????- diplays just the rating. Seems to only happen when the video is first played
 
-# TOTALLY IDLE, YOU HAVE TO CLICK A SPECIFIC BUTTON IN THE CENTER OF THE PAGE TO 
+# TOTALLY IDLE, YOU HAVE TO CLICK A SPECIFIC BUTTON IN THE CENTER OF THE PAGE TO
 
 # VIDEO IS PLAYING, BUTTONS ARE STILL BEING DISPLAYED
 # VIDEO IS PLAYING, BUTTONS ARE GONE (BACK TO IDLE BUT VIDEO IS PLAYING)
 
+
+# REDITS ARE ROLLING, VIDEO PLAYER IS MADE SMALL, RECOMMENDATIONS ARE DISPLAYED
+# TODO- I DID NOT ACCOUNT FOR THIS!!!! TODO- NEED TO FACTOR THIS IN AS WELL
+# HAPPENS AFTER change_time_using_slidebar(driver, .99)
 ############################################################################################
 ############################################################################################
 ############################################################################################
@@ -73,6 +73,7 @@ def player_is_idle(driver):
 
 def wake_up_idle_player(driver):
     """buttons are gone with idle"""
+    """ TODO- BUG- if player is TOTALLY idle, no activity in several minutes, this wont wake"""
     video_player_container = driver.find_element_by_css_selector('div.nfp.AkiraPlayer')
     video_player_container.click()  # Click the center of the screen to wake it up
     # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
@@ -113,18 +114,6 @@ def unpause_player(driver):
         small_play_button.click()
     else:
         print("player is not paused, unpause_player is not executing")
-
-
-def get_remaining_time(driver):
-    """ returns the amount of time left in this specific show"""
-    """ NOT TESTED, TODO- Test"""
-    wake_up_if_idle(driver)
-    time_remaining = driver.find_element_by_css_selector('time.time-remaining__time')
-    if time_remaining.text == '':
-        print("GET_REMAINING_TIME FAILED, MAYBE THE PLAYER WAS IDLE???")
-        return(time_remaining.text)
-    else:
-        return(time_remaining.text)
 
 
 def player_is_fullscreen(driver):
@@ -205,6 +194,63 @@ def unmute_player(driver):
     else:
         print("player is already unmuted, unmute_player not executing")
 
+def volume_slider_is_open(driver):
+    """ returns true if the slider is open, false if else"""
+    # intentionally not waking up idle player. Idle player implies slider is not open
+    try:
+        volume_percentage = driver.find_element_by_css_selector('div.slider-bar-percentage')
+        return(True)
+    except NoSuchElementException:
+        print("volume_slider_is_open couldnt find the volume slider, returning false")
+        return(False)
+
+def open_volume_slider(driver):
+    """ hover over the volume button causing the volume slider to open"""
+    """ since we are hovering, calling open_volume_slider when the slider is already open does 
+    nothing, thus its safe to use open_volume_slider as a open_volume_slider_if_not_open function,
+    but the user should NOTE that open_volume_slider_if_not_open is a defined function
+    """
+    """ TODO- TEST NEED TO TEST ALL VOLUME STATES (low,medium,high, muted) """
+    wake_up_if_idle(driver)
+    volume_container = driver.find_element_by_css_selector('div[data-uia="volume-container"]')
+    # volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
+    action = ActionChains(driver)
+    action.move_to_element(volume_container).perform()
+    # wait for the slider to appear
+    wait = WebDriverWait(driver,10)
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.slider-bar-percentage')))
+
+def open_volume_slider_if_not_open(driver):
+    """ opens slider if not open, if open do nothing"""
+    if volume_slider_is_open(driver):
+        print("volume slider is already open, open_volume_slider_if_not_open not executing")
+    else:
+        open_volume_slider(driver)
+
+
+def change_volume_using_percentage(driver, volume_percentage: float):
+    """ change the volume to a percentage
+    e.g. volume_percentage =.5 means 50% volume, .25 = 25% volume etc.
+    """
+    """ NETFLIX NAMES:
+    POPUP VOLUME CONTROLLER/ SLIDER/ SCRUBER TARGET
+    """
+wake_up_if_idle(driver)
+# I need to force the volume container open. MOUSING OVER should do fine
+volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
+action = ActionChains(driver)
+action.move_to_element(volume_button).perform()
+volume_bar = driver.find_element_by_css_selector('div.slider-bar-percentage')
+action_2 = ActionChains(driver)
+action.move_to_element_with_offset(volume_bar,0,volume_bar.size['height']*.5).click().perform()
+
+def get_current_volume(driver):
+    """ TODO"""
+    # wake_up_if_idle(driver)
+    volume_percentage = driver.find_element_by_css_selector('div.slider-bar-percentage')
+    return(volume_percentage.text)
+
+
 
 def skip_backward(driver):
     """ rewind the player 10 seconds using the seek back button. SHOULD WORK PAUSED OR UNPAUSED"""
@@ -222,23 +268,72 @@ def skip_forward(driver):
     seek_forward_button.click()
 
 
-def change_time_using_slider(driver):
-    """NETFLIX CALLS THIS THE SCRUBBER?"""
-    """ THIS IS THE BIG ONE. THE HARD PROBLEM. 
-    NOTE- Even If I could change the position by editing the html, thats not really testing the 
-    functionality of the slider. I need to use mouse locations to mimic user behavior"""
+def get_remaining_time(driver):
+    """ returns the amount of time left in this specific show AS DISPLAYED IN THE BOTTOM RIGHT
+    CORNER. NOTE- see get_show_duration . This could be refactored to use seek_time_scrubber"""
+    """ NOT TESTED, TODO- Test"""
+    wake_up_if_idle(driver)
+    time_remaining = driver.find_element_by_css_selector('time.time-remaining__time')
+    if time_remaining.text == '':
+        print("GET_REMAINING_TIME FAILED, MAYBE THE PLAYER WAS IDLE???")
+        return(time_remaining.text)
+    else:
+        return(time_remaining.text)
 
-wake_up_if_idle(driver)
-a = driver.find_element_by_css_selector('div.scrubber-bar')
-a.location
-#{'x': 20, 'y': 593} TODO- MOUSE LOCATION IS THE KEY HERE. USE LOCATION
-time_remaining = driver.find_element_by_css_selector('time.time-remaining__time')
+
+def get_current_time(driver):
+    """ TODO"""
+    pass
 
 
-# stops working after the first execution, research ActionChains
-# from selenium.webdriver.common.action_chains import ActionChains
-# action = ActionChains(driver)
-# action.move_to_element(video_player_cotainer).perform()
+def get_show_duration(driver) -> str:
+    """ return a str  'HH:MM:SS' """
+    # no need to wake the
+    seek_time_scrubber = driver.find_element_by_css_selector(
+        'div[aria-label="Seek time scrubber"]')
+    scrubber_value = seek_time_scrubber.get_attribute('aria-valuetext').split(" ")
+    assert len(scrubber_value) == 3, "get_show_duration SCRUBBER_VALUE found extra values"
+    return(scrubber_value[2])
+
+
+def change_to_percentage_time(driver, percentage_of_movie_left: float):
+    """
+    INPUT:
+    percentage_of_movie_left: float     e.g. .5 for 50%, .25 for 25%, .1 for 10%
+    NOTE- NETFLIX CALLS THIS THE SCRUBBER?
+    THIS IS THE BIG ONE. THE HARD PROBLEM.
+    NOTE- Even If I could change the position by editing the html, thats not really testing the
+    functionality of the slider. I need to use mouse locations to mimic user behavior
+    """
+    wake_up_if_idle(driver)
+    scrubber_bar = driver.find_element_by_css_selector('div.scrubber-bar')
+    action = ActionChains(driver)
+    action.move_to_element_with_offset(
+        scrubber_bar, scrubber_bar.size['width']*percentage_of_movie_left, 0).perform()
+    action.click().perform()
+
+
+def change_to_exact_time(driver, hours, minutes, seconds):
+    """ User provides a time in the movie they want to navigate to
+        e.g. 1 hour, 35 minutes, 20 seconds
+        This function converts that to a percentage of the movie left, then uses
+        change_to_percentage_time
+    """
+    """ TODO- Seems to be a +- 1 second difference. Im guessing its the fault of floating point
+    arithemetic not representing the exact_time_as_percentage. COULD ALSO BE  PADDING/BORDER/MARGIN
+    OF THE SCRUBBER ELEMENT BY THE BROWSER. 1 second difference BUG categorized as low priority
+    """
+    show_duration = get_show_duration(driver)  # returns a str 'HH:MM:SS'
+    show_duration_list = show_duration.split(":")
+    show_duration_in_seconds = (int(show_duration_list[0])*3600
+                                + int(show_duration_list[1])*60
+                                + int(show_duration_list[2])
+    )
+    exact_time_in_seconds = int(hours)*3600 + int(minutes)*60 + int(seconds)
+    print(exact_time_in_seconds, show_duration_in_seconds)
+    exact_time_as_percentage = exact_time_in_seconds / show_duration_in_seconds
+    print(exact_time_as_percentage)
+    change_to_percentage_time(driver, exact_time_as_percentage)
 
 
 # def report_issue(driver):
@@ -319,7 +414,7 @@ def change_audio_to_spanish(driver):
 
 # def change_spoken_language(driver , language):
 #     """ going to add this to the "nice to have" category. Not pressing."""
-#     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken 
+#     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken
 #     language to that language"""
 #     pass
 
@@ -331,22 +426,8 @@ def change_audio_to_spanish(driver):
 
 
 
-
-
-
-
-
-# video_player_container = driver.find_element_by_css_selector('div.nfp.AkiraPlayer')
-# video_player_cotainer.click()
-
-# stops working after the first execution, research ActionChains
-# from selenium.webdriver.common.action_chains import ActionChains
-# action = ActionChains(driver)
-# action.move_to_element(video_player_cotainer).perform()
-
-
-
 # ALL OF THE FOLLOWING BUTTONS WORK
+# THIS IS A REFERENCE FOR DEVELOPMENT. TODO- DELETE THIS ONCE EVERYTHING IS FINISHED
 back_arrow = driver.find_element_by_css_selector('button[data-uia="nfplayer-exit"]')
 back_arrow.click
 
@@ -366,12 +447,8 @@ volume_button.click()  # Clicking the volume button mutes and unmutes the video,
 title = driver.find_element_by_css_selector('h4.ellipsize-text')
 print(title.text)
 
-report_problem_button = driver.find_element_by_css_selector(
-    'button[aria-label="Report a problem with playback to Netflix."')
-report_problem_button.click()  #clicking launches report modal, double clicking doesnt close
-
 subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
-subtitles_button.click()  #clicking launches the subtitles modal, but clicking again doesnt close 
+subtitles_button.click()  # clicking launches the subtitles modal, but clicking again doesnt close
 
 full_screen_button = driver.find_element_by_css_selector('button[aria-label="Full screen"]')
 full_screen_button.click()  # Functions as both "make fullscreen" and "make small screen"
