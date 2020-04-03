@@ -45,6 +45,16 @@ import genrepagetools
 ############################################################################################
 ############################################################################################
 
+### ALL FUCNTIONS:
+player_is_idle
+wake_up_idle_player
+wake_up_if_idle
+player_is_paused
+unpause_player
+get_remaining_time
+player_is_fullscreen
+
+
 def player_is_idle(driver):
     """ change to full screen, add subtitles, max volume, and any other options user wants"""
     pass
@@ -171,6 +181,7 @@ def player_is_muted(driver):
         pass
     print("player_is_muted couldnt find either the muted or volume button. SOMETHING IS WRONG")
 
+
 def mute_player(driver):
     """ mute if unmuted. if already muted, do nothing"""
     wake_up_if_idle(driver)
@@ -182,6 +193,7 @@ def mute_player(driver):
         # small problem appeared. Muted the player causes the volume bar to stay open for
         # TODO- CLEAN THIS UP
 
+
 def unmute_player(driver):
     """ unmute player if muted. If alraedy unmuted, do nothing"""
     wake_up_if_idle(driver)
@@ -192,6 +204,7 @@ def unmute_player(driver):
         # TODO- CLEAN THIS UP
     else:
         print("player is already unmuted, unmute_player not executing")
+
 
 def skip_backward(driver):
     """ rewind the player 10 seconds using the seek back button. SHOULD WORK PAUSED OR UNPAUSED"""
@@ -209,29 +222,67 @@ def skip_forward(driver):
     seek_forward_button.click()
 
 
+def change_time_using_slider(driver):
+    """NETFLIX CALLS THIS THE SCRUBBER?"""
+    """ THIS IS THE BIG ONE. THE HARD PROBLEM. 
+    NOTE- Even If I could change the position by editing the html, thats not really testing the 
+    functionality of the slider. I need to use mouse locations to mimic user behavior"""
+
+wake_up_if_idle(driver)
+a = driver.find_element_by_css_selector('div.scrubber-bar')
+a.location
+#{'x': 20, 'y': 593} TODO- MOUSE LOCATION IS THE KEY HERE. USE LOCATION
+time_remaining = driver.find_element_by_css_selector('time.time-remaining__time')
+
+
+# stops working after the first execution, research ActionChains
+# from selenium.webdriver.common.action_chains import ActionChains
+# action = ActionChains(driver)
+# action.move_to_element(video_player_cotainer).perform()
+
 
 # def report_issue(driver):
 #     """ It was once considered to add the ability to automate the process of reporting issues.
 #     After consideration, the possibility of it being used for nefarious acts against Netflix led
 #     to this function being scrapped """
 
+def subtitle_menu_is_open(driver):
+    """ return true if the subtitle menu is open, false if else"""
+    """ TODO- CLEAN THIS UP"""
+    # INTENTIONALLY NOT WAKING UP PLAYER. IDLE PLAYER MEANS MENU IS NOT OEPN
+    try:
+        english = driver.find_element_by_css_selector('li[data-uia="track-subtitle-English"]')
+        return(True)  #  not all shows will have english subtitles
+    except NoSuchElementException:
+        return(False)   # SLOPPY CODE. OTHER CASES EXIST, BAD TRY EXCEPT
+
+
+def open_subtitle_menu_if_not_open(driver):
+    """ open subtitle menu if it is not already open. If it is open, do nothing"""
+    wake_up_if_idle(driver)
+    if subtitle_menu_is_open(driver):
+        print("subtitle menu is already open, open_subtitle_menu_if_not_open isnt executing")
+    else:
+        subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
+        subtitles_button.click()
+        # wait until the menu is open
+        wait = WebDriverWait(driver,10)
+        wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')))
+
 
 def has_subtitles(driver):
     """ return true if the player already has subtitles enabled (OF ANY LANGUAGE). False if else"""
     wake_up_if_idle(driver)
-    subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
-    subtitles_button.click()  #clicking launches the subtitles modal, but clicking again doesnt close 
+    open_subtitle_menu_if_not_open(driver)
     #
-    wait = WebDriverWait(driver,10)
-    wait.until(EC.visibility_of_element_located(
-        (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')))
     subtitles_languages_list = driver.find_element_by_css_selector(
         'div.track-list.structural.track-list-subtitles')
     # TODO- THIS IS LOOKS HORRIBLE. CLEAN THIS UP.
     actual_list = subtitles_languages_list.find_element_by_tag_name('ul')
     languages = actual_list.find_elements_by_tag_name('li')
     print(len(languages))
-
+    #
     for language in languages:
         if 'selected' in language.get_attribute('class'):
             if language.text == 'Off':
@@ -241,28 +292,52 @@ def has_subtitles(driver):
                 print(f"found subtitle with language {language.text}")
                 return(True)
 
+
 def add_english_subtitles(driver):
     # TODO- IT WORKS BUT SEEMS SKETCHY. NEEDS TO BE TESTED. I THOUGHT SINCE THE SUBTITLE MODAL
     # WAS ALREADY OPENT THA OPENING IT AGAIN WITH SUBTITLES_BUTTON.CLICK() WAS GOING TO CAUSE A
     # PROBLEM. INVESTIGATE
     wake_up_if_idle(driver)
-
-    ### opens subtitle menu
-    subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
-    subtitles_button.click()  #
+    open_subtitle_menu_if_not_open(driver)
     #
     # spanish = driver.find_element_by_css_selector('li[data-uia="track-subtitle-Spanish"]')
     english = driver.find_element_by_css_selector('li[data-uia="track-subtitle-English"]')
     english.click()
 
 
-def change_all_settings(**KWARGS):
-    """ a super function that takes in a list of options and performs them"""
+def change_audio_to_spanish(driver):
+    """spoken language != subtitles. This function changes the verbal language to spanish"""
+    """not fully tested, TODO-TEST"""
+    wake_up_if_idle(driver)
+    open_subtitle_menu_if_not_open(driver)
+    #
+    # spoken_language_container = driver.find_element_by_css_selector(
+    #     'div.track-list structural track-list-audio')
+    # spoken_language_list = spoken_language_container.find_element_by_tag_name('ul')
+    spanish_audio = driver.find_element_by_css_selector('li[data-uia="track-audio-Spanish"]')
+    spanish_audio.click()
+
+# def change_spoken_language(driver , language):
+#     """ going to add this to the "nice to have" category. Not pressing."""
+#     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken 
+#     language to that language"""
+#     pass
+
+# def change_all_settings(**KWARGS):
+#     """ a super function that takes in a list of options and performs them"""
+
+
+
+
+
+
+
+
+
 
 
 # video_player_container = driver.find_element_by_css_selector('div.nfp.AkiraPlayer')
 # video_player_cotainer.click()
-
 
 # stops working after the first execution, research ActionChains
 # from selenium.webdriver.common.action_chains import ActionChains
@@ -300,7 +375,3 @@ subtitles_button.click()  #clicking launches the subtitles modal, but clicking a
 
 full_screen_button = driver.find_element_by_css_selector('button[aria-label="Full screen"]')
 full_screen_button.click()  # Functions as both "make fullscreen" and "make small screen"
-
-
-
-
