@@ -81,3 +81,4 @@ temp = shows[2]
 action = ActionChains(driver)
 action.key_down(Keys.CONTROL).send_keys('f').key_up(Keys.CONTROL).perform()
 # Apparently I have to action.reset_actions() ????
+

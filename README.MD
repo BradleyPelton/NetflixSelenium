@@ -1,6 +1,6 @@
 
 
-# THIS REPO IS CURRENTLY UNDER THE EARLY STAGES OF DEVELOPMENT
+# THIS REPO IS STILL IN PROGRESS
 
 ## DEAR NETFLIX DEVS:
 The purpose of this repo is to provide advance searching to users, an area in which your current
