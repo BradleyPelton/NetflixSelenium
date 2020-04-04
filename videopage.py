@@ -8,8 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
-
-from login import driver, user_login
+from login import user_login
 import secrets
 import mylisttools
 import showtools
@@ -17,7 +16,10 @@ import genrepagetools
 
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
-
+# TODO- FIRST VERSION OF THESE FUNCTIONS ARE COMPLETE. ALL USE CASES ARE COVERED.
+# THERE ARE SOME QUALITY OF LIFE FUNCTIONS THAT COULD SHAVE A FEW SECONDS HERE OR THERE, SUCH AS
+# AN AGGREGATE FUNCTION THAT RUNS A LIST OF FUNCTIONS. THESE SHOULDNT CONSUME TOO MUCH TIME UNTIL
+# THE TEST SUITE IS FULLY UP AND RUNNING
 
 ############################################################################################
 ############################################################################################
@@ -37,7 +39,7 @@ import genrepagetools
 # VIDEO IS PLAYING, BUTTONS ARE GONE (BACK TO IDLE BUT VIDEO IS PLAYING)
 
 
-# REDITS ARE ROLLING, VIDEO PLAYER IS MADE SMALL, RECOMMENDATIONS ARE DISPLAYED
+# CREDITS ARE ROLLING, VIDEO PLAYER IS MADE SMALL, RECOMMENDATIONS ARE DISPLAYED
 # TODO- I DID NOT ACCOUNT FOR THIS!!!! TODO- NEED TO FACTOR THIS IN AS WELL
 # HAPPENS AFTER change_time_using_slidebar(driver, .99)
 ############################################################################################
@@ -45,16 +47,7 @@ import genrepagetools
 ############################################################################################
 ############################################################################################
 
-### ALL FUCNTIONS:
-player_is_idle
-wake_up_idle_player
-wake_up_if_idle
-player_is_paused
-unpause_player
-get_remaining_time
-player_is_fullscreen
-
-
+# IDLE FUNCTIONS
 def player_is_idle(driver):
     """ change to full screen, add subtitles, max volume, and any other options user wants"""
     pass
@@ -73,7 +66,8 @@ def player_is_idle(driver):
 
 def wake_up_idle_player(driver):
     """buttons are gone with idle"""
-    """ TODO- BUG- if player is TOTALLY idle, no activity in several minutes, this wont wake"""
+    """ TODO- BUG- if player is TOTALLY idle, no activity in several minutes, this wont wake.
+        when player is totally idle, a small play button appears in the center of the page"""
     video_player_container = driver.find_element_by_css_selector('div.nfp.AkiraPlayer')
     video_player_container.click()  # Click the center of the screen to wake it up
     # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
@@ -87,7 +81,15 @@ def wake_up_if_idle(driver):
     if player_is_idle(driver):
         wake_up_idle_player(driver)
 
+# BACK FUNCTIONS
+def go_back_to_shows(driver):
+    """ use the back button located inside of the player to return to the previous show list"""
+    wake_up_if_idle(driver)
+    back_arrow = driver.find_element_by_css_selector('button[data-uia="nfplayer-exit"]')
+    back_arrow.click()
 
+
+# PAUSE AND UNPAUSE FUNCTIONS
 def player_is_paused(driver):
     """PAUSED IS IRREGARDLESS OF IDLE. IDLE DOES NOT IMPLY PAUSED
     A PLAYER IS ALWAYS PAUSED OR NOT PAUSED. THUS NOT NOT PAUSED IMPLIES PAUSED """
@@ -105,17 +107,27 @@ def player_is_paused(driver):
         print("player_is_paused couldnt find either play nor pause button, SOMETHING IS WRONG")
 
 
+def pause_player(driver):
+    """ self-explanatory """
+    wake_up_if_idle(driver)
+    if player_is_paused(driver):
+        print("player is already paused, pause_player is not executing")
+    else:
+        small_pause_button = driver.find_element_by_css_selector('button[aria-label="Pause"]')
+        small_pause_button.click()
+
+
 def unpause_player(driver):
     """ unpause player if paused. if not paused, do nothing """
     wake_up_if_idle(driver)
     if player_is_paused(driver):
-        print("PAUSED")
         small_play_button = driver.find_element_by_css_selector('button[aria-label="Play"]')
         small_play_button.click()
     else:
         print("player is not paused, unpause_player is not executing")
 
 
+# FULLSCREEN FUCNTIONS
 def player_is_fullscreen(driver):
     """ this requires 'waking up' the player. TODO- See if its possible to not wake up"""
     """ A PLAYER IS ALWAYS EITHER FULL SCREEN OR NORMAL SCREEN. THUS NOT FULL SCREEN IMPLIES NORMAL
@@ -155,6 +167,7 @@ def make_normal_screen(driver):
         normal_screen.click()
 
 
+# MUTED FUNCTIONS
 def player_is_muted(driver):
     """ return true if muted, false if else"""
     wake_up_if_idle(driver)
@@ -194,6 +207,7 @@ def unmute_player(driver):
     else:
         print("player is already unmuted, unmute_player not executing")
 
+# VOLUME FUNCTIONS
 def volume_slider_is_open(driver):
     """ returns true if the slider is open, false if else"""
     # intentionally not waking up idle player. Idle player implies slider is not open
@@ -204,21 +218,21 @@ def volume_slider_is_open(driver):
         print("volume_slider_is_open couldnt find the volume slider, returning false")
         return(False)
 
+
 def open_volume_slider(driver):
     """ hover over the volume button causing the volume slider to open"""
-    """ since we are hovering, calling open_volume_slider when the slider is already open does 
-    nothing, thus its safe to use open_volume_slider as a open_volume_slider_if_not_open function,
-    but the user should NOTE that open_volume_slider_if_not_open is a defined function
-    """
     """ TODO- TEST NEED TO TEST ALL VOLUME STATES (low,medium,high, muted) """
     wake_up_if_idle(driver)
+    if volume_slider_is_open(driver):
+        print("volume slider is already open, open_volume slider is not executing")
     volume_container = driver.find_element_by_css_selector('div[data-uia="volume-container"]')
     # volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
     action = ActionChains(driver)
     action.move_to_element(volume_container).perform()
     # wait for the slider to appear
     wait = WebDriverWait(driver,10)
-    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.slider-bar-percentage')))
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.slider-container')))
+
 
 def open_volume_slider_if_not_open(driver):
     """ opens slider if not open, if open do nothing"""
@@ -228,30 +242,38 @@ def open_volume_slider_if_not_open(driver):
         open_volume_slider(driver)
 
 
-def change_volume_using_percentage(driver, volume_percentage: float):
+def get_current_volume(driver) -> float:
+    """ TODO"""
+    open_volume_slider_if_not_open(driver)
+    if player_is_muted(driver):
+        return(0.0)
+    volume_percentage = driver.find_element_by_css_selector('div.slider-bar-percentage')
+    # naturally, volume_percentage returns the percentage in a nasty format
+    # volume_percentage.get_attribute('style')  returns 'height: 45.4094%;'
+    str_volume = volume_percentage.get_attribute('style').split(" ")[-1]
+    str_volume = str_volume[:-2]
+    float_volume = (float(str_volume)/100)
+    return(float_volume)
+
+
+def change_volume_using_percentage(driver, desired_volume_percentage: float):
     """ change the volume to a percentage
     e.g. volume_percentage =.5 means 50% volume, .25 = 25% volume etc.
+    TODO- off by 1 pixel BUG. See below
     """
-    """ NETFLIX NAMES:
-    POPUP VOLUME CONTROLLER/ SLIDER/ SCRUBER TARGET
-    """
-wake_up_if_idle(driver)
-# I need to force the volume container open. MOUSING OVER should do fine
-volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
-action = ActionChains(driver)
-action.move_to_element(volume_button).perform()
-volume_bar = driver.find_element_by_css_selector('div.slider-bar-percentage')
-action_2 = ActionChains(driver)
-action.move_to_element_with_offset(volume_bar,0,volume_bar.size['height']*.5).click().perform()
+    open_volume_slider_if_not_open(driver)
+    slider_container = driver.find_element_by_css_selector('div.slider-bar-container')
+    action_2 = ActionChains(driver)
+    # action_2.move_to_element(slider_container).click().perform()  # always moves the slider to the center
+    # MOVE_TO_ELEMENT_WITH_OFFSET OFFSETS RELATIVE TO THE TOP LEFT CORNER OF ELEMENT
+    y_offset = slider_container.size['height'] * (1-desired_volume_percentage)
+    action_2.move_to_element_with_offset(
+        slider_container, 0, y_offset    # volume_bar.size['height']*volume_percentage
+        ).click().perform()
+    # BUG- volume seems to be off by .0133756 percent, a little over a single pixel 
+    # Not sure whats causing it. Test using change_volume_using_percentage and get_current_volume
 
-def get_current_volume(driver):
-    """ TODO"""
-    # wake_up_if_idle(driver)
-    volume_percentage = driver.find_element_by_css_selector('div.slider-bar-percentage')
-    return(volume_percentage.text)
-
-
-
+# SKIP FUNCTIONS
 def skip_backward(driver):
     """ rewind the player 10 seconds using the seek back button. SHOULD WORK PAUSED OR UNPAUSED"""
     wake_up_if_idle(driver)
@@ -267,7 +289,7 @@ def skip_forward(driver):
     seek_forward_button = driver.find_element_by_css_selector('button[aria-label="Seek Forward"]')
     seek_forward_button.click()
 
-
+# TIME/DURATION FUNCTIONS
 def get_remaining_time(driver):
     """ returns the amount of time left in this specific show AS DISPLAYED IN THE BOTTOM RIGHT
     CORNER. NOTE- see get_show_duration . This could be refactored to use seek_time_scrubber"""
@@ -335,12 +357,13 @@ def change_to_exact_time(driver, hours, minutes, seconds):
     print(exact_time_as_percentage)
     change_to_percentage_time(driver, exact_time_as_percentage)
 
-
+# REPORT FUNCTIONS
 # def report_issue(driver):
 #     """ It was once considered to add the ability to automate the process of reporting issues.
 #     After consideration, the possibility of it being used for nefarious acts against Netflix led
 #     to this function being scrapped """
 
+# SUBTITLE & AUDIO LANGUAGE FUNCTIONS
 def subtitle_menu_is_open(driver):
     """ return true if the subtitle menu is open, false if else"""
     """ TODO- CLEAN THIS UP"""
@@ -412,6 +435,7 @@ def change_audio_to_spanish(driver):
     spanish_audio = driver.find_element_by_css_selector('li[data-uia="track-audio-Spanish"]')
     spanish_audio.click()
 
+
 # def change_spoken_language(driver , language):
 #     """ going to add this to the "nice to have" category. Not pressing."""
 #     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken
@@ -421,34 +445,44 @@ def change_audio_to_spanish(driver):
 # def change_all_settings(**KWARGS):
 #     """ a super function that takes in a list of options and performs them"""
 
+# SKIP FUNCTIONS
+# def skip_intro(driver):
+#     """ during the into/OP of some shows, Netflix will display a "Skip Intro" button
+#     The button can appear 5 seconds into the show or 5 minute into the show. This presents quite a 
+#     problem for Selenium because we dont have full async functionality since we depend on the 
+#     webdriver API. Tools like https://arsenic.readthedocs.io/en/latest/ promise to help, but it 
+#     seems like a lot of work for a "Nice-to-have" feature. TODO- NICE TO HAVE"""
+#     pass
 
 
+# def skip_recap(driver):
+#     """very similar to skip_intro but with the "Skip Recap" button. See '7 deadly sins'"""
 
 
 
 # ALL OF THE FOLLOWING BUTTONS WORK
-# THIS IS A REFERENCE FOR DEVELOPMENT. TODO- DELETE THIS ONCE EVERYTHING IS FINISHED
-back_arrow = driver.find_element_by_css_selector('button[data-uia="nfplayer-exit"]')
-back_arrow.click
+# # THIS IS A REFERENCE FOR DEVELOPMENT. TODO- DELETE THIS ONCE EVERYTHING IS FINISHED
+# back_arrow = driver.find_element_by_css_selector('button[data-uia="nfplayer-exit"]')
+# back_arrow.click
 
-small_play_button = driver.find_element_by_css_selector('button[aria-label="Play"]')
-small_play_button.click()
+# small_play_button = driver.find_element_by_css_selector('button[aria-label="Play"]')
+# small_play_button.click()
 
-seek_back_button = driver.find_element_by_css_selector('button[aria-label="Seek Back"]')
-seek_back_button.click()
+# seek_back_button = driver.find_element_by_css_selector('button[aria-label="Seek Back"]')
+# seek_back_button.click()
 
-seek_forward_button = driver.find_element_by_css_selector('button[aria-label="Seek Forward"]')
-seek_forward_button.click()
+# seek_forward_button = driver.find_element_by_css_selector('button[aria-label="Seek Forward"]')
+# seek_forward_button.click()
 
 
-volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
-volume_button.click()  # Clicking the volume button mutes and unmutes the video, also adds slider
+# volume_button = driver.find_element_by_css_selector('button[aria-label="Volume"]')
+# volume_button.click()  # Clicking the volume button mutes and unmutes the video, also adds slider
 
-title = driver.find_element_by_css_selector('h4.ellipsize-text')
-print(title.text)
+# title = driver.find_element_by_css_selector('h4.ellipsize-text')
+# print(title.text)
 
-subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
-subtitles_button.click()  # clicking launches the subtitles modal, but clicking again doesnt close
+# subtitles_button = driver.find_element_by_css_selector('button[aria-label="Audio & Subtitles"]')
+# subtitles_button.click()  # clicking launches the subtitles modal, but clicking again doesnt close
 
-full_screen_button = driver.find_element_by_css_selector('button[aria-label="Full screen"]')
-full_screen_button.click()  # Functions as both "make fullscreen" and "make small screen"
+# full_screen_button = driver.find_element_by_css_selector('button[aria-label="Full screen"]')
+# full_screen_button.click()  # Functions as both "make fullscreen" and "make small screen"
