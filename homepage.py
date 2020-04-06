@@ -51,12 +51,144 @@ def play_main_recommendation(driver):
     # dom
     billboard_play.click()
 
+#################################################################################################
+# ROW OPERATIONS
+# The following funcitions are going to frequently use the following element:
+# row = div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card
+# ALL HOMEPAGE ROWS ARE LOCATED IN CONTAINERS LIKE THIS
+# ROW_ELEMENT, ROW,  WILL ONLY REFERENCE THESE CONTAINERS AND ROWS SHOULD BE CONSIDERED THIS
+#################################################################################################
+ 
 
 def get_shows_in_continue_watching(driver) -> list:
     """ returns a list of shows that are displayed in 'Continue Watching for Bradley' row """
     """TODO TODO TODO"""
     pass
 
+
+# def get_all_rows(driver) -> list:
+"""TODO- NOT FUCNTIONAL. SOME ROWS ARE NOT ROWS BUT BILLBOARDS/TOP 10 lists ETC"""
+#     """ return a list of Webelements that represent the rows of the home page"""
+#     row_container = driver.find_element_by_css_selector('div.lolomo.is-fullbleed')
+#     rows = row_container.find_elements_by_css_selector('div.lolomoRow.lolomoRow_title_card')
+a = driver.find_elements_by_css_selector(
+    'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context]')
+# len(a)
+# ORDER OF ROWS. I WONDER IF THIS IS UNIVERSAL OR USER SPECIFIC. 
+['queue', 'continueWatching', 'becauseYouAdded', 'trendingNow', 'bigRow', 'genre', 'genre', 'popularTitles', 'genre', 'genre', 'similars', 'genre', 'mostWatched', 'genre', 'netflixOriginals', 'genre', 'similars', 'genre', 'topTen', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'newRelease', 'genre', 'genre', 'similars', 'genre', 'similars', 'genre', 'genre', 'similars', 'genre', 'becauseYouAdded', 'similars']
+
+#UNIQUE ROWS
+['popularTitles', 'newRelease', 'netflixOriginals', 'continueWatching', 'topTen', 'queue', 'trendingNow', 'mostWatched', 'similars', 'genre', 'bigRow', 'becauseYouAdded']
+
+
+def get_genre_rows(driver) -> list:
+    """get all genre rows that are not targeted at me e.g. Action movies but not 'Because you.. """
+    genre_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="genre"]')
+    return(genre_rows)
+
+
+def get_queue_row(driver):
+    """ queue row AKA My-List row"""
+    queue_row = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="queue"]')
+    return(queue_row)
+
+
+def get_continueWatching_row(driver):
+    """ continueWatching row is the shows that currently have saved progress """
+    continueWatching_row = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="continueWatching"]')
+    return(continueWatching_row)
+
+
+def get_trendingNow_row(driver):
+    """row? rows? TODO """
+    trendingNow = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="trendingNow"]')
+    return(trendingNow)
+
+
+def get_similars_rows(driver) -> list:
+    """rows with data-list-context="similars" . These are rows that are targeted at the profile"""
+    similars_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="similars"]')
+    return(similars_rows)
+
+
+def get_becauseYouAdded_rows(driver) -> list:
+    """ BUG- see get_row_titles_from_row_list"""
+    """rows with data-list-context="becauseYouAdded". These rows are targetd at the profile based
+    on the user having added the show the row is named after (e.g. Because you Added Top Gun)
+    """
+    becauseYouAdded_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="becauseYouAdded"]')
+    return(becauseYouAdded_rows)
+
+
+def get_newRelease_rows(driver) -> list:
+    """ TODO"""
+    newRelease_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="newRelease"]')
+    return(newRelease_rows)
+
+def get_topTen_rows(driver) -> list:
+    """ row? rows? TODO find out"""
+    """ TODO"""
+    topTen_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="topTen"]')
+    return(topTen_rows)
+
+
+def get_netflixOriginals_rows(driver) -> list:
+    """ row? rows? TODO find out"""
+    """ TODO"""
+    netflixOriginals_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="netflixOriginals"]')
+    return(netflixOriginals_rows)
+
+
+def get_popularTitles_rows(driver) -> list:
+    """ row? rows? TODO find out"""
+    """ TODO"""
+    popularTitles_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="popularTitles"]')
+    return(popularTitles_rows)
+
+
+def get_bigRow_rows(driver) -> list:
+    """ row? rows? TODO find out"""
+    """ TODO"""
+    bigRow_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="bigRow"]')
+    return(bigRow_rows)
+
+
+def get_mostWatched_rows(driver) -> list:
+    """ row? rows? TODO find out"""
+    """ TODO"""
+    mostWatched_rows = driver.find_elements_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="mostWatched"]')
+    return(mostWatched_rows)
+
+def get_row_titles_from_row_list(driver, row_list: list) -> list:
+    """ INPUT: list of WEBELEMENTS of row elements (div.lolomoRow.lolomoRow_title_card)
+        OUTPUT: THE LIST OF TITLES FOR THOSE ROW ELEMENTS
+    """
+    # BUG- TODO- for some reason, get_becauseYouAdded_rows have the title stored in a span.rowTitle
+    # instead of a.rowTitle.  FIX BUG TODO Investigate other rows
+    row_title_list = []
+    for row in row_list:
+        row_title = row.find_element_by_css_selector('a.rowTitle')
+        # print(row_title.text)
+        row_title_list.append(row_title.text)
+    return(row_title_list)
+
+
+
+def row_page_right(driver, row_element):
+    """take in the row_element"""
+right_chevron = driver.find_element_by_css_selector('span.handle.handleNext.active')
 
 def get_recommended_genres(driver) -> list:
     """ TODO- BREAK THIS INTO MULTIPLE FUNCTIONS:

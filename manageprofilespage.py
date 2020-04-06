@@ -224,7 +224,7 @@ def change_default_language(driver, new_language: str):
         language_dropdown = driver.find_element_by_css_selector('div.nfDropDown.theme-lakira > div')
         language_dropdown.click()
         spanish_choice = driver.find_element_by_css_selector(
-        'div.sub-menu.theme-lakira > ul > li:nth-of-type(5)'
+            'div.sub-menu.theme-lakira > ul > li:nth-of-type(5)'
         )
         spanish_choice.click()
 
