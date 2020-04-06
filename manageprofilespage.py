@@ -43,6 +43,7 @@ def get_profile_names(driver) -> List:
     profile_names = [profile.text for profile in profiles if profile.text != "Add Profile"]
     return(profile_names)
 
+
 def edit_profile_is_open(driver) -> bool:
     """returns true if the edit profile modal is open, false if else"""
     try:
@@ -50,6 +51,7 @@ def edit_profile_is_open(driver) -> bool:
         return(True)
     except NoSuchElementException:
         return(False)
+
 
 def open_named_profile(driver, profile_name):
     """ opens the profile with name: profile_name. 
@@ -183,6 +185,7 @@ def change_profile_settings(driver, **kwargs):
     """
     pass
 
+
 def change_profile_name(driver, new_name: str):
     """ TODO """
     """ opening and closing the edit modal will be handled elsewhere"""
@@ -192,6 +195,7 @@ def change_profile_name(driver, new_name: str):
     name_field.clear()
     name_field.send_keys(new_name)
 
+
 def change_kid_bool(driver, new_bool: bool):
     """TODO"""
     """ opening and closing the edit modal will be handled elsewhere"""
@@ -200,6 +204,7 @@ def change_kid_bool(driver, new_bool: bool):
     # clicking the checkbox works for unchecking and checking
     kids_checkbox = driver.find_element_by_css_selector('label[for="add-kids-profile"]')
     kids_checkbox.click()
+
 
 def change_default_language(driver, new_language: str):
     """ There are 26 languages, most not UTF-8 compliant. TODO- Create and display a dictionary so
@@ -222,6 +227,7 @@ def change_default_language(driver, new_language: str):
         'div.sub-menu.theme-lakira > ul > li:nth-of-type(5)'
         )
         spanish_choice.click()
+
 
 def change_allowed_shows(driver, new_allowed_shows):
     """TODO- BUG- in here somewhere. looks good 99% of the time"""
@@ -264,6 +270,7 @@ def change_allowed_shows(driver, new_allowed_shows):
 # change_allowed_shows(driver, 'for older kids and below')
 # change_allowed_shows(driver, 'for little kids only')
 
+
 def change_autoplay_episode(driver, new_bool: bool):
     """ opening and closing the edit modal will be handled elsewhere"""
     current_profile_settings = get_profile_settings(driver)
@@ -280,6 +287,6 @@ def change_autoplay_previews(driver, new_bool: bool):
     assert new_bool != current_profile_settings['autoplay_previews'], "same bool, change_autoplay_p"
     #
     autoplay_previews_checkbox = driver.find_element_by_css_selector(
-    'label[for="videomerch-profile"]'
+        'label[for="videomerch-profile"]'
     )
     autoplay_previews_checkbox.click()

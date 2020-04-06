@@ -14,17 +14,13 @@ chromedriver_path = secrets.chromedriver_path
 # SINCE EVERYTHING IS LOCKED BEHIND A USER BEING-LOGGED IN,
 # LOGIN IS A NECESSARY AND REQUISITE STEP FOR EVERY TEST
 driver = webdriver.Chrome(executable_path=chromedriver_path)
-	
 # driver.set_window_size(800,600) TODO- ADD THIS IN?
 
 
-
-def user_login(username,password):
+def user_login(username, password):
     """username, password case sensitive strings"""
     # Should the driver be passed to the function ? Consider after rewrite
     driver.get('https://netflix.com/login')
-
-
 
     username_field = driver.find_element_by_css_selector('input[name="userLoginId"]')
     username_field.send_keys(username)
@@ -37,7 +33,7 @@ def user_login(username,password):
     # other tests can execute
     # TODO- reword me
     print(time.time())
-    wait = WebDriverWait(driver,10)
+    wait = WebDriverWait(driver, 10)
     # home_button = driver.find_element_by_css_selector('a.logo.icon-logoUpdate.active')
     home_button = wait.until(EC.visibility_of_element_located(
         (By.CSS_SELECTOR, 'a.logo.icon-logoUpdate.active')))

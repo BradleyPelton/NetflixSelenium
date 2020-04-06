@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from login import driver, user_login
+from login import user_login
 import secrets
 import mylisttools
 import showtools
@@ -31,6 +31,7 @@ def switch_to_grid(driver):
     switch_to_grid_view_button = driver.find_element_by_css_selector('button.aro-grid-toggle')
     switch_to_grid_view_button.click()
 
+
 def switch_to_alpha_sort(driver):
     """
     click the dropdown that allows user to change the sort method
@@ -45,13 +46,13 @@ def switch_to_alpha_sort(driver):
 # current_sort_option = driver.find_element_by_css_selector('div.nfDropDown.widthRestricted.theme-aro > div')
 # print(f"Currently sourting by {current_sort_option.text}")
 
+
 def master_sweep(driver, genre_id: int) -> dict:
     """ MASTER SWEEP  TODO- GENERALIZE, STILL USES ANIME NAMES"""
     driver.get("https://www.netflix.com/browse/genre/" + str(genre_id))
     switch_to_grid(driver)
 
     shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
-
 
     anime_shows_dict = defaultdict(dict)
     for show in shows[0:10]:
@@ -61,7 +62,8 @@ def master_sweep(driver, genre_id: int) -> dict:
         show.click()
         # Let jawbone load, explicit wait until jawbone is open
         wait = WebDriverWait(driver,10)
-        meta_lists_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.meta-lists')))
+        meta_lists_element = wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, 'div.meta-lists')))
         #
         if showtools.show_has_saved_progress(driver, show, JAWBONE_OPEN=True):
             anime_shows_dict[title]['progress'] = 'T'

@@ -5,4 +5,5 @@ secrets.py
 
 ### python-auto-generated files
 debug.log
-__pychache__
+__pycache__/
+*.log
