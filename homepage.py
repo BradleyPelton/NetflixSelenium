@@ -75,10 +75,10 @@ a = driver.find_elements_by_css_selector(
     'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context]')
 # len(a)
 # ORDER OF ROWS. I WONDER IF THIS IS UNIVERSAL OR USER SPECIFIC. 
-['queue', 'continueWatching', 'becauseYouAdded', 'trendingNow', 'bigRow', 'genre', 'genre', 'popularTitles', 'genre', 'genre', 'similars', 'genre', 'mostWatched', 'genre', 'netflixOriginals', 'genre', 'similars', 'genre', 'topTen', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'newRelease', 'genre', 'genre', 'similars', 'genre', 'similars', 'genre', 'genre', 'similars', 'genre', 'becauseYouAdded', 'similars']
+# ['queue', 'continueWatching', 'becauseYouAdded', 'trendingNow', 'bigRow', 'genre', 'genre', 'popularTitles', 'genre', 'genre', 'similars', 'genre', 'mostWatched', 'genre', 'netflixOriginals', 'genre', 'similars', 'genre', 'topTen', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'genre', 'newRelease', 'genre', 'genre', 'similars', 'genre', 'similars', 'genre', 'genre', 'similars', 'genre', 'becauseYouAdded', 'similars']
 
 #UNIQUE ROWS
-['popularTitles', 'newRelease', 'netflixOriginals', 'continueWatching', 'topTen', 'queue', 'trendingNow', 'mostWatched', 'similars', 'genre', 'bigRow', 'becauseYouAdded']
+# ['popularTitles', 'newRelease', 'netflixOriginals', 'continueWatching', 'topTen', 'queue', 'trendingNow', 'mostWatched', 'similars', 'genre', 'bigRow', 'becauseYouAdded']
 
 
 def get_genre_rows(driver) -> list:
@@ -133,6 +133,7 @@ def get_newRelease_rows(driver) -> list:
         'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="newRelease"]')
     return(newRelease_rows)
 
+
 def get_topTen_rows(driver) -> list:
     """ row? rows? TODO find out"""
     """ TODO"""
@@ -171,6 +172,7 @@ def get_mostWatched_rows(driver) -> list:
     mostWatched_rows = driver.find_elements_by_css_selector(
         'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="mostWatched"]')
     return(mostWatched_rows)
+
 
 def get_row_titles_from_row_list(driver, row_list: list) -> list:
     """ INPUT: list of WEBELEMENTS of row elements (div.lolomoRow.lolomoRow_title_card)
@@ -216,7 +218,7 @@ def get_recommended_genres(driver) -> list:
     return(genres)
 
 # NOTE TO READER. ANY FUNCTIONS RELATED TO INTERACTING WITH SHOW ELEMNTS CAN BE FOUND IN 
-# showtools.py
+# showtools.py. THE FOLLOWING FUCNTIONS ARE SQUARELY IN THE DOMAIN OF ROW_ELEMENT FUCNTIONS
 def get_show_titles_from_row(driver, row_element):
     """ this one is complicated. Netflix's frontend doesnt populate the DOM with all of the shows.
     the test suite needs to force all of the shows to load by using get_page_right()
@@ -245,6 +247,12 @@ def get_show_titles_from_row(driver, row_element):
     return(final_show_titles_list)
 
 
+def get_first_show_in_row(driver, row_element):
+    """ return a show_element. NOTE- SHOW ELEMENTS ARE JUST AS SPECIAL AS ROW_ELEMNTS. THIS
+    TEST SUITE CONSIDERS THE TWO TO BE FUNDAMENTAL. THUS THE SHOW_ELEMENT MUST FIT THE STANDARDS
+    , i.e. show = driver.find_elements_by_css_selector('a[class="slider-refocus"]') """
+    # TODO- NOTE- TODO
+    pass
 
 ###########################################################################################
 ###########################################################################################

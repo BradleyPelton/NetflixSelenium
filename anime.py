@@ -58,7 +58,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-from login import driver, user_login
+from login import user_login
 import secrets
 import mylisttools
 import showtools

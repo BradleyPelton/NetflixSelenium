@@ -1,4 +1,4 @@
-from typing import List, Dict
+import time
 from collections import defaultdict
 
 from selenium.webdriver.common.by import By
@@ -6,11 +6,16 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
-# from login import driver, user_login
+
+from login import  user_login
 import secrets
 import mylisttools
 import showtools
+import genrepagetools
+
+user_login(secrets.bradleys_email,secrets.bradleys_password)
 
 ### NOTE- CTRL +K CTRL + 0 TO FOLD ALL, CTRL + K CTRL J TO UNFOLD ALL 
 
@@ -23,6 +28,9 @@ import showtools
 #########################################################################
 #########################################################################
 #########################################################################
+
+# NOTE- SHOW ELEMENTS ARE OFTEN RETURNED FROM ROW_OPERATIONS. SEE homepage.py IF YOU NEED TO 
+# GRAB A SHOW ELEMENT FROM A PAGE SINCE EVERY SHOW ELEMENT APPEARS IN A ROW
 
 ##### JAWBONE FUCNTIONS
 #### FOR SHOW PREVIEW FUNCTIONS, SEE LINE 300+
@@ -258,36 +266,178 @@ def open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN):
 # NOT TO BE CONFUSED WITH THE JAWBONE FUCNTINOS ABOVE, THESE FUCNTIONS SOLELY WORK WITH THE USE 
 # CASES WHEN A USER MOUSES OVER A SHOW ELEMENT 
 
-shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
+# NETFLIX CALLS THIS THE "BOB-CARD" "BOB OVERLAY" "BOB-JAW-HITZONE"
 
+# Every show hasa bob-container div but it contains nothing until the show is moused over
+
+shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
+s = shows[25]
+mouse_over_show_element(driver, s)
+show_is_in_my_list_from_show_preview(driver, s)
 
 
 def mouse_over_show_element(driver, show_element):
     """ """
     action = ActionChains(driver)
     action.move_to_element(show_element).perform()
+    # Wait for BOB CONTAINER to open
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.bob-play-hitzone')))
+
+
+def mouse_over_show_if_not_moused_over(driver, show_element):
+    """ self-explanatory"""
+    if show_is_being_previewed(driver):
+        pass
+    else:
+        mouse_over_show_element(driver, show_element)
+
 
 def show_is_being_previewed(driver):
     """ RETURN TRUE IF THERE IS A SHOW THAT IS CURRENTLY BEING MOUSED OVER. NOT TO BE CONFUSED
-    WITH JAWBONE OPEN, show"""
-    pass
+    WITH JAWBONE OPEN. STIPULATES THE BOB CONTAINER IS OPEN, SEE showtools.py"""
+    """NOTE- only one show can be previewed at a time so its valid just to search the entire dom"""
+    try:
+        driver.find_element_by_css_selector('div.bob-overview a[data-uia="play-button"]')
+        return(True)
+    except NoSuchElementException:
+        return(False)
+
+
+def open_jawbone_from_show_preview(driver, show_element):
+    """ TODO- add logic to check if jawbone is already open."""
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    #
+    bob_jawbone_hitzone = driver.find_element_by_css_selector(
+        'div.bob-overlay > a.bob-jaw-hitzone'
+    )
+    bob_jawbone_hitzone.click()
+
 
 def play_show_from_show_preview(driver, show_element):
-    pass
-
-def show_is_upvoted_from_show_preview(driver):
-    pass
-
-def show_is_downvoted_from_show_preview(driver):
-    pass
-
-def show_is_in_my_list_from_show_preview(driver):
-    pass
+    """ play the show from the bob container by clicking in the center of the bob container"""
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    #
+    bob_play_hitzone = driver.find_element_by_css_selector('div.bob-play-hitzone')
+    bob_play_hitzone.click()
 
 
-def upvote_from_show_preview(driver):
-    pass
+def show_is_upvoted_from_show_preview(driver, show_element):
+    """ return true if the show is upvoted AS SEEN FROM THE BOB CONTAINER, False if else"""
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    #
+    try:
+        driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Already rated: thumbs up (click to remove rating)"]'
+        )
+        return(True)
+    except NoSuchElementException:
+        return(False)
 
 
-def downvote_from_show_preview(driver):
-    pass
+def show_is_downvoted_from_show_preview(driver, show_element):
+    """ return true if the show is downvoted AS SEEN FROM THE BOB CONTAINER, False if else """
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    #
+    try:
+        driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Already rated: thumbs down (click to remove rating)"]'
+        )
+        return(True)
+    except NoSuchElementException:
+        return(False)
+
+
+def upvote_from_show_preview(driver, show_element):
+    """ upvote from preview if not upvoted, else do nothing"""
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    #
+    if show_is_upvoted_from_show_preview(driver, show_element):
+        print("show is already upvoted, upvote_from_show_preview not executing")
+    elif show_is_upvoted_from_show_preview(driver, show_element):
+        already_upvoted_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Already rated: thumbs down (click to remove rating)"]'
+        )
+        already_upvoted_button.click()
+        # HAVE TO WAIT FOR DOWNVOTE UNCLICK TO PROCESS AND FOR THE UPVOTE BUTTON TO APPEAR
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs up"]')))
+        upvote_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Rate thumbs up"]'
+        )
+        upvote_button.click()
+    else:
+        upvote_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Rate thumbs up"]'
+        )
+        upvote_button.click()
+
+
+def downvote_from_show_preview(driver, show_element):
+    """ downvote from preview if not downvoted, else do nothing"""
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    if show_is_downvoted_from_show_preview(driver, show_element):
+        print("show is already downvoted, downvote_from_show_preview not executing")
+    elif show_is_upvoted_from_show_preview(driver, show_element):
+        already_upvoted_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Already rated: thumbs up (click to remove rating)"]'
+        )
+        already_upvoted_button.click()
+        # HAVE TO WAIT FOR UPVOTE UNCLICK TO PROCESS AND FOR THE DOWNVOTE BUTTON TO APPEAR
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs down"]')))
+        downvote_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Rate thumbs down"]'
+        )
+        downvote_button.click()
+    else:
+        downvote_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper a[aria-label="Rate thumbs down"]'
+        )
+        downvote_button.click()
+
+
+def show_is_in_my_list_from_show_preview(driver, show_element):
+    """ """
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    #
+    my_list_button = driver.find_element_by_css_selector(
+        'div.bob-actions-wrapper div[data-uia="myListButton"]'
+    )
+    # I cant find another way to determine if the my list button is checked or not
+    # The dom is surprisingly not helpful here. There is not is_checked attribute hidden in an aria
+    # tag or anything. I'm going to have to brute force it by mousing over the my_list_button and
+    # seeing what the text popup says
+    action = ActionChains(driver)
+    action.move_to_element(my_list_button).perform()
+    status = driver.find_element_by_css_selector(
+        'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
+    print(f"show status text is {status.text}")
+    if status.text == 'Remove from My List':
+        return(True)
+    else:
+        return(False)
+
+
+def add_show_to_my_list_from_show_preview(driver, show_element):
+    """ add show to my list using the bob container. If show already in my list, do nothing"""
+    mouse_over_show_if_not_moused_over(driver, show_element)
+    if show_is_in_my_list_from_show_preview(driver, show_element):
+        print("show already in my list, add_show_to_my_list_from_show_preview not executing")
+    else:
+        my_list_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper div[data-uia="myListButton"]'
+        )
+        my_list_button.click()
+
+
+def remove_show_from_my_list_from_show_preview(driver, show_element):
+    if not show_is_in_my_list_from_show_preview(driver, show_element):
+        print("show isnt in my list already, remove_show_from_my_list_from_show_preview not exe")
+    else:
+        my_list_button = driver.find_element_by_css_selector(
+            'div.bob-actions-wrapper div[data-uia="myListButton"]'
+        )
+        my_list_button.click()
