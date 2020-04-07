@@ -24,7 +24,8 @@ import showtools
 #########################################################################
 #########################################################################
 
-
+##### JAWBONE FUCNTIONS
+#### FOR SHOW PREVIEW FUNCTIONS, SEE LINE 300+
 def play_show(driver, show_element, JAWBONE_OPEN=False):
     """ Plays the show passed in as the parameter show_element """
     """ NOT TESTED, TODO- TEST """
@@ -32,6 +33,7 @@ def play_show(driver, show_element, JAWBONE_OPEN=False):
     
     play_button = driver.find_element_by_css_selector('a[data-uia="play-button"] > span')
     play_button.click()
+
 
 def is_show(driver, show_element, JAWBONE_OPEN=False):
     """ not sure about needed this function or not. Leaving it here just in case"""
@@ -50,6 +52,7 @@ def get_duration(driver, show_element, JAWBONE_OPEN=False) -> str:
 
     duration = driver.find_element_by_css_selector('span.duration')
     return(duration.text)
+
 
 def show_has_saved_progress(driver, show_element, JAWBONE_OPEN=False) -> bool:
     """ CHECK IF SHOW HAS SAVED PROGRESS, if so return False, else False"""
@@ -94,6 +97,7 @@ def has_audio_description_available(driver, show_element, JAWBONE_OPEN=False) ->
     except NoSuchElementException:
         return(False)
 
+
 def get_maturity_rating(driver, show_element, JAWBONE_OPEN=False) -> str:
     """ return the maturity rating for a show, E.G. 'PG', 'PG-13', 'TV-MA'"""
     """ UNTESTED, TODO- TEST"""
@@ -117,6 +121,7 @@ def get_show_match_percentage(driver, show_element, JAWBONE_OPEN=False) -> str:
     else:
         return(match_score.text)
 
+
 def get_synopsis(driver, show_element, JAWBONE_OPEN=False) -> str:
     """NOT TESTED, TODO- TEST"""
     open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
@@ -132,10 +137,10 @@ def get_release_date(driver, show_element, JAWBONE_OPEN=False):
     year = driver.find_element_by_css_selector('span.year')
     return(year.text)
 
+
 def get_number_of_episodes():
     """not sure if this is going to be hard or not. """
     pass
-
 
 
 def get_actors_list(driver, show_element, JAWBONE_OPEN=False) -> List:
@@ -179,7 +184,6 @@ def get_tags_list(driver, show_element, JAWBONE_OPEN=False) -> List:
         return(["COULD NOT FIND TAG"])
 
 
-
 def is_upvoted(driver, show_element, JAWBONE_OPEN=False):
     """ return bool if upvoted"""
     open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
@@ -219,7 +223,6 @@ def upvote_show(driver, show_element, JAWBONE_OPEN=False):
         upvote_button.click()
 
 
-
 def downvote_show(driver, show_element, JAWBONE_OPEN=False):
     """weird edge cases: the upvote button disappears when a show is downvoted"""
     open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN)
@@ -242,3 +245,49 @@ def open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN):
         # WAIT UNTIL JAWBONE FINISHES LOADING
         wait = WebDriverWait(driver,10)
         meta_lists_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.meta-lists')))
+
+
+#################################################################################################
+#################################################################################################
+#################################################################################################
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- SHOW PREVIEW =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#################################################################################################
+#################################################################################################
+#################################################################################################
+
+# NOT TO BE CONFUSED WITH THE JAWBONE FUCNTINOS ABOVE, THESE FUCNTIONS SOLELY WORK WITH THE USE 
+# CASES WHEN A USER MOUSES OVER A SHOW ELEMENT 
+
+shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
+
+
+
+def mouse_over_show_element(driver, show_element):
+    """ """
+    action = ActionChains(driver)
+    action.move_to_element(show_element).perform()
+
+def show_is_being_previewed(driver):
+    """ RETURN TRUE IF THERE IS A SHOW THAT IS CURRENTLY BEING MOUSED OVER. NOT TO BE CONFUSED
+    WITH JAWBONE OPEN, show"""
+    pass
+
+def play_show_from_show_preview(driver, show_element):
+    pass
+
+def show_is_upvoted_from_show_preview(driver):
+    pass
+
+def show_is_downvoted_from_show_preview(driver):
+    pass
+
+def show_is_in_my_list_from_show_preview(driver):
+    pass
+
+
+def upvote_from_show_preview(driver):
+    pass
+
+
+def downvote_from_show_preview(driver):
+    pass

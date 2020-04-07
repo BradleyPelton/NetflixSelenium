@@ -90,8 +90,9 @@ def get_genre_rows(driver) -> list:
 
 def get_queue_row(driver):
     """ queue row AKA My-List row"""
-    queue_row = driver.find_elements_by_css_selector(
-        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="queue"]')
+    queue_row = driver.find_element_by_css_selector(
+        'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="queue"]'
+    )
     return(queue_row)
 
 
@@ -185,17 +186,23 @@ def get_row_titles_from_row_list(driver, row_list: list) -> list:
     return(row_title_list)
 
 
-
 def row_page_right(driver, row_element):
-    """take in the row_element"""
-right_chevron = driver.find_element_by_css_selector('span.handle.handleNext.active')
+    """take in the row_element and click the chevron right to see the next page of shows"""
+    right_chevron = row_element.find_element_by_css_selector('span.handle.handleNext.active')
+    right_chevron.click()
+    # BUG- SOMETIMES I CANT PAGE RIGHT. ElementClickInterceptedException
+
+
+def row_page_left(driver, row_element):
+    """take in the row_element and click the chevron left to see the previous page of shows. LEFT
+    DOESNT EXIST FOR SOME ROWS UNTIL RIGHT IS CLICKED ONCE (and thus there is something to go left)
+    """
+    left_chevron = row_element.find_element_by_css_selector('span.handle.handlePrev.active')
+    left_chevron.click()
+
 
 def get_recommended_genres(driver) -> list:
-    """ TODO- BREAK THIS INTO MULTIPLE FUNCTIONS:
-    NAMELY: TOP 10 US, TOP PICKS FOR BRADLEY, GENRES(THIS FUNCTION), ETC.
-    """
-    # ASSUMES DRIVER IS ALREADY AT THE HOME PAGE
-
+    """TODO """
     # SCROLL TO THE BUTTOM OF THE HOME PAGE
     # 10 lazy loads by netflix. Have to scroll to the bottom, then more loads
     # repeat 10 times
@@ -203,29 +210,41 @@ def get_recommended_genres(driver) -> list:
         driver.execute_script("window.scrollTo(0, 10000000)")
         print(i)
         time.sleep(1)
-
-    # THIS IS GENRES AND "My List"
-    genre_rows = driver.find_elements_by_css_selector('a.rowTitle')
+    #
+    genre_rows = get_genre_rows(driver)
     genres = [genre.text for genre in genre_rows]
     return(genres)
-    # for row in rows:
-    #     print(row.text)
-    # #notably includes:
-    # My List
-    # Because you watched Cells at Work!
-    # New Releases
-    # #notably excludes:
-    # Continue Watching for Bradley
-    # Popular on netflix
-    # Trending Now
-    # Top 10 in the U.s. Today
-    # Top Picks for Bradley
-    # Because you added Goodfellas to your List
 
-    # # this was an interesting idea, but the element that contains the title
-    # # is the sibling before the id=row-37 element. We cant go backwards or up with css
-    # for i in range(0,38):
-    #     row = driver.find_element_by_css_selector('#row-'+str(i))
+# NOTE TO READER. ANY FUNCTIONS RELATED TO INTERACTING WITH SHOW ELEMNTS CAN BE FOUND IN 
+# showtools.py
+def get_show_titles_from_row(driver, row_element):
+    """ this one is complicated. Netflix's frontend doesnt populate the DOM with all of the shows.
+    the test suite needs to force all of the shows to load by using get_page_right()
+    Even worse yet, the last row is populated with the elements of the first row if the last row
+    doent fill the entire row. EEEEVEEEENNNNN WORSE YET, the number of shows displayed varies on
+    the size of the screen. TODO- SLOW AND HIDEOUS, BUT FUNCTIONAL
+    """
+    # Note from/to author: This is not a data scraping job. This is a test suite
+    final_show_titles_list = []
+    for _ in range(20):
+        currently_displayed_shows = row_element.find_elements_by_css_selector('a[class="slider-refocus"]')
+        current_titles = [
+            show.text 
+            for show in currently_displayed_shows
+            if show.text not in final_show_titles_list
+            and show.text != ''
+        ]
+        if not current_titles:
+            break
+        else:
+            final_show_titles_list += current_titles
+            # print(current_titles)
+            # print(final_show_titles_list)
+            row_page_right(driver,row_element)
+            time.sleep(1)
+    return(final_show_titles_list)
+
+
 
 ###########################################################################################
 ###########################################################################################
