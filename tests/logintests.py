@@ -11,12 +11,16 @@ from selenium.webdriver.support import expected_conditions as EC
 import prerefactor.secrets
 import pagemodels.loginpage
 
+# THIS WILL BE THE ONLY PLACE WHERE driver IS DEFINED. EVERY OTHER TEST OBJECT WILL BE PASSED
+# THE driver FROM THIS TEST OBJECT
 # SET YOUR PATH TO YOUR CHROMEDRIVER
 chromedriver_path = prerefactor.secrets.chromedriver_path
 driver = webdriver.Chrome(executable_path=chromedriver_path)
 
 
 class LoginTests(unittest.TestCase):
+    def __init__(self):
+        self.driver = driver
 
     def user_login_main(self):
         login_page = pagemodels.loginpage.LoginPage(driver)
@@ -30,5 +34,7 @@ class LoginTests(unittest.TestCase):
     #     """ """
     #     pass
 
-a = LoginTests()
-a.user_login_main()
+
+if __name__ == "__main__":
+    a = LoginTests()
+    a.user_login_main()
