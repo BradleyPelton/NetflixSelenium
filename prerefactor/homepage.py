@@ -19,8 +19,6 @@ import genrepagetools
 # After successful login, users are redirected to `netflix.com/browse`
 # netflix.com is redirected to this home page as well `netflix.com/browse`
 
-driver.get('https://netflix.com')
-
 
 def get_main_recommendation_id(driver) -> int:
     """returns the id for the show that is the primary "ad" seen on the top
