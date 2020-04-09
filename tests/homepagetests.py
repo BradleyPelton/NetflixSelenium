@@ -19,6 +19,10 @@ login_container = tests.logintests.LoginTests()
 login_container.user_login_main()
 # TODO- rename this. its not a login_container
 
+# TODO- a solution to this, and a recommendation from the docs is not to automate login.
+# Eliminating logging in via webbrowser before every test will improve both the speed and stability
+# of the test. A method should be created to gain access to the AUT* (e.g. using an API to login
+# and set a cookie).
 
 class HomePageTests(unittest.TestCase):
 

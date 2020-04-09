@@ -71,7 +71,7 @@ def wake_up_idle_player(driver):
     video_player_container = driver.find_element_by_css_selector('div.nfp.AkiraPlayer')
     video_player_container.click()  # Click the center of the screen to wake it up
     # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
-    wait = WebDriverWait(driver,10)
+    wait = WebDriverWait(driver, 10)
     wait.until(EC.visibility_of_element_located(
         (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')))
 
