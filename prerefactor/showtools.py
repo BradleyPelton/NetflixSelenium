@@ -263,7 +263,8 @@ def open_jawbone_if_not_open(driver, show_element, JAWBONE_OPEN):
 #################################################################################################
 #################################################################################################
 
-# NOT TO BE CONFUSED WITH THE JAWBONE FUCNTINOS ABOVE, THESE FUCNTIONS SOLELY WORK WITH THE USE 
+# NOT TO BE CONFUSED WITH THE JAWBONE FUCNTINOS A
+# BOVE, THESE FUCNTIONS SOLELY WORK WITH THE USE 
 # CASES WHEN A USER MOUSES OVER A SHOW ELEMENT 
 
 # NETFLIX CALLS THIS THE "BOB-CARD" "BOB OVERLAY" "BOB-JAW-HITZONE"
