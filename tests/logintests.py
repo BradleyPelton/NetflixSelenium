@@ -26,7 +26,7 @@ class LoginTests(unittest.TestCase):
         login_page = pagemodels.loginpage.LoginPage(driver)
         login_page.load()
         login_page.user_login(
-            prerefactor.secrets.bradleys_email, prerefactor.secrets.bradleys_password
+            secrets.bradleys_email, secrets.bradleys_password
         )
         # print("login was successfull?")
 

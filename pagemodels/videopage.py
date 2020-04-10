@@ -10,6 +10,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from pagemodels.basepage import BasePage
 
+
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
 ############################################################################################
@@ -51,6 +52,8 @@ class VideoPage(BasePage):
         self.TIME_SCRUBBER = (By.CSS_SELECTOR, 'div[aria-label="Seek time scrubber"]')
         self.TIME_SCRUBBER_BAR = (By.CSS_SELECTOR, 'div.scrubber-bar')
         self.SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Audio & Subtitles"]')
+        self.CURRENT_SUBTITLE_IS_OFF = (By.CSS_SELECTOR, 'li.track.selected[data-uia="track-subtitle-Off"]')
+        self.SUBTITLE_OFF_BUTTON = (By.CSS_SELECTOR, 'li.track[data-uia="track-subtitle-Off"]')
         self.ENGLISH_SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-subtitle-English"]')
         self.SPANISH_SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-subtitle-Spanish"]')
         self.SPANISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-Spanish"]')
@@ -126,8 +129,8 @@ class VideoPage(BasePage):
 
     #  FULL SCREEN FUCNTIONS
     def player_is_full_screen(self):
-        """ this requires 'waking up' the player. TODO- See if its possible to not wake up"""
-        """ A PLAYER IS ALWAYS EITHER FULL SCREEN OR NORMAL SCREEN. THUS NOT FULL SCREEN IMPLIES NORMAL
+        """ A PLAYER IS ALWAYS EITHER FULL SCREEN OR NORMAL SCREEN. THUS NOT FULL SCREEN IMPLIES
+        NORMAL SCREEN
         """
         self.wake_up_if_idle()
         try:
@@ -277,7 +280,7 @@ class VideoPage(BasePage):
         seek_forward_button.click()
 
     # TIME/DURATION FUNCTIONS
-    def get_remaining_time(self):
+    def get_remaining_time_in_seconds(self):
         """ returns the amount of time left in this specific show AS DISPLAYED IN THE BOTTOM RIGHT
         CORNER. NOTE- see get_show_duration . This could be refactored to use seek_time_scrubber"""
         """ NOT TESTED, TODO- Test"""
@@ -287,7 +290,13 @@ class VideoPage(BasePage):
             print("GET_REMAINING_TIME FAILED, MAYBE THE PLAYER WAS IDLE???")
             return time_remaining.text
         else:
-            return time_remaining.text
+            show_duration_list = time_remaining.text.split(":")
+            show_duration_in_seconds = (
+                                    int(show_duration_list[0])*3600
+                                    + int(show_duration_list[1])*60
+                                    + int(show_duration_list[2])
+            )
+            return show_duration_in_seconds
 
     def get_current_time(self):
         """ TODO"""
@@ -374,26 +383,26 @@ class VideoPage(BasePage):
             # never used again, leaving the raw CSS SELECTOR in there
 
     def has_subtitles(self):
+        self.wake_up_idle_player()
+        self.open_subtitle_menu_if_not_open()
+        try:
+            self.driver.find_element(*self.CURRENT_SUBTITLE_IS_OFF)
+            return False
+        except NoSuchElementException:
+            return True
+
+    def remove_subtitles(self):
         """ return true if the player already has subtitles enabled (OF ANY LANGUAGE).
-         False if else"""
+        False if else"""
+        """ TODO- UNTESTED"""
         self.wake_up_if_idle()
         self.open_subtitle_menu_if_not_open()
         #
-        subtitles_languages_list = self.driver.find_element(*self.SUBTITLE_LANGUAGE_LIST)
-        # TODO- THIS IS LOOKS HORRIBLE. CLEAN THIS UP.
-        actual_list = subtitles_languages_list.find_element_by_tag_name('ul')
-        languages = actual_list.find_elements_by_tag_name('li')
-        # print(len(languages))
-        #
-        for language in languages:
-            if 'selected' in language.get_attribute('class'):
-                if language.text == 'Off':
-                    print("subtitles are turned off")
-                    return False
-                else:
-                    print(f"found subtitle with language {language.text}")
-                    return True
-
+        assert self.has_subtitles()
+        subtitles_off_button = self.driver.find_element(*self.SUBTITLE_OFF_BUTTON)
+        subtitles_off_button.click()
+        # BUG- UNPAUSES PLAYER, but it does remove subtitles
+    
     def add_english_subtitles(self):
         # TODO- IT WORKS BUT SEEMS SKETCHY. NEEDS TO BE TESTED. I THOUGHT SINCE THE SUBTITLE MODAL
         # WAS ALREADY OPENT THA OPENING IT AGAIN WITH SUBTITLES_BUTTON.CLICK() WAS GOING TO CAUSE A

@@ -1,3 +1,11 @@
+# GUIDE
+- "I HAVE NO IDEA WHAT IM LOOKING AT." Checkout ./tests/videopagetests.py , its the most user friendly.
+The tests there are less elaborate(pause an unpaused player, mute an unmuted player, etc.)
+
+
+
+
+
 
 
 # SETUP
