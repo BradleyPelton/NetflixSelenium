@@ -4,6 +4,9 @@ from selenium.webdriver.common.by import By
 # from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 from pagemodels.basepage import BasePage
 
@@ -127,7 +130,6 @@ class HomePage(BasePage):
         right_chevron = row_element.find_element(*self.RIGHT_CHEVRON)
         right_chevron.click()
         # BUG- SOMETIMES I CANT PAGE RIGHT. ElementClickInterceptedException
-
 
     def row_page_left(self, row_element):
         """take in the row_element and click the chevron left to see the previous page of shows. LEFT
