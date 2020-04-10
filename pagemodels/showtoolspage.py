@@ -27,6 +27,7 @@ class ShowToolsPage(BasePage):
 
         #Locators
         self.PLAY_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="play-button"] > span')
+        self.MY_LIST_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="myListButton"]')
         self.DURATION = (By.CSS_SELECTOR, 'span.duration')
         self.PROGRESS_SUMMARY = (By.CSS_SELECTOR, 'span.summary')
         self.AUDIO_DESCRIPTION_BADGE = (By.CSS_SELECTOR, 'span.audio-description-badge')
@@ -41,6 +42,7 @@ class ShowToolsPage(BasePage):
         self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON = (BY.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs down (click to remove rating)"]')
         self.UPVOTE_BUTTON = (BY.CSS_SELECTOR, 'a[aria-label="Rate thumbs up"]')
         self.DOWNVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Rate thumbs down"]')
+        # BOB LOCATORS
         self.BOB_PLAY_HITZONE = (By.CSS_SELECTOR, 'div.bob-play-hitzone')
         self.BOB_PLAY_BUTTON = (By.CSS_SELECTOR, 'div.bob-overview a[data-uia="play-button"]')
         self.BOB_JAWBONE_HITZONE = (By.CSS_SELECTOR, 'div.bob-overlay > a.bob-jaw-hitzone')
@@ -51,6 +53,7 @@ class ShowToolsPage(BasePage):
         self.BOB_MY_LIST_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"])')
         self.BOB_MY_LIST_STATUS = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
 
+        
 
     # JAWBONE FUCNTIONS
     # FOR SHOW PREVIEW FUNCTIONS(bob-container), SEE LINE 300+
@@ -63,6 +66,37 @@ class ShowToolsPage(BasePage):
                 (By.CSS_SELECTOR, 'div.meta-lists')))
             # TODO- Grab a better element to wait for here
 
+    def is_in_my_list(self, show_element, JAWBONE_OPEN=False) -> bool:
+        """ RETURNS TRUE IF SHOW IS ALREADY IN My-List, FALSE IF ELSE"""
+        self.open_jawbone_if_not_open(show_element)
+
+        my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
+
+        if my_list_button.get_attribute('aria-label') == 'Remove from My List':
+            return True
+        else:
+            return False
+
+    def add_show_to_my_list(self, show_element):
+        self.open_jawbone_if_not_open()
+
+        my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
+
+        if self.is_in_my_list(show_element, JAWBONE_OPEN=True):
+            print("SHOW IS ALREADY IN YOUR LIST, NOT EXECUTING add_show_to_my_list")
+        else:
+            my_list_button.click()
+
+    def remove_show_from_my_list(self, show_element):
+        self.open_jawbone_if_not_open()
+
+        my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
+
+        if self.is_in_my_list(show_element):
+            my_list_button.click()
+        else:
+            print("SHOW ISNT IN YOUR LIST, NOT EXECUTING remove_show_from_my_list ")
+
     def play_show(self, show_element, JAWBONE_OPEN=False):
         """ Plays the show passed in as the parameter show_element """
         """ NOT TESTED, TODO- TEST """
@@ -70,7 +104,6 @@ class ShowToolsPage(BasePage):
 
         play_button = self.driver.find_element(*self.PLAY_BUTTON)
         play_button.click()
-
 
     def is_show(self, show_element, JAWBONE_OPEN=False):
         """ not sure about needed this function or not. Leaving it here just in case"""
