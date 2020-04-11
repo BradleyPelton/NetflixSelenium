@@ -15,19 +15,28 @@ import pagemodels.loginpage
 # THE driver FROM THIS TEST OBJECT
 # SET YOUR PATH TO YOUR CHROMEDRIVER
 
+chromedriver_path = secrets.chromedriver_path
+driver = webdriver.Chrome(executable_path=chromedriver_path)
+
+
 
 class LoginTests(unittest.TestCase):
+
+    def __init__(self):
+        self.driver = driver
+
     def setUp(self):
-        chromedriver_path = secrets.chromedriver_path
-        self.driver = webdriver.Chrome(executable_path=chromedriver_path)
+        """ """
+        pass
 
     def test_user_login_main(self):
-        login_page = pagemodels.loginpage.LoginPage(self.driver)
+        login_page = pagemodels.loginpage.LoginPage(driver)
         login_page.load()
         login_page.user_login(
             secrets.bradleys_email, secrets.bradleys_password
         )
-        # print("login was successfull?")
+        # Recall there is an explicit wait built into login_page.user_login()
+        self.assertEqual('https://www.netflix.com/browse', driver.current_url)
 
     def test_user_login_incorrect_credentials(self):
         """ """
@@ -39,9 +48,11 @@ class LoginTests(unittest.TestCase):
 
     def tearDown(self):
         """ """
-        self.driver.quit()
+        pass
+        # self.driver.quit()
 
 
 
 if __name__ == "__main__":
     unittest.main()
+

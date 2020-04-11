@@ -46,8 +46,12 @@ class VideoPage(BasePage):
         self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
         self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
+
+
         self.SEEK_BACK_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Back"]')
-        self.SEEK_FORWAD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
+        self.SEEK_FORWARD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
+
+
         self.TIME_REMAINING = (By.CSS_SELECTOR, 'time.time-remaining__time')
         self.TIME_SCRUBBER = (By.CSS_SELECTOR, 'div[aria-label="Seek time scrubber"]')
         self.TIME_SCRUBBER_BAR = (By.CSS_SELECTOR, 'div.scrubber-bar')
@@ -62,7 +66,7 @@ class VideoPage(BasePage):
     def player_is_idle(self):
         """ return bool is player is idle. If player is playing, it is considered idle
             IDLE IF AND ONLY IF BUTTONS ARE BEING DISPLAYED"""
-        seek_forward_button = self.driver.find_element(*self.SEEK_FORWAD_BUTTON)
+        seek_forward_button = self.driver.find_element(*self.SEEK_FORWARD_BUTTON)
         if seek_forward_button.is_displayed():
             print("player is NOT idle")  # TODO- excellent for debugging, but should be removed
             return False
@@ -77,7 +81,7 @@ class VideoPage(BasePage):
         video_player_container.click()  # Click the center of the screen to wake it up
         # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
         wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.visibility_of_element_located(self.SEEK_FORWAD_BUTTON))
+        wait.until(EC.visibility_of_element_located(self.SEEK_FORWARD_BUTTON))
 
     def wake_up_if_idle(self):
         """ wake up if idle, else do nothing"""
@@ -269,15 +273,16 @@ class VideoPage(BasePage):
         """ rewind the player 10 seconds using the seek back button. PAUSED OR UNPAUSED"""
         self.wake_up_if_idle()
         #
-        seek_back_button = self.driver.find_element(*self.SEEK_BACK_BUTTON)
+        seek_back_button = self.driver.find_element(*self.SEEK_FORWARD_BUTTON)
         seek_back_button.click()
-
+        # BUG- FORWARD = BACKWARD FOR SOME REASON IN THE DOM. REVERSED HERE ON PURPOSE. DEBUG
     def skip_forward(self):
         """ skip forward 10 seconds using the seek forward button.  PAUSED OR UNPAUSED"""
         self.wake_up_if_idle()
         #
-        seek_forward_button = self.driver.find_element(*self.SEEK_FORWAD_BUTTON)
+        seek_forward_button = self.driver.find_element(*self.SEEK_BACK_BUTTON)
         seek_forward_button.click()
+        # BUG- FORWARD = BACKWARD FOR SOME REASON IN THE DOM. REVERSED HERE ON PURPOSE. DEBUG
 
     # TIME/DURATION FUNCTIONS
     def get_remaining_time_in_seconds(self):
@@ -310,6 +315,22 @@ class VideoPage(BasePage):
         # TODO- Add an example of what scrubber_value is supposed to look like
         assert len(scrubber_value) == 3, "get_show_duration SCRUBBER_VALUE found extra values"
         return scrubber_value[2]
+
+    def get_show_duration_in_seconds(self) -> int:
+        """ return the number of seconds in a show/movie"""
+        # no need to wake the
+        seek_time_scrubber = self.driver.find_element(*self.TIME_SCRUBBER)
+        scrubber_value = seek_time_scrubber.get_attribute('aria-valuetext').split(" ")
+        # TODO- Add an example of what scrubber_value is supposed to look like
+        assert len(scrubber_value) == 3, "get_show_duration SCRUBBER_VALUE found extra values"
+        # print(scrubber_value)
+        show_duration_list = scrubber_value[2].split(":")
+        show_duration_in_seconds = (
+                                int(show_duration_list[0])*3600
+                                + int(show_duration_list[1])*60
+                                + int(show_duration_list[2])
+        )
+        return show_duration_in_seconds
 
     def change_to_percentage_time(self, percentage_left: float):
         """
