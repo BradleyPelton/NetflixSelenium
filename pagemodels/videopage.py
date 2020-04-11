@@ -20,22 +20,33 @@ from pagemodels.basepage import BasePage
 # FIRST IDLE PHASE: UI DISAPPARS, ONLY VIDEO REMAINS
 # SECOND IDLE PHASE: TITLE APPEARS, EVERYTHING GETS DARKER AS OVERLAY APPEARS
 
-# IDLE PHASE 1.5????- diplays just the rating. Seems to only happen when the video is first played
+# IDLE PHASE 1.5- diplays just the rating. Seems to only happen when the video is first played
 
-# THIRD IDLE PHASE- TOTALLY IDLE, YOU HAVE TO CLICK A SPECIFIC BUTTON IN THE CENTER OF THE PAGE TO
+# THIRD IDLE PHASE- TOTALLY IDLE, YOU HAVE TO CLICK A SPECIFIC BUTTON IN THE CENTER OF THE PAGE
 
 # VIDEO IS PLAYING, BUTTONS ARE STILL BEING DISPLAYED
 # VIDEO IS PLAYING, BUTTONS ARE GONE (BACK TO IDLE BUT VIDEO IS PLAYING)
 
 # CREDITS ARE ROLLING, VIDEO PLAYER IS MADE SMALL, RECOMMENDATIONS ARE DISPLAYED
 # TODO- I DID NOT ACCOUNT FOR THIS!!!! TODO- NEED TO FACTOR THIS IN AS WELL
-# HAPPENS AFTER change_time_using_slidebar(driver, .99)
+# HAPPENS AFTER change_time_using_slidebar(.99)
 ############################################################################################
+
+# Function CATEGORIES
+# 0.) Idle functions
+# 1.) Pause functions
+# 2.) Mute functions
+# 3.) Volume functions
+# 4.) Full screen functions
+# 5.) Audio&Subtitles functions
+# 6.) Skip_forward/backward functions
+# 7.) Time/Duration functions
+# 8.) Exit Player functions
 
 class VideoPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
-        #LOCATORS
+        # LOCATORS
         self.VIDEO_PLAYER_CONTAINER = (By.CSS_SELECTOR, 'div.nfp.AkiraPlayer')
         self.BACK_BUTTON = (By.CSS_SELECTOR, 'button[data-uia="nfplayer-exit"]')
         self.SMALL_PLAY_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Play"]')
@@ -46,22 +57,21 @@ class VideoPage(BasePage):
         self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
         self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
-
-
         self.SEEK_BACK_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Back"]')
         self.SEEK_FORWARD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
-
-
         self.TIME_REMAINING = (By.CSS_SELECTOR, 'time.time-remaining__time')
         self.TIME_SCRUBBER = (By.CSS_SELECTOR, 'div[aria-label="Seek time scrubber"]')
         self.TIME_SCRUBBER_BAR = (By.CSS_SELECTOR, 'div.scrubber-bar')
         self.SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Audio & Subtitles"]')
         self.CURRENT_SUBTITLE_IS_OFF = (By.CSS_SELECTOR, 'li.track.selected[data-uia="track-subtitle-Off"]')
         self.SUBTITLE_OFF_BUTTON = (By.CSS_SELECTOR, 'li.track[data-uia="track-subtitle-Off"]')
+        self.CURRENT_AUDIO = (By.CSS_SELECTOR, 'div.track-list.structural.track-list-audio > ul > li.track.selected')
         self.ENGLISH_SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-subtitle-English"]')
         self.SPANISH_SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-subtitle-Spanish"]')
         self.SPANISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-Spanish"]')
+        self.ENGLISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-English [Original]"]')
         self.SUBTITLE_LANGUAGE_LIST = (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')
+
     # IDLE FUNCTIONS
     def player_is_idle(self):
         """ return bool is player is idle. If player is playing, it is considered idle
@@ -87,13 +97,6 @@ class VideoPage(BasePage):
         """ wake up if idle, else do nothing"""
         if self.player_is_idle():
             self.wake_up_idle_player()
-
-    # BACK FUNCTIONS
-    def go_back_to_shows(self):
-        """ use the back button located inside of the player to return to the previous show list"""
-        self.wake_up_if_idle()
-        back_button = self.driver.find_element(*self.BACK_BUTTON)
-        back_button.click()
 
     # PAUSE AND UNPAUSE FUNCTIONS
     def player_is_paused(self):
@@ -130,41 +133,6 @@ class VideoPage(BasePage):
             small_play_button.click()
         else:
             print("player is not paused, unpause_player is not executing")
-
-    #  FULL SCREEN FUCNTIONS
-    def player_is_full_screen(self):
-        """ A PLAYER IS ALWAYS EITHER FULL SCREEN OR NORMAL SCREEN. THUS NOT FULL SCREEN IMPLIES
-        NORMAL SCREEN
-        """
-        self.wake_up_if_idle()
-        try:
-            self.driver.find_element(*self.FULL_SCREEN_BUTTON)
-            return False
-        except NoSuchElementException:
-            print("couldnt find the full screen button")
-        try:
-            self.driver.find_element(*self.NORMAL_SCREEN_BUTTON)
-            return True
-        except NoSuchElementException:
-            print("player_is_full_screen couldnt find either buttons, SOMETHING IS WRONG")
-
-    def make_full_screen(self):
-        """ make full screen if not full screen. if full screen, do nothing"""
-        self.wake_up_if_idle()  # TODO- DUPLICATE WAKE UPS, SEE ABOUT FIXING THIS
-        if self.player_is_full_screen():
-            print("player is already full screen! not executing make_full_screen")
-        else:
-            full_screen_button = self.driver.find_element(*self.FULL_SCREEN_BUTTON)
-            full_screen_button.click()
-
-    def make_normal_screen(self):
-        """ make normal_screen if player is full screen. if normal screen already, do nothing"""
-        self.wake_up_if_idle()  # TODO- DUPLICATE WAKE UPS, SEE ABOUT FIING THIS
-        if not self.player_is_full_screen():
-            print("player is already normal screen, make_normal_screen not executing")
-        else:
-            normal_screen = self.driver.find_element(*self.NORMAL_SCREEN_BUTTON)
-            normal_screen.click()
 
     # MUTED FUNCTIONS
     def player_is_muted(self):
@@ -268,6 +236,138 @@ class VideoPage(BasePage):
         # Not sure whats causing it. Test using change_volume_using_percentage and
         # get_current_volume
 
+    #  FULL SCREEN FUCNTIONS
+    def player_is_full_screen(self):
+        """ A PLAYER IS ALWAYS EITHER FULL SCREEN OR NORMAL SCREEN. THUS NOT FULL SCREEN IMPLIES
+        NORMAL SCREEN
+        """
+        self.wake_up_if_idle()
+        try:
+            self.driver.find_element(*self.FULL_SCREEN_BUTTON)
+            return False
+        except NoSuchElementException:
+            print("couldnt find the full screen button")
+        try:
+            self.driver.find_element(*self.NORMAL_SCREEN_BUTTON)
+            return True
+        except NoSuchElementException:
+            print("player_is_full_screen couldnt find either buttons, SOMETHING IS WRONG")
+
+    def make_full_screen(self):
+        """ make full screen if not full screen. if full screen, do nothing"""
+        self.wake_up_if_idle()  # TODO- DUPLICATE WAKE UPS, SEE ABOUT FIXING THIS
+        if self.player_is_full_screen():
+            print("player is already full screen! not executing make_full_screen")
+        else:
+            full_screen_button = self.driver.find_element(*self.FULL_SCREEN_BUTTON)
+            full_screen_button.click()
+
+    def make_normal_screen(self):
+        """ make normal_screen if player is full screen. if normal screen already, do nothing"""
+        self.wake_up_if_idle()  # TODO- DUPLICATE WAKE UPS, SEE ABOUT FIING THIS
+        if not self.player_is_full_screen():
+            print("player is already normal screen, make_normal_screen not executing")
+        else:
+            normal_screen = self.driver.find_element(*self.NORMAL_SCREEN_BUTTON)
+            normal_screen.click()
+
+    # SUBTITLE & AUDIO LANGUAGE FUNCTIONS
+    def subtitle_menu_is_open(self):
+        """ return true if the subtitle menu is open, false if else"""
+        """ TODO- CLEAN THIS UP"""
+        # INTENTIONALLY NOT WAKING UP PLAYER. IDLE PLAYER MEANS MENU IS NOT OEPN
+        try:
+            self.driver.find_element(*self.ENGLISH_SUBTITLE_BUTTON)
+            return True  # TODO- MINOR BUG - not all shows will have english subtitles
+        except NoSuchElementException:
+            return False  # SLOPPY CODE. OTHER CASES EXIST, BAD TRY EXCEPT
+
+    def open_subtitle_menu_if_not_open(self):
+        """ open subtitle menu if it is not already open. If it is open, do nothing"""
+        self.wake_up_if_idle()
+        if self.subtitle_menu_is_open():
+            print("subtitle menu is already open, open_subtitle_menu_if_not_open isnt executing")
+        else:
+            subtitles_button = self.driver.find_element(*self.SUBTITLE_BUTTON)
+            subtitles_button.click()
+            # wait until the menu is open
+            wait = WebDriverWait(self.driver, 10)
+            wait.until(EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')))
+            # never used again, leaving the raw CSS SELECTOR in there
+
+    def has_subtitles(self):
+        self.wake_up_idle_player()
+        self.open_subtitle_menu_if_not_open()
+        try:
+            self.driver.find_element(*self.CURRENT_SUBTITLE_IS_OFF)
+            return False
+        except NoSuchElementException:
+            return True
+
+    def remove_subtitles(self):
+        """ return true if the player already has subtitles enabled (OF ANY LANGUAGE).
+        False if else"""
+        """ TODO- UNTESTED"""
+        self.wake_up_if_idle()
+        self.open_subtitle_menu_if_not_open()
+        #
+        assert self.has_subtitles()
+        subtitles_off_button = self.driver.find_element(*self.SUBTITLE_OFF_BUTTON)
+        subtitles_off_button.click()
+        # BUG- UNPAUSES PLAYER, but it does remove subtitles
+
+    def add_english_subtitles(self):
+        # TODO- IT WORKS BUT SEEMS SKETCHY. NEEDS TO BE TESTED. I THOUGHT SINCE THE SUBTITLE MODAL
+        # WAS ALREADY OPENT THA OPENING IT AGAIN WITH SUBTITLES_BUTTON.CLICK() WAS GOING TO CAUSE A
+        # PROBLEM. INVESTIGATE
+        self.wake_up_if_idle()
+        self.open_subtitle_menu_if_not_open()
+        english = self.driver.find_element(*self.ENGLISH_SUBTITLE_BUTTON)
+        english.click()
+
+    def get_current_audio(self):
+        """ assert that the audio is currently english
+        NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description
+        """
+        self.wake_up_idle_player()
+        self.open_subtitle_menu_if_not_open()
+
+        currently_selected_audio = self.driver.find_element(*self.CURRENT_AUDIO)
+        return currently_selected_audio.text
+
+    def change_audio_to_english_original(self):
+        """NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description] and
+        English[Original] . For the sake of consistency, this test suite will only focus on english
+        only shows until refactored for other languages.
+        """
+        self.wake_up_idle_player()
+        self.open_subtitle_menu_if_not_open()
+        english_audio_button = self.driver.find_element(*self.ENGLISH_AUDIO_BUTTON)
+        english_audio_button.click()
+
+    def change_audio_to_spanish(self):
+        """spoken language != subtitles. This function changes the verbal language to spanish"""
+        """not fully tested, TODO-TEST"""
+        self.wake_up_if_idle()
+        self.open_subtitle_menu_if_not_open()
+        spanish_audio_button = self.driver.find_element(*self.SPANISH_AUDIO_BUTTON)
+        spanish_audio_button.click()
+
+    # def change_audio_to_original_language(self):
+        # for li in ul:
+        #     if 'original' in li.text:
+        #         li.click()
+
+    # def change_spoken_language(driver , language):
+    #     """ going to add this to the "nice to have" category. Not pressing."""
+    #     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken
+    #     language to that language"""
+    #     pass
+
+    # def change_all_settings(**KWARGS):
+    #     """ a super function that takes in a list of options and performs them"""
+
     # SKIP FUNCTIONS
     def skip_backward(self):
         """ rewind the player 10 seconds using the seek back button. PAUSED OR UNPAUSED"""
@@ -276,6 +376,7 @@ class VideoPage(BasePage):
         seek_back_button = self.driver.find_element(*self.SEEK_FORWARD_BUTTON)
         seek_back_button.click()
         # BUG- FORWARD = BACKWARD FOR SOME REASON IN THE DOM. REVERSED HERE ON PURPOSE. DEBUG
+
     def skip_forward(self):
         """ skip forward 10 seconds using the seek forward button.  PAUSED OR UNPAUSED"""
         self.wake_up_if_idle()
@@ -378,77 +479,12 @@ class VideoPage(BasePage):
     #     led to this function being scrapped """
     #     pass
 
-    # SUBTITLE & AUDIO LANGUAGE FUNCTIONS
-    def subtitle_menu_is_open(self):
-        """ return true if the subtitle menu is open, false if else"""
-        """ TODO- CLEAN THIS UP"""
-        # INTENTIONALLY NOT WAKING UP PLAYER. IDLE PLAYER MEANS MENU IS NOT OEPN
-        try:
-            self.driver.find_element(*self.ENGLISH_SUBTITLE_BUTTON)
-            return True  # TODO- MINOR BUG - not all shows will have english subtitles
-        except NoSuchElementException:
-            return False  # SLOPPY CODE. OTHER CASES EXIST, BAD TRY EXCEPT
-
-    def open_subtitle_menu_if_not_open(self):
-        """ open subtitle menu if it is not already open. If it is open, do nothing"""
+    # BACK FUNCTIONS
+    def go_back_to_shows(self):
+        """ use the back button located inside of the player to return to the previous show list"""
         self.wake_up_if_idle()
-        if self.subtitle_menu_is_open():
-            print("subtitle menu is already open, open_subtitle_menu_if_not_open isnt executing")
-        else:
-            subtitles_button = self.driver.find_element(*self.SUBTITLE_BUTTON)
-            subtitles_button.click()
-            # wait until the menu is open
-            wait = WebDriverWait(self.driver, 10)
-            wait.until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')))
-            # never used again, leaving the raw CSS SELECTOR in there
-
-    def has_subtitles(self):
-        self.wake_up_idle_player()
-        self.open_subtitle_menu_if_not_open()
-        try:
-            self.driver.find_element(*self.CURRENT_SUBTITLE_IS_OFF)
-            return False
-        except NoSuchElementException:
-            return True
-
-    def remove_subtitles(self):
-        """ return true if the player already has subtitles enabled (OF ANY LANGUAGE).
-        False if else"""
-        """ TODO- UNTESTED"""
-        self.wake_up_if_idle()
-        self.open_subtitle_menu_if_not_open()
-        #
-        assert self.has_subtitles()
-        subtitles_off_button = self.driver.find_element(*self.SUBTITLE_OFF_BUTTON)
-        subtitles_off_button.click()
-        # BUG- UNPAUSES PLAYER, but it does remove subtitles
-    
-    def add_english_subtitles(self):
-        # TODO- IT WORKS BUT SEEMS SKETCHY. NEEDS TO BE TESTED. I THOUGHT SINCE THE SUBTITLE MODAL
-        # WAS ALREADY OPENT THA OPENING IT AGAIN WITH SUBTITLES_BUTTON.CLICK() WAS GOING TO CAUSE A
-        # PROBLEM. INVESTIGATE
-        self.wake_up_if_idle()
-        self.open_subtitle_menu_if_not_open()
-        english = self.driver.find_element(*self.ENGLISH_SUBTITLE_BUTTON)
-        english.click()
-
-    def change_audio_to_spanish(self):
-        """spoken language != subtitles. This function changes the verbal language to spanish"""
-        """not fully tested, TODO-TEST"""
-        self.wake_up_if_idle()
-        self.open_subtitle_menu_if_not_open()
-        spanish_audio = self.driver.find_element(*self.SPANISH_AUDIO_BUTTON)
-        spanish_audio.click()
-
-    # def change_spoken_language(driver , language):
-    #     """ going to add this to the "nice to have" category. Not pressing."""
-    #     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken
-    #     language to that language"""
-    #     pass
-
-    # def change_all_settings(**KWARGS):
-    #     """ a super function that takes in a list of options and performs them"""
+        back_button = self.driver.find_element(*self.BACK_BUTTON)
+        back_button.click()
 
     # SKIP FUNCTIONS
     # def skip_intro(driver):
