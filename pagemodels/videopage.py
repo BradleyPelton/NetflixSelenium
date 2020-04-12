@@ -1,15 +1,19 @@
+import unittest
 import time
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-from pagemodels.basepage import BasePage
-
+import pagemodels.basepage
+import tests.pickledlogin
+import secrets
 
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
@@ -43,11 +47,26 @@ from pagemodels.basepage import BasePage
 # 7.) Time/Duration functions
 # 8.) Exit Player functions
 
-class VideoPage(BasePage):
+
+
+
+# # # # DELETE ME 
+# chromedriver_path = secrets.chromedriver_path
+# driver = webdriver.Chrome(executable_path=chromedriver_path)
+# tests.pickledlogin.pickled_login(driver)
+
+
+# driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\
+#     fc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725\
+#     ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
+
+
+class VideoPage(pagemodels.basepage.BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         # LOCATORS
         self.VIDEO_PLAYER_CONTAINER = (By.CSS_SELECTOR, 'div.nfp.AkiraPlayer')
+        self.BIG_PLAY_IDLE_BUTTON = (By.CSS_SELECTOR, 'div.PlayView-play > div > button')
         self.BACK_BUTTON = (By.CSS_SELECTOR, 'button[data-uia="nfplayer-exit"]')
         self.SMALL_PLAY_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Play"]')
         self.SMALL_PAUSE_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Pause"]')
@@ -75,20 +94,32 @@ class VideoPage(BasePage):
     # IDLE FUNCTIONS
     def player_is_idle(self):
         """ return bool is player is idle. If player is playing, it is considered idle
-            IDLE IF AND ONLY IF BUTTONS ARE BEING DISPLAYED"""
-        seek_forward_button = self.driver.find_element(*self.SEEK_FORWARD_BUTTON)
-        if seek_forward_button.is_displayed():
-            print("player is NOT idle")  # TODO- excellent for debugging, but should be removed
-            return False
-        else:
-            print("player is idle")
+            IDLE IF AND ONLY IF BUTTONS ARE BEING DISPLAYED.
+            INITIAL IDLE COUNTS AS IDLE"""
+        try:
+            seek_forward_button = self.driver.find_element(*self.SEEK_FORWARD_BUTTON)
+            if seek_forward_button.is_displayed():
+                print("player is NOT idle")  # TODO- excellent for debugging, but should be removed
+                return False
+            else:
+                print("player is idle")
+                return True
+        except NoSuchElementException:
+            print(" player_is_idle COULDNT FIND THE SEEK_FORWAD, IS THE PLAYER TOTALLY IDLE???")
             return True
+
 
     def wake_up_idle_player(self):
         """ TODO- BUG- if player is TOTALLY idle, no activity in several minutes, this wont wake.
         when player is totally idle, a small play button appears in the center of the page"""
-        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
-        video_player_container.click()  # Click the center of the screen to wake it up
+        try:
+            big_play_idle_button = self.driver.find_element(*self.BIG_PLAY_IDLE_BUTTON)
+            print("found big play idle button!")
+            big_play_idle_button.click()
+        except NoSuchElementException:
+            print("couldnt find big play idle button")
+            video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+            video_player_container.click()  # Click the center of the screen to wake it up
         # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located(self.SEEK_FORWARD_BUTTON))
@@ -177,6 +208,7 @@ class VideoPage(BasePage):
     def volume_slider_is_open(self):
         """ returns true if the slider is open, false if else"""
         # intentionally not waking up idle player. Idle player implies slider is not open
+        self.wake_up_if_idle()
         try:
             self.driver.find_element(*self.VOLUME_SLIDER)
             return True
@@ -190,6 +222,7 @@ class VideoPage(BasePage):
         self.wake_up_if_idle()
         if self.volume_slider_is_open():
             print("volume slider is already open, open_volume slider is not executing")
+        time.sleep(3)
         volume_container = self.driver.find_element(*self.VOLUME_CONTAINER)
         action = ActionChains(self.driver)
         action.move_to_element(volume_container).perform()
