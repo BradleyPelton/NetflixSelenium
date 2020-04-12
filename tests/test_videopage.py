@@ -10,12 +10,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
 import pagemodels.videopage
-import tests.test_loginpage
+import tests.pickledlogin
+import secrets
 
-login_container = tests.test_loginpage.LoginTests()
-login_container.test_user_login_main()
-driver = login_container.driver
-driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2Cfc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
 
 # TEST CATEGORIES
 # 1.) Pause Tests
@@ -30,20 +27,29 @@ driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2
 # 9.) Keyboard shortcuts TODO- 'f' for fullscreen, 'm' for mute
 
 
-# TODO- Everything is in one test fixture because I dont want to spam Netflix's login server.
-# TODO- I refuse to login each time for each test case in light of that fact. Best practices are
-# TODO- being violated. A compromise would be to at least split VideoPageTests into fixtures
-# TODO- that dont depend on the login credentials
 class VideoPageTests(unittest.TestCase):
     """ The following tests test basic user cases for Netflix's video player(dubbed 'Akira player'
     by Netflix). The individual actions are defined at ./pagemodels/videopage.py"""
-    # NOTE- KEEP TESTS IN A USER-FRIENDLY ORDER, people are lazy and dont read more than a few
-    # lines
+
+    @classmethod
+    def setUpClass(cls):
+        chromedriver_path = secrets.chromedriver_path
+        self.driver = webdriver.Chrome(executable_path=chromedriver_path)
+        tests.pickledlogin.pickled_login()
+
+        # load some random movie, Minority Report with Tom Cruise in this instance
+        self.driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\
+            fc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725\
+            ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
+
+    def tearDownClass(cls):
+        """ TODO-"""
+        driver.quit()
 
     # PAUSE TESTS
     def test_pause_from_unpaused_state(self):
         """ from unpaused state, pause the player"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertFalse(
             video_page.player_is_paused(),
             msg="pause_from_unpaused_state wasnt unpaused state")
@@ -54,7 +60,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_unpause_from_paused_state(self):
         """from a paused state, unpause the player"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertTrue(
             video_page.player_is_paused(),
             msg="unpause_from_paused_state wasnt paused state")
@@ -68,7 +74,7 @@ class VideoPageTests(unittest.TestCase):
     # MUTE TESTS
     def test_unmute_from_muted_state(self):
         """from a muted state, unmute the player"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertTrue(
             video_page.player_is_muted(),
             msg="unmute_from_muted_state isnt a muted_state")
@@ -79,7 +85,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_mute_from_unmuted_state(self):
         """from an unmuted state, mute the player"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.asserFalse(
             video_page.player_is_muted(),
             msg="mute_from_unmuted_state isnt an unumuted state")
@@ -93,7 +99,7 @@ class VideoPageTests(unittest.TestCase):
         """ whatever the current volume is, cut it in half USING THE VOLUME SLIDER"""
         # There is a lot going on under the hood with .get_current_volume() and
         # .change_volume_using_percentage() . check out /pagemodels/videopage.py if curious
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_volume = video_page.get_current_volume()  # float
 
@@ -105,7 +111,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_double_volume(self):
         """ double the current volume (upper limit 100%) USING THE VOLUME SLIDER"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_volume = video_page.get_current_volume()  # float
 
@@ -120,7 +126,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_set_volume_to_33_percent(self):
         """ set the current volume to 33 percent USING THE VOLUME SLIDER"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_volume_using_percentage(.33)
 
@@ -130,7 +136,7 @@ class VideoPageTests(unittest.TestCase):
     # FULLSCREEN TESTS
     def test_full_screen_from_normal_screen_state(self):
         """ from a normal_screen state, go full screen"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertFalse(
             video_page.player_is_full_screen(),
             msg="full screen_from_normal_screen was not a normal screen state")
@@ -141,7 +147,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_normal_screen_from_full_screen_state(self):
         """ from a full screen state, go normal screen"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertTrue(
             video_page.player_is_full_screen(),
             msg="normal_screen_from_full_screen_state was not a full screen state")
@@ -153,7 +159,7 @@ class VideoPageTests(unittest.TestCase):
     # AUDIO AND SUBTITLES TESTS
     def test_add_subtitles_from_no_subtitles_state(self):
         """from a state of no subtitles, add english subtitles"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertFalse(
             video_page.has_subtitles(),
             msg="add_subitles_from_no_subtitles_state was not a no subtitles state from start")
@@ -164,7 +170,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_remove_subtitles_from_subtitle_state(self):
         """from a state with subtitles, remove subtitles"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertTrue(
             video_page.has_subtitles(),
             msg="remove_subtitles_from_subtitle_state was not a subtitle state from start")
@@ -175,7 +181,7 @@ class VideoPageTests(unittest.TestCase):
         # BUG- removing subtitles pauses/unpauses the player for some reason
 
     def test_change_audio_to_spanish_from_english_state(self):
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_audio = video_page.get_current_audio()
         self.assertIn(
@@ -193,7 +199,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_change_audio_to_english_from_spanish_state(self):
         """ ENGLISH ORIGINAL NOT ENGLISH. DOESNT WORK ON NON ENGLISH ORIGINAL SHOWS """
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_audio = video_page.get_current_audio()
         self.assertIn(
@@ -212,7 +218,7 @@ class VideoPageTests(unittest.TestCase):
     # SKIP FORWARD/BACKWARD TESTS
     def test_skip_forward_30_seconds(self):
         """ """
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_time = video_page.get_remaining_time_in_seconds()
 
@@ -227,7 +233,7 @@ class VideoPageTests(unittest.TestCase):
     def test_skip_back_30_seconds(self):
         """ skipping back at 0:00 will cause the test to fail even though the act of skippin
         back three times will not fail.  """
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_time = video_page.get_remaining_time_in_seconds()
 
@@ -242,7 +248,7 @@ class VideoPageTests(unittest.TestCase):
     # TIME/DURATION TESTS
     def test_go_to_halfway_point(self):
         """ go to the halfway point in the show/movie USING THE SLIDER"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_to_percentage_time(.5)
 
@@ -259,7 +265,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_go_to_credits(self):
         """ go to the .98  point in the show/movie USING THE SLIDER"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_to_percentage_time(.98)
 
@@ -276,7 +282,7 @@ class VideoPageTests(unittest.TestCase):
 
     def test_restart_show(self):
         """ restart a show by setting the percentage_time to 0"""
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_to_percentage_time(0)
 
@@ -289,7 +295,7 @@ class VideoPageTests(unittest.TestCase):
     # EXIT PLAYER TESTS
     def test_exit_player(self):
         "exit the player by clicking the built-in back arrow button"
-        video_page = pagemodels.videopage.VideoPage(driver)
+        video_page = pagemodels.videopage.VideoPage(self.driver)
         video_page.go_back_to_shows()
 
         time.sleep(3)  # TODO- clean this up
