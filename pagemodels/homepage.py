@@ -132,8 +132,9 @@ class HomePage(BasePage):
         # BUG- SOMETIMES I CANT PAGE RIGHT. ElementClickInterceptedException
 
     def row_page_left(self, row_element):
-        """take in the row_element and click the chevron left to see the previous page of shows. LEFT
-        DOESNT EXIST FOR SOME ROWS UNTIL RIGHT IS CLICKED ONCE (and thus there is something to go left)
+        """take in the row_element and click the chevron left to see the previous page of shows.
+        LEFTDOESNT EXIST FOR SOME ROWS UNTIL RIGHT IS CLICKED ONCE (and thus there is something to
+        go left)
         """
         left_chevron = row_element.find_element(*self.LEFT_CHEVRON)
         left_chevron.click()

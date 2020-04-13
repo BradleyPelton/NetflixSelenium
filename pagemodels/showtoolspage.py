@@ -20,6 +20,19 @@ from pagemodels.basepage import BasePage
 # JAWBONE IS THE EXPANDED MENU THAT APPEARS WHEN YOU CLICK ON A SHOW ELEMENT
 # BOB-CARD/BOB-CONTAINER IS THE MINI MENU THAT APPEARS WHEN YOU HOVER OVER A SHOW ELEMENT
 
+
+
+# TODO- ORGANIZE THIS MESS
+# FUNCTION CATEGORIES
+# 1.) JAWBONE
+# 1a- add/remove my list
+# 1b- play show
+# 1c- get duration
+# 1d- progress
+# 1e- DATA COLLECTION
+
+# 2.) BOB-CONAINER/SHOW PREVIEW
+
 # ELEMENT PAGE(SEE ABOVE)
 class ShowToolsPage(BasePage):
     def __init__(self, driver):
@@ -53,8 +66,6 @@ class ShowToolsPage(BasePage):
         self.BOB_MY_LIST_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"])')
         self.BOB_MY_LIST_STATUS = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
 
-        
-
     # JAWBONE FUCNTIONS
     # FOR SHOW PREVIEW FUNCTIONS(bob-container), SEE LINE 300+
     def open_jawbone_if_not_open(self, show_element, JAWBONE_OPEN):
@@ -66,7 +77,7 @@ class ShowToolsPage(BasePage):
                 (By.CSS_SELECTOR, 'div.meta-lists')))
             # TODO- Grab a better element to wait for here
 
-    def is_in_my_list(self, show_element, JAWBONE_OPEN=False) -> bool:
+    def is_in_my_list_from_jawbone(self, show_element, JAWBONE_OPEN=False) -> bool:
         """ RETURNS TRUE IF SHOW IS ALREADY IN My-List, FALSE IF ELSE"""
         self.open_jawbone_if_not_open(show_element)
 
@@ -77,27 +88,27 @@ class ShowToolsPage(BasePage):
         else:
             return False
 
-    def add_show_to_my_list(self, show_element):
+    def add_show_to_my_list_from_jawbone(self, show_element):
         self.open_jawbone_if_not_open()
 
         my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
 
-        if self.is_in_my_list(show_element, JAWBONE_OPEN=True):
-            print("SHOW IS ALREADY IN YOUR LIST, NOT EXECUTING add_show_to_my_list")
+        if self.is_in_my_list_from_jawbone(show_element, JAWBONE_OPEN=True):
+            print("SHOW IS ALREADY IN YOUR LIST, NOT EXECUTING add_show_to_my_list_from_jawbone")
         else:
             my_list_button.click()
 
-    def remove_show_from_my_list(self, show_element):
+    def remove_show_from_my_list_from_jawbone(self, show_element):
         self.open_jawbone_if_not_open()
 
         my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
 
-        if self.is_in_my_list(show_element):
+        if self.is_in_my_list_from_jawbone(show_element):
             my_list_button.click()
         else:
-            print("SHOW ISNT IN YOUR LIST, NOT EXECUTING remove_show_from_my_list ")
+            print("SHOW ISNT IN YOUR LIST, NOT EXECUTING remove_show_from_my_list_from_jawbone ")
 
-    def play_show(self, show_element, JAWBONE_OPEN=False):
+    def play_show_from_jawbone(self, show_element, JAWBONE_OPEN=False):
         """ Plays the show passed in as the parameter show_element """
         """ NOT TESTED, TODO- TEST """
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
@@ -105,15 +116,15 @@ class ShowToolsPage(BasePage):
         play_button = self.driver.find_element(*self.PLAY_BUTTON)
         play_button.click()
 
-    def is_show(self, show_element, JAWBONE_OPEN=False):
-        """ not sure about needed this function or not. Leaving it here just in case"""
-        pass
+    # def is_show(self, show_element, JAWBONE_OPEN=False):
+    #     """ not sure about needed this function or not. Leaving it here just in case"""
+    #     pass
 
-    def is_movie(self, show_element, JAWBONE_OPEN=False):
-        """ movie is defined as not TV show. Everything is either a series episodes or a movie"""
-        pass
+    # def is_movie(self, show_element, JAWBONE_OPEN=False):
+    #     """ movie is defined as not TV show. Everything is either a series episodes or a movie"""
+    #     pass
 
-    def get_duration(self, show_element, JAWBONE_OPEN=False) -> str:
+    def get_duration_from_jawbone(self, show_element, JAWBONE_OPEN=False) -> str:
         """ RETURNS STR, e.g.'1h 27m' FOR MOVIE, '1 Season' FOR SHOW """
         """ NOT TESTED- TODO- THIS SHOULD RECIEVE EXTRA ATTENTION TO TEST"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
@@ -121,7 +132,7 @@ class ShowToolsPage(BasePage):
         duration = self.driver.find_element(*self.DURATION)
         return duration.text
 
-    def show_has_saved_progress(self, show_element, JAWBONE_OPEN=False) -> bool:
+    def show_has_saved_progress_from_jawbone(self, show_element, JAWBONE_OPEN=False) -> bool:
         """ CHECK IF SHOW HAS SAVED PROGRESS, if so return True, else False"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
         try:
@@ -137,25 +148,25 @@ class ShowToolsPage(BasePage):
         # print(f"show {show_element.text} has saved progress. {progress_summary.text} remain")
         return progress_summary.text
 
-    def is_netflix_original(self, show_element, JAWBONE_OPEN=False) -> bool:
-        """ return true if this show/movie is a netflix original, false if else"""
-        # this one might be tricky. The only designation that a show is a Netflix
-        # original seems to be the "N SERIES" logo that is added on to the series
-        # logo(same image). Might have to compare against a list of confirmed
-        # netflix originals or do some cool image analysis to see if the top left
-        # pixel is the nextflix red
-        pass
+    # def is_netflix_original(self, show_element, JAWBONE_OPEN=False) -> bool:
+    #     """ return true if this show/movie is a netflix original, false if else"""
+    #     # this one might be tricky. The only designation that a show is a Netflix
+    #     # original seems to be the "N SERIES" logo that is added on to the series
+    #     # logo(same image). Might have to compare against a list of confirmed
+    #     # netflix originals or do some cool image analysis to see if the top left
+    #     # pixel is the nextflix red
+    #     pass
 
-    def has_new_episodes(self, show_element, JAWBONE_OPEN=False) -> bool:
-        """ IF A SHOW HAS the "NEW EPISODES" tile added to the image, return True
-        false if else"""
-        # Might be equally as hard to determine as _is_netflix_original
-        # Netflix adds a "new episodes" box ontop of the the boxart
-        # My only idea for runny this function is to improt some module
-        # that can determine which pixels are supposed to be the netflix red
-        pass
+    # def has_new_episodes(self, show_element, JAWBONE_OPEN=False) -> bool:
+    #     """ IF A SHOW HAS the "NEW EPISODES" tile added to the image, return True
+    #     false if else"""
+    #     # Might be equally as hard to determine as _is_netflix_original
+    #     # Netflix adds a "new episodes" box ontop of the the boxart
+    #     # My only idea for runny this function is to improt some module
+    #     # that can determine which pixels are supposed to be the netflix red
+    #     pass
 
-    def has_audio_description_available(self, show_element, JAWBONE_OPEN=False) -> bool:
+    def has_audio_description_available_from_jawbone(self, show_element, JAWBONE_OPEN=False):
         """ return True if the show has an audio description available, False if else"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
         try:
@@ -164,7 +175,7 @@ class ShowToolsPage(BasePage):
         except NoSuchElementException:
             return False
 
-    def get_maturity_rating(self, show_element, JAWBONE_OPEN=False) -> str:
+    def get_maturity_rating_from_jawbone(self, show_element, JAWBONE_OPEN=False) -> str:
         """ return the maturity rating for a show, E.G. 'PG', 'PG-13', 'TV-MA'"""
         """ UNTESTED, TODO- TEST"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
@@ -172,7 +183,7 @@ class ShowToolsPage(BasePage):
         maturity_rating = self.driver.find_element(*self.MATURITY_RATING)
         return maturity_rating.text
 
-    def get_show_match_percentage(self, show_element, JAWBONE_OPEN=False) -> str:
+    def get_show_match_percentage_from_jawbone(self, show_element, JAWBONE_OPEN=False) -> str:
         """ returns the match percentage e.g. '99% Match' for Castlevania"""
         """ EDGE CASE: match percentage doesnt seem to always show"""
         """ NOT TESTED, TODO- TEST"""
@@ -200,9 +211,9 @@ class ShowToolsPage(BasePage):
         release_year = self.driver.find_element(*self.RELEASE_YEAR)
         return release_year.text
 
-    def get_number_of_episodes(self):
-        """TODO-not sure if this is going to be hard or not. """
-        pass
+    # def get_number_of_episodes(self):
+    #     """TODO-not sure if this is going to be hard or not. """
+    #     pass
 
     def get_actors_list(self, show_element, JAWBONE_OPEN=False) -> list:
         """ returns list of actors. TODO- IF actors arent available from JAWBONE,
@@ -247,8 +258,8 @@ class ShowToolsPage(BasePage):
         except NoSuchElementException:
             return ["COULD NOT FIND TAG"]
 
-# UPVOTE/DOWNVOTE FUCNTIONS
-    def is_upvoted(self, show_element, JAWBONE_OPEN=False):
+    # UPVOTE/DOWNVOTE FUCNTIONS
+    def is_upvoted_from_jawbone(self, show_element, JAWBONE_OPEN=False):
         """ return bool if upvoted"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
         try:
@@ -257,7 +268,7 @@ class ShowToolsPage(BasePage):
         except NoSuchElementException:
             return False
 
-    def is_downvoted(self, show_element, JAWBONE_OPEN=False):
+    def is_downvoted_from_jawbone(self, show_element, JAWBONE_OPEN=False):
         """ return bool if upvoted"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
         try:
@@ -266,13 +277,13 @@ class ShowToolsPage(BasePage):
         except NoSuchElementException:
             return False
 
-    def upvote_show(self, show_element, JAWBONE_OPEN=False):
+    def upvote_show_from_jawbone(self, show_element, JAWBONE_OPEN=False):
         """upvote if not already upvoted, pass if already upvoted
             weird edge cases: the upvote button disappears when a show is downvoted"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
-        if self.is_upvoted(show_element, JAWBONE_OPEN=True):
-            print("already upvoted, upvote_show is not doing anything")
-        elif self.is_downvoted(show_element, JAWBONE_OPEN=True):
+        if self.is_upvoted_from_jawbone(show_element, JAWBONE_OPEN=True):
+            print("already upvoted, upvote_show_from_jawbone is not doing anything")
+        elif self.is_downvoted_from_jawbone(show_element, JAWBONE_OPEN=True):
             already_downvoted_big_downvoted_button = self.find_element(
                 *self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)
             already_downvoted_big_downvoted_button.click()
@@ -282,12 +293,12 @@ class ShowToolsPage(BasePage):
             upvote_button = self.driver.find_element(*self.UPVOTE_BUTTON)
             upvote_button.click()
 
-    def downvote_show(self, show_element, JAWBONE_OPEN=False):
+    def downvote_show_from_jawbone(self, show_element, JAWBONE_OPEN=False):
         """weird edge cases: the upvote button disappears when a show is downvoted"""
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
-        if self.is_downvoted(show_element, JAWBONE_OPEN=True):
-            print("already downvoted, downvote_show is not doing anything")
-        elif self.is_upvoted(show_element, JAWBONE_OPEN=True):
+        if self.is_downvoted_from_jawbone(show_element, JAWBONE_OPEN=True):
+            print("already downvoted, downvote_show_from_jawbone is not doing anything")
+        elif self.is_upvoted_from_jawbone(show_element, JAWBONE_OPEN=True):
             already_upvoted_big_upvote_button = self.driver.find_element(
                 *self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)
             already_upvoted_big_upvote_button.click()
@@ -429,7 +440,12 @@ class ShowToolsPage(BasePage):
         """ """
         self.mouse_over_show_if_not_moused_over(show_element)
         if not self.show_is_in_my_list_from_show_preview(show_element):
-            print("show isnt in mylistalready, remove_show_from_my_list_from_show_preview not exe")
+            print("show not in mylistalready, remove_show_from_my_list_from_show_preview not exe")
         else:
             bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
             bob_my_list_button.click()
+
+    def get_genre_and_tags_from_show_preview():
+        """ the show preview sometimes contains both tags and genres. I need a new function to
+        retrieve though """
+        pass
