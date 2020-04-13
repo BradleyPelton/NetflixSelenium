@@ -15,8 +15,6 @@ import tests.test_loginpage
 # chromedriver_path = prerefactor.secrets.chromedriver_path
 # driver = webdriver.Chrome(executable_path=chromedriver_path)
 
-login_container = tests.test_loginpage.LoginTests()
-login_container.user_login_main()
 # TODO- rename this. its not a login_container
 
 # TODO- a solution to this, and a recommendation from the docs is not to automate login.

@@ -11,8 +11,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import pagemodels.showtoolspage
 import tests.logintests
 
-login_container = tests.logintests.LoginTests()
-login_container.user_login_main()
 # TODO- rename this. its not a login_container
 
 

@@ -335,13 +335,6 @@ class VideoPageTests(unittest.TestCase):
     #     show_duration = video_page.get_show_duration_in_seconds()
 
     #     current_remaining_time = video_page.get_remaining_time_in_seconds()
-    #     # print(f" show duration is {show_duration}")
-    #     # print(f"current time is {current_time}")
-    #     self.assertAlmostEqual(show_duration*.02, current_remaining_time, delta=10)
-    #     # Largest observed delta is 6.5 seconds. Not sure what is causing this delta.
-    #     # seems to be intermittent. Could be the off by a pixel again. BUG- low priority
-    #     # Maybe it would be eliminated by making a .get_current_time_in_seconds function
-    #     # instead of relying on .get_remaining_time_in_seconds()
 
     def test_restart_show(self):
         """ restart a show by setting the percentage_time to 0"""

@@ -48,7 +48,7 @@ import secrets
 
 
 
-# # # # DELETE ME 
+# # # # DELETE ME
 # chromedriver_path = secrets.chromedriver_path
 # driver = webdriver.Chrome(executable_path=chromedriver_path)
 # tests.pickledlogin.pickled_login(driver)
@@ -71,11 +71,9 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.NORMAL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Exit full screen"]')
         self.MUTED_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Muted"]')
         self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
-
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
         self.VOLUME_S = (By.CSS_SELECTOR, 'div.slider-bar-container')
         self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
-
         self.SEEK_BACK_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Back"]')
         self.SEEK_FORWARD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
         self.TIME_REMAINING = (By.CSS_SELECTOR, 'time.time-remaining__time')
