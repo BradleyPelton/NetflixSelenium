@@ -23,9 +23,7 @@ import secrets
 # ACTIVE
 # FIRST IDLE PHASE: UI DISAPPARS, ONLY VIDEO REMAINS
 # SECOND IDLE PHASE: TITLE APPEARS, EVERYTHING GETS DARKER AS OVERLAY APPEARS
-
 # IDLE PHASE 1.5- diplays just the rating. Seems to only happen when the video is first played
-
 # THIRD IDLE PHASE- TOTALLY IDLE, YOU HAVE TO CLICK A SPECIFIC BUTTON IN THE CENTER OF THE PAGE
 
 # VIDEO IS PLAYING, BUTTONS ARE STILL BEING DISPLAYED
@@ -55,7 +53,6 @@ import secrets
 # driver = webdriver.Chrome(executable_path=chromedriver_path)
 # tests.pickledlogin.pickled_login(driver)
 
-
 # driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\
 #     fc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725\
 #     ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
@@ -74,8 +71,11 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.NORMAL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Exit full screen"]')
         self.MUTED_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Muted"]')
         self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
+
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
+        self.VOLUME_S = (By.CSS_SELECTOR, 'div.slider-bar-container')
         self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
+
         self.SEEK_BACK_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Back"]')
         self.SEEK_FORWARD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
         self.TIME_REMAINING = (By.CSS_SELECTOR, 'time.time-remaining__time')
@@ -117,7 +117,7 @@ class VideoPage(pagemodels.basepage.BasePage):
             print("found big play idle button!")
             big_play_idle_button.click()
         except NoSuchElementException:
-            print("couldnt find big play idle button")
+            # print("couldnt find big play idle button")
             video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
             video_player_container.click()  # Click the center of the screen to wake it up
         # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
@@ -222,7 +222,6 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.wake_up_if_idle()
         if self.volume_slider_is_open():
             print("volume slider is already open, open_volume slider is not executing")
-        time.sleep(3)
         volume_container = self.driver.find_element(*self.VOLUME_CONTAINER)
         action = ActionChains(self.driver)
         action.move_to_element(volume_container).perform()
@@ -240,6 +239,7 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def get_current_volume(self) -> float:
         """ TODO"""
+        self.wake_up_if_idle()
         self.open_volume_slider_if_not_open()
         if self.player_is_muted():
             return 0.0
@@ -257,7 +257,7 @@ class VideoPage(pagemodels.basepage.BasePage):
         TODO- off by 1 pixel BUG. See below
         """
         self.open_volume_slider_if_not_open()
-        volume_slider = self.driver.find_element(*self.VOLUME_SLIDER)
+        volume_slider = self.driver.find_element(*self.VOLUME_S)
         action_2 = ActionChains(self.driver)
         # action_2.move_to_element(volume_slider).click().perform()  # always moves to the center
         # MOVE_TO_ELEMENT_WITH_OFFSET OFFSETS RELATIVE TO THE TOP LEFT CORNER OF ELEMENT
@@ -518,6 +518,26 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.wake_up_if_idle()
         back_button = self.driver.find_element(*self.BACK_BUTTON)
         back_button.click()
+
+    # CREDITS FUCNTIONS
+    # def view_credits(self):
+    #     """ When the credits appear, the player will shrink to 10% of its size and the page will
+    #     be dominated by an add for "What to watch next"""
+
+    #     # There is something complicated going on here
+    #     # The player still exists, but it is 10% of its normal size
+    #     # b.click() doesnt work but neither does click any other node
+    #     # TODO
+    #     b = driver.find_element_by_css_selector('div.PlayerControlsNeo__all-controls')
+
+    #     action = ActionChains(driver)
+    #     action.move_to_element(b).click(b).perform()
+
+    # def upvote_from_credits(self):
+    #     pass
+
+    # def downvote_from_credits(self):
+    #     pass
 
     # SKIP FUNCTIONS
     # def skip_intro(driver):

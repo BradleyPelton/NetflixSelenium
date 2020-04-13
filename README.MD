@@ -2,7 +2,8 @@
 - "I HAVE NO IDEA WHAT IM LOOKING AT." Checkout ./tests/test_videopage.py , its the most user friendly.
 The tests there are less elaborate(pause an unpaused player, mute an unmuted player, etc.)
 
-
+# TLDR, EXAMPLE
+- Watch https://gyazo.com/37be44a9993676c4161adff157960e45
 
 
 

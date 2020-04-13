@@ -1,3 +1,11 @@
+POM NOTES
+https://willowtreeapps.com/ideas/organizing-automated-tests-with-page-object-model
+https://selenium-python.readthedocs.io/page-objects.html
+
+
+
+
+
 https://stackoverflow.com/questions/18421280/selenium-python-click-on-element-nothing-happensz
 https://www.selenium.dev/selenium/docs/api/py/webdriver/selenium.webdriver.common.action_chains.html
 https://gist.github.com/dariodiaz/3104601
