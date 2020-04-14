@@ -1,6 +1,6 @@
 # GUIDE
 - "I HAVE NO IDEA WHAT IM LOOKING AT." Watch https://gyazo.com/37be44a9993676c4161adff157960e45 then
-checkout ./tests/test_videopage.py , it contains straightforward test(mute, pause, add subtitles, etc.)
+checkout ./tests/test_videopage.py , it contains straightforward tests(mute, pause, add subtitles, etc.)
 - This test suite is organized in a Page-Object-Model(POM) design pattern. TLDR: tests contain the 
 test logic (asserts, etc.), Page objects (in /pagemodels/) hold the logic for interacting with the page.
 - This design pattern(POM) is most the verbose(and the most complex) to write, but is the easiest to 

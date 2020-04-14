@@ -1,7 +1,9 @@
 import time
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
@@ -9,12 +11,34 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 from pagemodels.basepage import BasePage
+import secrets
+import pagemodels.showtoolspage
+import tests.pickledlogin
 
 
 # The Home page for netflix is netflix.com/browse. Everything leads back to /browse somehow
 
 # RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
+
+# # # # DELETE ME
+chromedriver_path = secrets.chromedriver_path
+driver = webdriver.Chrome(executable_path=chromedriver_path)
+tests.pickledlogin.pickled_login(driver)
+
+a = HomePage(driver)
+b = ShowToolsPage(driver)
+
+gen_rows = a.get_genre_rows()
+first_row = gen_rows[0]
+
+first_show = a.get_first_show_in_row(first_row)
+print(first_show.text)
+
+b.add_show_to_my_list_from_jawbone(first_show)
+
+b.open_jawbone_if_not_open(first_show)
+b.is_jawbone_open(first_show)
 
 class HomePage(BasePage):
     def __init__(self, driver):
@@ -213,8 +237,3 @@ class HomePage(BasePage):
         return currently_displayed_shows
 
 
-
-
-a = HomePage(driver)
-q = a.get_queue_row()
-a.get_currently_displayed_in_row(q)

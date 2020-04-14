@@ -1,13 +1,18 @@
 import time
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 from selenium.webdriver.common.action_chains import ActionChains
 
 from pagemodels.basepage import BasePage
+import secrets
+import pagemodels.showtoolspage
+import tests.pickledlogin
 
 # SHOWTTOOLS IS NOT AN ACTUALY PAGE. IT IS, HOWEVER, A COLLECTION OF FUNCTIONS
 # THAT ARE APPLICABLE TO 95% OF THE WEB APP. EVERY NON-VIDEOPAGE PAGE IS A COLLECTION OF
@@ -36,14 +41,26 @@ from pagemodels.basepage import BasePage
 
 # 2.) BOB-CONAINER/SHOW PREVIEW
 
+
+# # # # DELETE ME
+# chromedriver_path = secrets.chromedriver_path
+# driver = webdriver.Chrome(executable_path=chromedriver_path)
+# tests.pickledlogin.pickled_login(driver)
+
+
 # ELEMENT PAGE(SEE ABOVE)
 class ShowToolsPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
 
         #Locators
-        self.PLAY_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="play-button"] > span')
-        self.MY_LIST_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="myListButton"]')
+
+        self.JAWBONE_PLAY_BUTTON = (By.CSS_SELECTOR, 'div.jawbone-actions a[data-uia="play-button"] > span')
+        self.JAWBONE_CLOSE_BUTTON = (By.CSS_SELECTOR, 'div.jawBoneContainer.slider-hover-trigger-layer > button[aria-label="Close"]')
+
+        self.MY_LIST_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="myListButton"] > span')
+        self.JAWBONE_ADD_TO_MY_LIST_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Add To My List"] > span')
+
         self.DURATION = (By.CSS_SELECTOR, 'span.duration')
         self.PROGRESS_SUMMARY = (By.CSS_SELECTOR, 'span.summary')
         self.AUDIO_DESCRIPTION_BADGE = (By.CSS_SELECTOR, 'span.audio-description-badge')
@@ -55,8 +72,8 @@ class ShowToolsPage(BasePage):
         self.GENRE_LIST = (By.CSS_SELECTOR, 'div.meta-lists > p.genres.inline-list')
         self.TAGS_LIST = (By.CSS_SELECTOR, 'div.meta-lists > p.tags.inline-list')
         self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs up (click to remove rating)"]')
-        self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON = (BY.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs down (click to remove rating)"]')
-        self.UPVOTE_BUTTON = (BY.CSS_SELECTOR, 'a[aria-label="Rate thumbs up"]')
+        self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs down (click to remove rating)"]')
+        self.UPVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Rate thumbs up"]')
         self.DOWNVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Rate thumbs down"]')
         # BOB LOCATORS
         self.BOB_PLAY_HITZONE = (By.CSS_SELECTOR, 'div.bob-play-hitzone')
@@ -71,38 +88,74 @@ class ShowToolsPage(BasePage):
 
     # JAWBONE FUCNTIONS
     # FOR SHOW PREVIEW FUNCTIONS(bob-container), SEE LINE 300+
-    def open_jawbone_if_not_open(self, show_element, JAWBONE_OPEN):
-        if not JAWBONE_OPEN:
+
+
+
+
+
+
+    # WHERE I LEFT OFF
+
+    # JAWBONE_OPEN parameter WAS A MISTAKE. REFACTORING EVERYTHING TO A BASIC ASSERT IF OPEN LOGIC
+
+    # DOESNT SEEM POSSIBLE TO TELL IF THE JAWBONE IS OPEN FOR A SPECIFIC SHOW
+    # ONLY THAT ANY JAWBONE IS OPEN AT A TIME
+
+
+
+
+    def is_jawbone_open(self):
+        """ return True if ANY jawbone is open, False if else"""
+        try:
+            self.driver.find_element(*self.JAWBONE_CLOSE_BUTTON)
+            print("JAWBONE IS OPEN")
+            return True
+        except NoSuchElementException:
+            print("JAWBONE IS NOTTTTTTTT OPEN")
+            return False
+
+    def open_jawbone_if_not_open(self, show_element):
+        """open jawbone if it isnt open, if it is open do nothing"""
+        if not self.is_jawbone_open(show_element):
+            print("open_jawbone_if_not_open is opening jawbone")
             show_element.click()
             # WAIT UNTIL JAWBONE FINISHES LOADING
             wait = WebDriverWait(self.driver, 10)
-            meta_lists_element = wait.until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, 'div.meta-lists')))
-            # TODO- Grab a better element to wait for here
+            wait.until(EC.visibility_of_element_located(self.MATURITY_RATING))
 
-    def is_in_my_list_from_jawbone(self, show_element, JAWBONE_OPEN=False) -> bool:
+    def close_jawbone(self):
+        """ close any open jawbone """
+        # TODO- UNTESTED
+        if self.is_jawbone_open():
+            jawbone_close_button = self.driver.find_element(*self.JAWBONE_CLOSE_BUTTON)
+            jawbone_close_button.click()
+
+    def is_in_my_list_from_jawbone(self, show_element) -> bool:
         """ RETURNS TRUE IF SHOW IS ALREADY IN My-List, FALSE IF ELSE"""
         self.open_jawbone_if_not_open(show_element)
 
-        my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
-
-        if my_list_button.get_attribute('aria-label') == 'Remove from My List':
-            return True
-        else:
+        try:
+            self.driver.find_element(*self.JAWBONE_ADD_TO_MY_LIST_BUTTON)
             return False
+        except NoSuchElementException:
+            print("is_in_my_list_from_jawbone couldnt find add_to_my_list_button")
+            return True
 
     def add_show_to_my_list_from_jawbone(self, show_element):
-        self.open_jawbone_if_not_open()
+        self.open_jawbone_if_not_open(show_element)
 
-        my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
-
-        if self.is_in_my_list_from_jawbone(show_element, JAWBONE_OPEN=True):
-            print("SHOW IS ALREADY IN YOUR LIST, NOT EXECUTING add_show_to_my_list_from_jawbone")
-        else:
-            my_list_button.click()
+        # my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
+        add_to_my_list_button = self.driver.find_element_by_css_selector(
+            'a[aria-label="Add To My List"] > span'
+        )
+        add_to_my_list_button.click()
+        # if self.is_in_my_list_from_jawbone(show_element, JAWBONE_OPEN=True):
+        #     print("SHOW IS ALREADY IN YOUR LIST, NOT EXECUTING add_show_to_my_list_from_jawbone")
+        # else:
+        #     my_list_button.click()
 
     def remove_show_from_my_list_from_jawbone(self, show_element):
-        self.open_jawbone_if_not_open()
+        self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
 
         my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
 
@@ -115,9 +168,14 @@ class ShowToolsPage(BasePage):
         """ Plays the show passed in as the parameter show_element """
         """ NOT TESTED, TODO- TEST """
         self.open_jawbone_if_not_open(show_element, JAWBONE_OPEN)
-
-        play_button = self.driver.find_element(*self.PLAY_BUTTON)
-        play_button.click()
+        try:
+            jawbone_play_button = self.driver.find_element(*self.JAWBONE_PLAY_BUTTON)
+            jawbone_play_button.click()
+        except ElementClickInterceptedException:
+            next_episode_button = self.driver.find_element_by_css_selector(
+                'div.jawbone-actions > a[aria-label="Next Episode"] > span'
+            )
+            next_episode_button.click()
 
     # def is_show(self, show_element, JAWBONE_OPEN=False):
     #     """ not sure about needed this function or not. Leaving it here just in case"""
@@ -452,3 +510,5 @@ class ShowToolsPage(BasePage):
         """ the show preview sometimes contains both tags and genres. I need a new function to
         retrieve though """
         pass
+
+
