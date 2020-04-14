@@ -13,6 +13,9 @@ from pagemodels.basepage import BasePage
 
 # The Home page for netflix is netflix.com/browse. Everything leads back to /browse somehow
 
+# RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
+# 'div.slider-item > div > div > a.slider-refocus'
+
 class HomePage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
@@ -40,7 +43,6 @@ class HomePage(BasePage):
         self.LEFT_CHEVRON = (By.CSS_SELECTOR, 'span.handle.handlePrev.active' )
         ###########
         self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
-        
 
     # ROW OPERATIONS
     def get_queue_row(self):
@@ -166,26 +168,53 @@ class HomePage(BasePage):
         # Note from/to author: This is not a data scraping job. This is a test suite
         final_show_titles_list = []
         for _ in range(20):  # 20 is an arbitrary number. TODO- Find the max number
-            currently_displayed_shows = row_element.find_elements(*self.SHOW_ELEMENTS)
+            currently_displayed_shows = self.get_currently_displayed_in_row(row_element)
             current_titles = [
-                show.text 
+                show.text
                 for show in currently_displayed_shows
                 if show.text not in final_show_titles_list
-                and show.text != ''
             ]
             if not current_titles:
                 # No new titles were found
                 break
             else:
                 final_show_titles_list += current_titles
-                row_page_right(driver,row_element)
+                self.row_page_right(row_element)
                 time.sleep(1)  # Sloppy work to use SLEEP TODO- CLEAN
         return final_show_titles_list
 
-
     def get_first_show_in_row(self, row_element):
         """ return a show_element. NOTE- SHOW ELEMENTS ARE JUST AS SPECIAL AS ROW_ELEMNTS. THIS
-        TEST SUITE CONSIDERS THE TWO TO BE FUNDAMENTAL. THUS THE SHOW_ELEMENT MUST FIT THE STANDARDS
-        , i.e. show = driver.find_elements_by_css_selector('a[class="slider-refocus"]') """
+        TEST SUITE CONSIDERS THE TWO TO BE FUNDAMENTAL. THUS THE SHOW_ELEMENT MUST FIT THE
+        STANDARDS, i.e. show = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
+        """
         # TODO- NOTE- TODO
-        pass
+
+        return self.get_currently_displayed_in_row(row_element)[0]
+
+    def get_currently_displayed_in_row(self, row_element):
+        """ return a list of show elements THAT ARE ACTIVELY DISPLAYED IN ROW. BY ACTIVEL DISPLAYED
+        I MEAN VISIBLE TO THE NAKED EYE"""
+
+        slider_items = row_element.find_elements_by_css_selector('div.slider-item')
+        # print(f"found {len(slider_items)} slider items")
+        currently_displayed_shows = []  # LIST OF SHOW_ELEMENTS, NOT TITLES
+
+        for item in slider_items:
+            try:
+                temp = item.find_element_by_css_selector('div > div > div > a')
+                # print(temp.get_attribute('aria-hidden'))
+                if temp.get_attribute('aria-hidden') == 'false':
+                    # CAN NOT JUST ADD TEMP TO A LIST. NEED TO CONFORM TO SHOW_ELEMENT OBJECT
+                    new_show_element = item.find_element(*self.SHOW_ELEMENTS)
+                    currently_displayed_shows.append(new_show_element)
+            except NoSuchElementException:
+                continue
+        return currently_displayed_shows
+
+
+
+
+a = HomePage(driver)
+q = a.get_queue_row()
+a.get_currently_displayed_in_row(q)

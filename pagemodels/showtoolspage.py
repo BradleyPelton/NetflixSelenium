@@ -16,6 +16,9 @@ from pagemodels.basepage import BasePage
 # NOTE- SHOW ELEMENTS ARE OFTEN RETURNED FROM ROW_OPERATIONS. SEE homepage.py IF YOU NEED TO
 # GRAB A SHOW ELEMENT FROM A PAGE, SINCE EVERY SHOW ELEMENT APPEARS IN A ROW, GO THERE
 
+# RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
+# 'div.slider-item > div > div > a.slider-refocus'
+
 # IMPORTANT NOTE
 # JAWBONE IS THE EXPANDED MENU THAT APPEARS WHEN YOU CLICK ON A SHOW ELEMENT
 # BOB-CARD/BOB-CONTAINER IS THE MINI MENU THAT APPEARS WHEN YOU HOVER OVER A SHOW ELEMENT
@@ -356,7 +359,7 @@ class ShowToolsPage(BasePage):
         bob_play_hitzone.click()
 
     # BOB UPVOTE/DOWNVOTE FUCNTIONS
-    def show_is_upvoted_from_show_preview(self, show_element):
+    def is_upvoted_from_show_preview(self, show_element):
         """ return true if the show is upvoted AS SEEN FROM THE BOB CONTAINER, False if else"""
         self.mouse_over_show_if_not_moused_over(show_element)
         try:
@@ -365,7 +368,7 @@ class ShowToolsPage(BasePage):
         except NoSuchElementException:
             return False
 
-    def show_is_downvoted_from_show_preview(self, show_element):
+    def is_downvoted_from_show_preview(self, show_element):
         """ return true if the show is downvoted AS SEEN FROM THE BOB CONTAINER, False if else """
         self.mouse_over_show_if_not_moused_over(show_element)
         try:
@@ -377,9 +380,9 @@ class ShowToolsPage(BasePage):
     def upvote_from_show_preview(self, show_element):
         """ upvote from preview if not upvoted, else do nothing"""
         self.mouse_over_show_if_not_moused_over(show_element)
-        if self.show_is_upvoted_from_show_preview(show_element):
+        if self.is_upvoted_from_show_preview(show_element):
             print("show is already upvoted, upvote_from_show_preview not executing")
-        elif self.show_is_upvoted_from_show_preview(show_element):
+        elif self.is_upvoted_from_show_preview(show_element):
             bob_already_upvoted_button = self.driver.find_element(*self.BOB_ALREADY_UPVOTED_BUTTON)
             bob_already_upvoted_button.click()
             # HAVE TO WAIT FOR DOWNVOTE UNCLICK TO PROCESS AND FOR THE UPVOTE BUTTON TO APPEAR
@@ -394,9 +397,9 @@ class ShowToolsPage(BasePage):
     def downvote_from_show_preview(self, show_element):
         """ downvote from preview if not downvoted, else do nothing"""
         self.mouse_over_show_if_not_moused_over(show_element)
-        if self.show_is_downvoted_from_show_preview(show_element):
+        if self.is_downvoted_from_show_preview(show_element):
             print("show is already downvoted, downvote_from_show_preview not executing")
-        elif self.show_is_upvoted_from_show_preview(show_element):
+        elif self.is_upvoted_from_show_preview(show_element):
             bob_already_upvoted_button = self.driver.find_element(self.BOB_ALREADY_UPVOTED_BUTTON)
             bob_already_upvoted_button.click()
             # HAVE TO WAIT FOR UPVOTE UNCLICK TO PROCESS AND FOR THE DOWNVOTE BUTTON TO APPEAR

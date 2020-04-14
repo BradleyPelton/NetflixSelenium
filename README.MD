@@ -1,8 +1,12 @@
 # GUIDE
-- "I HAVE NO IDEA WHAT IM LOOKING AT." Checkout ./tests/test_videopage.py , its the most user friendly.
-The tests there are less elaborate(pause an unpaused player, mute an unmuted player, etc.)
+- "I HAVE NO IDEA WHAT IM LOOKING AT." Watch https://gyazo.com/37be44a9993676c4161adff157960e45 then
+checkout ./tests/test_videopage.py , it contains straightforward test(mute, pause, add subtitles, etc.)
+- This test suite is organized in a Page-Object-Model(POM) design pattern. TLDR: tests contain the 
+test logic (asserts, etc.), Page objects (in /pagemodels/) hold the logic for interacting with the page.
+- This design pattern(POM) is most the verbose(and the most complex) to write, but is the easiest to 
+maintain in both speed and complexity. See https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/ 
 
-# TLDR, EXAMPLE
+# EXAMPLE
 - Watch https://gyazo.com/37be44a9993676c4161adff157960e45
 
 
@@ -14,6 +18,8 @@ I like to keep chrome and ChromeDriver as up to date as possible.
 - Current google chrome version: "Version 81.0.4044.92 (Official Build) (64-bit)"
 - Current ChromeDriver version: "81.0.4044.69"
 https://chromedriver.storage.googleapis.com/index.html?path=81.0.4044.69/
+- Execute tests exactly the same way normal unittest are executed 
+`python -m unittest -v tests/test_videopage.py`
 
 ## DEAR NETFLIX DEVS:
 The purpose of this repo is to provide advance searching to users, an area in which your current
