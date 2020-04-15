@@ -2,12 +2,6 @@ POM NOTES
 https://willowtreeapps.com/ideas/organizing-automated-tests-with-page-object-model
 https://selenium-python.readthedocs.io/page-objects.html
 
-
-
-
-
-https://stackoverflow.com/questions/18421280/selenium-python-click-on-element-nothing-happensz
-https://www.selenium.dev/selenium/docs/api/py/webdriver/selenium.webdriver.common.action_chains.html
 https://gist.github.com/dariodiaz/3104601
 https://stackoverflow.com/questions/12159874/click-method-will-not-always-work
 https://github.com/aslushnikov/getting-started-with-cdp/blob/master/README.md
@@ -21,7 +15,7 @@ https://selenium-python.readthedocs.io/waits.html#explicit-waits
 
 ### TOPICS TO EXPLORE:
 - ActionChains class
-    - https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.common.action_chains
+- https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.common.action_chains
 - Optimal explicit waits 
 - https://en.wikipedia.org/wiki/Microsoft_UI_Automation
 - Netflix uses a cool UIA ID of the form `data-uia="myListButton"`

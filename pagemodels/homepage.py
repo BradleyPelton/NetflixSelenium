@@ -22,23 +22,41 @@ import tests.pickledlogin
 # 'div.slider-item > div > div > a.slider-refocus'
 
 # # # # DELETE ME
-chromedriver_path = secrets.chromedriver_path
-driver = webdriver.Chrome(executable_path=chromedriver_path)
-tests.pickledlogin.pickled_login(driver)
+# chromedriver_path = secrets.chromedriver_path
+# driver = webdriver.Chrome(executable_path=chromedriver_path)
+# tests.pickledlogin.pickled_login(driver)
 
-a = HomePage(driver)
-b = ShowToolsPage(driver)
+# a = HomePage(driver)
+# b = ShowToolsPage(driver)
 
-gen_rows = a.get_genre_rows()
-first_row = gen_rows[0]
+# que = a.get_queue_row()
+# first_show = a.get_first_show_in_row(que)
+# print(first_show.text)
 
-first_show = a.get_first_show_in_row(first_row)
-print(first_show.text)
+# gen_rows = a.get_genre_rows()
+# first_row = gen_rows[0]
+# first_show = a.get_first_show_in_row(first_row)
+# print(first_show.text)
 
-b.add_show_to_my_list_from_jawbone(first_show)
+# b.mouse_over_show_element(first_show)
+# b.show_is_being_previewed()
+# b.mouse_over_show_if_not_moused_over(first_show)
+# b.show_is_in_my_list_from_show_preview(first_show)
+# b.add_show_to_my_list_from_show_preview(first_show)
+# b.remove_show_from_my_list_from_show_preview(first_show)
 
-b.open_jawbone_if_not_open(first_show)
-b.is_jawbone_open(first_show)
+
+# COOL HIGHLIST FUCNTION FOR DEBUGGING
+# def highlight(element):
+#     """Highlights (blinks) a Selenium Webdriver element"""
+#     driver = element._parent
+#     def apply_style(s):
+#         driver.execute_script("arguments[0].setAttribute('style', arguments[1]);",
+#                               element, s)
+#     original_style = element.get_attribute('style')
+#     apply_style("background: yellow; border: 2px solid red;")
+#     time.sleep(.3)
+#     apply_style(original_style)
 
 class HomePage(BasePage):
     def __init__(self, driver):
@@ -67,6 +85,12 @@ class HomePage(BasePage):
         self.LEFT_CHEVRON = (By.CSS_SELECTOR, 'span.handle.handlePrev.active' )
         ###########
         self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
+
+    def scroll_to_top_of_page(self):
+        self.driver.execute_script("window.scrollTo(0, 0)")
+
+    def scroll_to_bottom_of_page(self):
+        self.driver.execute_script("window.scrollTo(0, 10000000)")
 
     # ROW OPERATIONS
     def get_queue_row(self):
@@ -139,9 +163,12 @@ class HomePage(BasePage):
     #######################################################################################
 
     def get_row_titles_from_row_list(self, row_list: list) -> list:
-        """ INPUT: list of WEBELEMENTS of row elements (div.lolomoRow.lolomoRow_title_card)
+        """ 
+            TODO-INTENDED FOR A LIST OF ROWS, NOW A SINGLE ROW
+        INPUT: list of WEBELEMENTS of row elements (div.lolomoRow.lolomoRow_title_card)
             OUTPUT: THE LIST OF TITLES FOR THOSE ROW ELEMENTS
         """
+        # THIS FUNC
         # BUG- TODO- for some reason, get_becauseYouAdded_rows have the title stored in a span.rowTitle
         # instead of a.rowTitle.  FIX BUG TODO Investigate other rows
         row_title_list = []
