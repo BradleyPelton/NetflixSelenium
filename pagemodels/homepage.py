@@ -21,7 +21,7 @@ import tests.pickledlogin
 # RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
 
-# # # # DELETE ME
+# # # DELETE ME
 # chromedriver_path = secrets.chromedriver_path
 # driver = webdriver.Chrome(executable_path=chromedriver_path)
 # tests.pickledlogin.pickled_login(driver)
@@ -41,10 +41,12 @@ import tests.pickledlogin
 # b.mouse_over_show_element(first_show)
 # b.show_is_being_previewed()
 # b.mouse_over_show_if_not_moused_over(first_show)
-# b.show_is_in_my_list_from_show_preview(first_show)
-# b.add_show_to_my_list_from_show_preview(first_show)
-# b.remove_show_from_my_list_from_show_preview(first_show)
-
+# b.is_upvoted_from_jawbone(first_show)
+# b.is_downvoted_from_jawbone(first_show)
+# b.upvote_from_jawbone(first_show)
+# b.close_jawbone()
+# b.downvote_from_jawbone(first_show)
+# b.remove_downvote_or_upvote_from_jawbone(first_show)
 
 # COOL HIGHLIST FUCNTION FOR DEBUGGING
 # def highlight(element):

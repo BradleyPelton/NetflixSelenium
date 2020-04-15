@@ -325,14 +325,15 @@ class ShowToolsPage(BasePage):
         except NoSuchElementException:
             return False
 
-    def upvote_show_from_jawbone(self, show_element):
+    def upvote_from_jawbone(self, show_element):
         """upvote if not already upvoted, pass if already upvoted
             weird edge cases: the upvote button disappears when a show is downvoted"""
         self.open_jawbone_if_not_open(show_element)
+        time.sleep(3)
         if self.is_upvoted_from_jawbone(show_element):
-            print("already upvoted, upvote_show_from_jawbone is not doing anything")
+            print("already upvoted, upvote_from_jawbone is not doing anything")
         elif self.is_downvoted_from_jawbone(show_element):
-            already_downvoted_big_downvoted_button = self.find_element(
+            already_downvoted_big_downvoted_button = self.driver.find_element(
                 *self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)
             already_downvoted_big_downvoted_button.click()
             upvote_button = self.driver.find_element(*self.UPVOTE_BUTTON)
@@ -341,11 +342,11 @@ class ShowToolsPage(BasePage):
             upvote_button = self.driver.find_element(*self.UPVOTE_BUTTON)
             upvote_button.click()
 
-    def downvote_show_from_jawbone(self, show_element):
+    def downvote_from_jawbone(self, show_element):
         """weird edge cases: the upvote button disappears when a show is downvoted"""
         self.open_jawbone_if_not_open(show_element)
         if self.is_downvoted_from_jawbone(show_element):
-            print("already downvoted, downvote_show_from_jawbone is not doing anything")
+            print("already downvoted, downvote_from_jawbone is not doing anything")
         elif self.is_upvoted_from_jawbone(show_element):
             already_upvoted_big_upvote_button = self.driver.find_element(
                 *self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)
@@ -355,6 +356,23 @@ class ShowToolsPage(BasePage):
         else:
             downvote_button = self.driver.find_element(*self.DOWNVOTE_BUTTON)
             downvote_button.click()
+
+    def remove_downvote_or_upvote_from_jawbone(self, show_element):
+        """ a cleanup function used to return the state of the show before test execution"""
+        self.open_jawbone_if_not_open(show_element)
+
+        if self.is_downvoted_from_jawbone(show_element):
+            print("remove vote jawbone found a downvoted show")
+            already_downvoted_big_downvoted_button = self.driver.find_element(
+                *self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)
+            already_downvoted_big_downvoted_button.click()
+        elif self.is_upvoted_from_jawbone(show_element):
+            print("remove vote jawbone found an upvoted show")
+            already_upvoted_big_upvote_button = self.driver.find_element(
+                *self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)
+            already_upvoted_big_upvote_button.click()
+        else:
+            print("remove vote jawbone COULDNT FIND UPVOTED OR DOWNVOTED")
 
     ##########################################################################################
     # -=-=-=-=-=-=-=-=-=-=-=-=- BOB CONTAINER FUNCTIONS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=
@@ -470,10 +488,10 @@ class ShowToolsPage(BasePage):
             # HAVE TO WAIT FOR DOWNVOTE UNCLICK TO PROCESS AND FOR THE UPVOTE BUTTON TO APPEAR
             wait = WebDriverWait(self.driver, 10)
             wait.until(EC.visibility_of_element_located(self.BOB_UPVOTE_BUTTON))
-            bob_upvote_button = self.driver.find_element(self.BOB_UPVOTE_BUTTON)
+            bob_upvote_button = self.driver.find_element(*self.BOB_UPVOTE_BUTTON)
             bob_upvote_button.click()
         else:
-            bob_upvote_button = self.driver.find_element(self.BOB_UPVOTE_BUTTON)
+            bob_upvote_button = self.driver.find_element(*self.BOB_UPVOTE_BUTTON)
             bob_upvote_button.click()
 
     def downvote_from_show_preview(self, show_element):
@@ -482,7 +500,7 @@ class ShowToolsPage(BasePage):
         if self.is_downvoted_from_show_preview(show_element):
             print("show is already downvoted, downvote_from_show_preview not executing")
         elif self.is_upvoted_from_show_preview(show_element):
-            bob_already_upvoted_button = self.driver.find_element(self.BOB_ALREADY_UPVOTED_BUTTON)
+            bob_already_upvoted_button = self.driver.find_element(*self.BOB_ALREADY_UPVOTED_BUTTON)
             bob_already_upvoted_button.click()
             # HAVE TO WAIT FOR UPVOTE UNCLICK TO PROCESS AND FOR THE DOWNVOTE BUTTON TO APPEAR
             wait = WebDriverWait(self.driver, 10)
@@ -492,6 +510,9 @@ class ShowToolsPage(BasePage):
         else:
             bob_downvote_button = self.driver.find_element(*self.BOB_DOWNVOTE_BUTTON)
             bob_downvote_button.click()
+
+    def remove_upvote_or_downvote_from_show_preview(self):
+        pass
 
     def get_genre_and_tags_from_show_preview():
         """ the show preview sometimes contains both tags and genres. I need a new function to
