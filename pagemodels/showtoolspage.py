@@ -1,20 +1,14 @@
 import time
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 from selenium.webdriver.common.action_chains import ActionChains
 
 from pagemodels.basepage import BasePage
-import secrets
-import pagemodels.showtoolspage
-import tests.pickledlogin
 
-# SHOWTTOOLS IS NOT AN ACTUALY PAGE. IT IS, HOWEVER, A COLLECTION OF FUNCTIONS
+# SHOWTTOOLS IS NOT AN ACTUAL PAGE. IT IS, HOWEVER, A COLLECTION OF FUNCTIONS
 # THAT ARE APPLICABLE TO 95% OF THE WEB APP. EVERY NON-VIDEOPAGE PAGE IS A COLLECTION OF
 # THESE SHOW ELEMENTS. THUS, THEY ARE GETTING THEIR OWN ELEMENT PAGE
 
@@ -28,8 +22,6 @@ import tests.pickledlogin
 # JAWBONE IS THE EXPANDED MENU THAT APPEARS WHEN YOU CLICK ON A SHOW ELEMENT
 # BOB-CARD/BOB-CONTAINER IS THE MINI MENU THAT APPEARS WHEN YOU HOVER OVER A SHOW ELEMENT
 
-
-
 # TODO- ORGANIZE THIS MESS
 # FUNCTION CATEGORIES
 # 1.) JAWBONE
@@ -40,12 +32,6 @@ import tests.pickledlogin
 # 1e- DATA COLLECTION
 
 # 2.) BOB-CONAINER/SHOW PREVIEW
-
-
-# # # # DELETE ME
-# chromedriver_path = secrets.chromedriver_path
-# driver = webdriver.Chrome(executable_path=chromedriver_path)
-# tests.pickledlogin.pickled_login(driver)
 
 
 # ELEMENT PAGE(SEE ABOVE)
@@ -518,5 +504,3 @@ class ShowToolsPage(BasePage):
         """ the show preview sometimes contains both tags and genres. I need a new function to
         retrieve though """
         pass
-
-

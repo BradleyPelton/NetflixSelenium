@@ -1,5 +1,6 @@
 import time
 
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,6 +9,8 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 
 from pagemodels.basepage import BasePage
+import tests.pickledlogin
+import secrets
 
 ###########################################################################################
 ###########################################################################################
@@ -19,13 +22,23 @@ from pagemodels.basepage import BasePage
 ###########################################################################################
 ###########################################################################################
 
+# chromedriver_path = secrets.chromedriver_path
+# driver = webdriver.Chrome(executable_path=chromedriver_path)
+# tests.pickledlogin.pickled_login(driver)
+
+# a = HeaderPage(driver)
+# a.logout()
+
+# b = driver.find_element_by_css_selector('a[aria-label="Netflix"]')
+
 
 class HeaderPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
 
         # Locators
-        self.ACCOUNT_DROPDOWN_BUTTON = (By.CSS_SELECTORS, 'div.account-dropdown-button')
+        self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
+        self.ACCOUNT_DROPDOWN_BUTTON = (By.CSS_SELECTOR, 'div.account-dropdown-button')
         self.DROPDOWN_OPTIONS = (By.CSS_SELECTOR, 'ul.account-links.sub-menu-list > li')
         self.MANAGE_PROFILES_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Manage Profiles"]')
         self.NOTIFICATION_MENU_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Notifications"]')
@@ -34,7 +47,7 @@ class HeaderPage(BasePage):
         self.SEARCH_BUTTON = (By.CSS_SELECTOR, 'button.searchTab')
 
     def logout(self):
-        """ self explantory, tested"""
+        """ self explanatory, tested"""
         account_dropdown_button = self.driver.find_element(*self.ACCOUNT_DROPDOWN_BUTTON)
         account_dropdown_button.click()
 
@@ -42,6 +55,11 @@ class HeaderPage(BasePage):
 
         logout_button = dropdown_options[2]
         logout_button.click()
+
+    def navigate_to_home(self):
+        """ navigate home using the home button in the top left corner """
+        home_button = self.driver.find_element(*self.HOME_BUTTON)
+        home_button.click()
 
     def navigate_to_manage_profile(self):
         """ navigate to the manage profiles page, https://www.netflix.com/profiles/manage, by clicking
@@ -90,7 +108,7 @@ class HeaderPage(BasePage):
 
     def search(self, search_term: str):
         """ uses the search bar in the header to search for search_term"""
-        """ TODO- This is a exactly what a serach is in theory, but in practice, Netflix handles things
+        """ TODO- This is a exactly what a serach is in theory, but in practice, Netflix handles
         a little differently. Notice when searching things manually, the netflix app actually
         searches after EVERY SINGLE key press. Thus if we were to search for "Top Gun" manually,
         the observerwill notice that 7 DIFFERENT page results are displayed in the results
@@ -107,6 +125,11 @@ class HeaderPage(BasePage):
         search_field = self.driver.find_element(*self.SEARCH_FIELD)
         search_field.send_keys(search_term)
 
+        # let the results load
+        time.sleep(3)
+
     # def click_refer_button(driver):
     #     """ waste of time. adding it here just for completeness"""
     #     pass
+
+

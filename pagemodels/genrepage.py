@@ -15,6 +15,9 @@ from pagemodels.basepage import BasePage
 # TODO- There are three other sort methods: Suggested for you, Z-A, Year Released
 # CREATE FUCNTIONS FOR EACH OF THESE
 
+# Anime sweep
+# genrepagetools.master_sweep(driver, 7424)
+
 
 class GenrePage(BasePage):
     def __init__(self, driver):

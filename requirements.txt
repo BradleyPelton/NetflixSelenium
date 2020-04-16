@@ -1,0 +1,9 @@
+# LAST UPDATED 2020-04-15
+flake8==3.7.9
+pycodestyle==2.5.0
+pyflakes==2.1.1
+pyparsing==2.4.6
+pytest==5.4.1
+selenium==3.141.0
+
+# CHROME AND CHROMEDRIVER FOR CHROME TESTING, SEE README/setup

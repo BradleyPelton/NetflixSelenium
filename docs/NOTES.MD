@@ -21,5 +21,10 @@ https://selenium-python.readthedocs.io/waits.html#explicit-waits
 - Netflix uses a cool UIA ID of the form `data-uia="myListButton"`
 
 
+### PROBLEMS WITH CIRCLECI
+- I'm not testing against a local version of Netflix's app (localhost:8000). This complicates 
+pretty dramitically. TODO- NICE TO HAVE BUT A HUGE TIME SINK
+
+
 action = ActionChains(driver)
 action.key_down(Keys.CONTROL).key_down(Keys.F).key_up(Keys.CONTROL).perform()

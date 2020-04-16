@@ -7,7 +7,9 @@ test logic (asserts, etc.), Page objects (in /pagemodels/) hold the logic for in
 maintain in both speed and complexity. See https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/ 
 
 # EXAMPLE
-- Watch https://gyazo.com/37be44a9993676c4161adff157960e45
+- Watch VIDEO TESTS https://gyazo.com/37be44a9993676c4161adff157960e45
+- WATCH HOME PAGE TESTS https://gyazo.com/6821682827f79a47ce16e66c34ce2fbb
+- HEADER TOOLS TESTS https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
 
 
 
@@ -20,7 +22,7 @@ I like to keep chrome and ChromeDriver as up to date as possible.
 https://chromedriver.storage.googleapis.com/index.html?path=81.0.4044.69/
 - Execute tests exactly the same way normal unittest are executed 
 `python -m unittest -v tests/test_videopage.py`
-
+- geckodriver-v0.26.0-win64 , Firefox V 75.0 (64-bit)
 ## DEAR NETFLIX DEVS:
 The purpose of this repo is to provide advance searching to users, an area in which your current
 app falls short unfortunately. A perfect example is sorting a category by additional characteristics

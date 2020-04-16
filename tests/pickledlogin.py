@@ -67,6 +67,10 @@ def pickled_login(driver):
 
 
 
+# browser_settings = dict()
+# browser_settings['last_updated'] = 5346574609275234
+
+
 
 
 # with open(r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl', 'wb') as pickledcookies:

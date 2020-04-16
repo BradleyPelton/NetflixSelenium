@@ -37,3 +37,11 @@
 - Navigate to HALFWAY through the movie using the duration slider
 - Restart the show using the duration slider
 - Exit the player using the built-in back arrow button
+
+# HEADER PAGE
+- Logout using header
+- Navigate home from my-list using home button
+- Navigate to manage_profiles page from header dropdown
+- Test the search bar by searching for "shawshank" 
+- Clear notifications
+- Click the top notification
