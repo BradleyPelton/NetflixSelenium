@@ -14,6 +14,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import pagemodels.basepage
 import tests.pickledlogin
 import secrets
+import browserconfig
 
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
@@ -51,6 +52,8 @@ import secrets
 # # # # DELETE ME
 # chromedriver_path = secrets.chromedriver_path
 # driver = webdriver.Chrome(executable_path=chromedriver_path)
+
+# driver = browserconfig.driver_runner(executable_path=browserconfig.driver_path)
 # tests.pickledlogin.pickled_login(driver)
 
 # driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\

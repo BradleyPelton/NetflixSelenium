@@ -19,10 +19,10 @@ maintain in both speed and complexity. See https://www.selenium.dev/documentatio
 I like to keep chrome and ChromeDriver as up to date as possible.
 - Current google chrome version: "Version 81.0.4044.92 (Official Build) (64-bit)"
 - Current ChromeDriver version: "81.0.4044.69"
-https://chromedriver.storage.googleapis.com/index.html?path=81.0.4044.69/
+- geckodriver-v0.26.0-win64 , Firefox V 75.0 (64-bit)
+- msedgedriver Version: 81.0.409.0 , msedge Version 81.0.416.53(64-bit)
 - Execute tests exactly the same way normal unittest are executed 
 `python -m unittest -v tests/test_videopage.py`
-- geckodriver-v0.26.0-win64 , Firefox V 75.0 (64-bit)
 ## DEAR NETFLIX DEVS:
 The purpose of this repo is to provide advance searching to users, an area in which your current
 app falls short unfortunately. A perfect example is sorting a category by additional characteristics

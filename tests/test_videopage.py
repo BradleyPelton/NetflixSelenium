@@ -6,7 +6,7 @@ from selenium import webdriver
 import pagemodels.videopage
 import tests.pickledlogin
 import secrets
-
+import browserconfig
 
 # TEST CATEGORIES
 # 1.) Pause Tests
@@ -32,15 +32,19 @@ import secrets
 # to end with ExpectectedCondition waits. They all passed the smoke tests because they werent
 # chained together (and thus nothing was after the last action).
 
+
 class VideoPageTests(unittest.TestCase):
     """ The following tests test basic use cases for Netflix's video player(dubbed 'Akira player'
     by Netflix). The individual actions are defined at ./pagemodels/videopage.py"""
 
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver and login. See tests.pickled.login for more"""
-        chromedriver_path = secrets.chromedriver_path
-        cls.driver = webdriver.Chrome(executable_path=chromedriver_path)
+        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)
+         and then login using pickled cookies. (SEE tests/pickledlogin.py)"""
+        cls.driver = browserconfig.driver_runner(
+            executable_path=browserconfig.driver_path,
+            options=browserconfig.current_options
+        )
         tests.pickledlogin.pickled_login(cls.driver)
 
     @classmethod
@@ -277,7 +281,8 @@ class VideoPageTests(unittest.TestCase):
 
         new_time = video_page.get_remaining_time_in_seconds()
 
-        self.assertAlmostEqual(current_time + 30, new_time, delta=1)
+        # WHEN PAUSED, delta < 0.01, WHEN NOT PAUSED AND GOOD CONNECTION, delta < 5
+        self.assertAlmostEqual(current_time + 30, new_time, delta=5)
 
     def test_skip_back_30_seconds(self):
         """ using the skip back button, skip back 30 seconds"""
@@ -297,7 +302,8 @@ class VideoPageTests(unittest.TestCase):
 
         new_time = video_page.get_remaining_time_in_seconds()
         # TODO- CURRENT_TIME and NEW_TIME are not accurate names, they are remaining times really
-        self.assertAlmostEqual(current_time-30, new_time, delta=1)
+        # WHEN PAUSED, delta < 0.01, WHEN NOT PAUSED AND GOOD CONNECTION, delta < 5
+        self.assertAlmostEqual(current_time-30, new_time, delta=5)
 
     # TIME/DURATION TESTS
     def test_go_to_halfway_point(self):

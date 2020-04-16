@@ -4,6 +4,7 @@ import time
 from selenium import webdriver
 
 import secrets
+import browserconfig
 import pagemodels.loginpage
 
 # Fully functional. All 4 tests passing.
@@ -15,9 +16,11 @@ class LoginPageTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver """
-        chromedriver_path = secrets.chromedriver_path
-        cls.driver = webdriver.Chrome(executable_path=chromedriver_path)
+        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)"""
+        cls.driver = browserconfig.driver_runner(
+            executable_path=browserconfig.driver_path,
+            options=browserconfig.current_options
+        )
 
     @classmethod
     def tearDownClass(cls):
