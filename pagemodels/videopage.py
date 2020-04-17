@@ -45,16 +45,16 @@ import browserconfig
 
 
 
-# # # # DELETE ME
-# driver = browserconfig.driver_runner(
-#     executable_path=browserconfig.driver_path,
-#     options=browserconfig.current_options
-# )
+# # # # # DELETE ME
+#         cls.driver = browserconfig.driver_runner(
+#             executable_path=browserconfig.driver_path,
+#             desired_capabilities=browserconfig.capabilities
+#         )
 # tests.pickledlogin.pickled_login(driver)
 
-# driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\
-#     fc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725\
-#     ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
+# driver.get('https://www.netflix.com/watch/80219127?trackId=200254290&tctx=0%2C0%2C3f74b4eb-86\
+#     f6-4d9d-bb35-a72282cd263c-76893314%2C311384eb-a55b-41d5-bb93-deb09b53bebb_3236856X6XX158712875\
+#     1673%2C311384eb-a55b-41d5-bb93-deb09b53bebb_ROOT')
 
 # a = VideoPage(driver)
 # a.volume_slider_is_open()

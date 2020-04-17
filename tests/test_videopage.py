@@ -43,7 +43,7 @@ class VideoPageTests(unittest.TestCase):
          and then login using pickled cookies. (SEE tests/pickledlogin.py)"""
         cls.driver = browserconfig.driver_runner(
             executable_path=browserconfig.driver_path,
-            options=browserconfig.current_options
+            desired_capabilities=browserconfig.capabilities
         )
         tests.pickledlogin.pickled_login(cls.driver)
 
@@ -54,47 +54,47 @@ class VideoPageTests(unittest.TestCase):
 
     def setUp(self):
         """ load some random movie, Minority Report with Tom Cruise in this instance """
-        self.driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\
-            fc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725\
-            ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
+        self.driver.get('https://www.netflix.com/watch/80219127?trackId=200254290&tctx=0%2C0%2C3f\
+            74b4eb-86f6-4d9d-bb35-a72282cd263c-76893314%2C311384eb-a55b-41d5-bb93-deb09b53bebb_323\
+            6856X6XX1587128751673%2C311384eb-a55b-41d5-bb93-deb09b53bebb_ROOT')
         time.sleep(5)  # BUG - TODO- why doesnt webdriver wait here? The page hasnt fully loaded
 
-    # # PAUSE TESTS
-    # def test_pause_from_unpaused_state(self):
-    #     """ from an unpaused state, pause the player"""
-    #     video_page = pagemodels.videopage.VideoPage(self.driver)
+    # PAUSE TESTS
+    def test_pause_from_unpaused_state(self):
+        """ from an unpaused state, pause the player"""
+        video_page = pagemodels.videopage.VideoPage(self.driver)
 
-    #     self.assertFalse(
-    #         video_page.player_is_paused(),
-    #         msg="pause_from_unpaused_state wasnt an unpaused state"
-    #     )
+        self.assertFalse(
+            video_page.player_is_paused(),
+            msg="pause_from_unpaused_state wasnt an unpaused state"
+        )
 
-    #     video_page.pause_player()
+        video_page.pause_player()
 
-    #     self.assertTrue(
-    #         video_page.player_is_paused(),
-    #         msg="pause_from_unpaused_state major test failed"
-    #     )
+        self.assertTrue(
+            video_page.player_is_paused(),
+            msg="pause_from_unpaused_state major test failed"
+        )
 
-    #     # CLEANUP- Netflix's Akira player (annoyingly) remembers the paused state in the next test
-    #     video_page.unpause_player()
+        # CLEANUP- Netflix's Akira player (annoyingly) remembers the paused state in the next test
+        video_page.unpause_player()
 
-    # def test_unpause_from_paused_state(self):
-    #     """from a paused state, unpause the player"""
-    #     video_page = pagemodels.videopage.VideoPage(self.driver)
-    #     video_page.pause_player()
+    def test_unpause_from_paused_state(self):
+        """from a paused state, unpause the player"""
+        video_page = pagemodels.videopage.VideoPage(self.driver)
+        video_page.pause_player()
 
-    #     self.assertTrue(
-    #         video_page.player_is_paused(),
-    #         msg="unpause_from_paused_state wasnt paused state"
-    #     )
+        self.assertTrue(
+            video_page.player_is_paused(),
+            msg="unpause_from_paused_state wasnt paused state"
+        )
 
-    #     video_page.unpause_player()
+        video_page.unpause_player()
 
-    #     self.assertFalse(
-    #         video_page.player_is_paused(),
-    #         msg="unpause_from_paused_state major test failed"
-    #     )
+        self.assertFalse(
+            video_page.player_is_paused(),
+            msg="unpause_from_paused_state major test failed"
+        )
 
     # MUTE TESTS
     # def test_unmute_from_muted_state(self):
@@ -135,23 +135,23 @@ class VideoPageTests(unittest.TestCase):
 #         video_page.unmute_player()
 
 #     # VOLUME TESTS
-    def test_cut_volume_in_half(self):
-        """ whatever the current volume is, cut it in half using the volume slider"""
-        # There is a lot going on under the hood with .get_current_volume() and
-        # .change_volume_using_percentage() . check out /pagemodels/videopage.py
-        video_page = pagemodels.videopage.VideoPage(self.driver)
+    # def test_cut_volume_in_half(self):
+    #     """ whatever the current volume is, cut it in half using the volume slider"""
+    #     # There is a lot going on under the hood with .get_current_volume() and
+    #     # .change_volume_using_percentage() . check out /pagemodels/videopage.py
+    #     video_page = pagemodels.videopage.VideoPage(self.driver)
 
-        current_volume = video_page.get_current_volume()  # returns a float 0 <= x <= 1
+    #     current_volume = video_page.get_current_volume()  # returns a float 0 <= x <= 1
 
-        target_volume = current_volume/2
-        video_page.change_volume_using_percentage(target_volume)
-        time.sleep(3)
+    #     target_volume = current_volume/2
+    #     video_page.change_volume_using_percentage(target_volume)
+    #     time.sleep(3)
 
-        new_volume = video_page.get_current_volume()
-        self.assertAlmostEqual(new_volume, target_volume, delta=0.02)
+    #     new_volume = video_page.get_current_volume()
+    #     self.assertAlmostEqual(new_volume, target_volume, delta=0.02)
 
-        # CLEANUP- DEFAULT STATE IS 50% VOLUME
-        video_page.change_volume_using_percentage(.5)
+    #     # CLEANUP- DEFAULT STATE IS 50% VOLUME
+    #     video_page.change_volume_using_percentage(.5)
 
 #     def test_double_volume(self):
 #         """ double the current volume (upper limit 100%) using the volume slider"""

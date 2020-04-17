@@ -36,7 +36,7 @@ class HomePageTests(unittest.TestCase):
         """ launch the webdriver and login. See tests.pickledlogin for more"""
         cls.driver = browserconfig.driver_runner(
             executable_path=browserconfig.driver_path,
-            options=browserconfig.current_options
+            desired_capabilities=browserconfig.capabilities
         )
         tests.pickledlogin.pickled_login(cls.driver)
 

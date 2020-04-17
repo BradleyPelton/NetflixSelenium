@@ -16,11 +16,17 @@ class LoginPageTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)"""
-        cls.driver = browserconfig.driver_runner(
-            executable_path=browserconfig.driver_path,
-            options=browserconfig.current_options
-        )
+        """ launch the webdriver of choice with options/capabilties. (SEE browserconfig.py)"""
+        if browserconfig.current_browser == 'chrome' or browserconfig.current_browser == 'firefox':
+            cls.driver = browserconfig.driver_runner(
+                executable_path=browserconfig.driver_path,
+                desired_capabilities=browserconfig.capabilities
+            )
+        elif browserconfig.current_browser == 'edge':
+            cls.driver = browserconfig.driver_runner(
+                executable_path=browserconfig.driver_path,
+                desired_capabilities=browserconfig.capabilities  # different paramater names, frustrating
+            )
 
     @classmethod
     def tearDownClass(cls):
