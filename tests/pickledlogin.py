@@ -1,33 +1,32 @@
 import pickle
 import datetime
 
+import browserconfig
 import secrets
 import pagemodels.loginpage
 
-
-
-
-# chromedriver_path = secrets.chromedriver_path
-# driver = webdriver.Chrome(executable_path=chromedriver_path)
-
-
-# FIRST DUMP\ HARD RESET pikcledcookies.pkl \ accidentally deleted pickledcookies.pkl
+##########################################################################
+##########################################################################
+##########################################################################
+# CLEAR COOKIES\ HARD RESET \ accidentally deleted pickledcookies.pkl
+# Delete the cookies by placing placeholder values in the browser_settings dict
 # browser_settings = dict()
-# browser_settings['last_updated'] = datetime.date.today()
-# browser_settings['stored_cookies'] = driver.get_cookies()
+# browser_settings['last_updated'] = datetime.date(1980,1,1)
+# browser_settings['stored_cookies'] = 1234567890
 # with open(
 #     r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
 #     'wb'
 # ) as pickledcookies:
 #     pickle.dump(browser_settings, pickledcookies)
-
-# with open(
-#     r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
-#     'rb'
-# ) as pickledcookies:
-#     browser_settings = pickle.load(pickledcookies)
+##########################################################################
+##########################################################################
+##########################################################################
 
 
+# driver = browserconfig.driver_runner(
+#     executable_path=browserconfig.driver_path,
+#     options=browserconfig.current_options
+# )
 
 def pickled_login(driver):
     """ IF TODAYS COOKIES ARE STILL VALID, USE TODAYS COOKIES TO LOG IN.
@@ -64,24 +63,10 @@ def pickled_login(driver):
             ) as pickledcookies:
                 pickle.dump(browser_settings, pickledcookies)
 
-
-
-
-# browser_settings = dict()
-# browser_settings['last_updated'] = 5346574609275234
-
-
-
-
-# with open(r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl', 'wb') as pickledcookies:
-#     pickle.dump(browser_settings, pickledcookies)
-
 # with open(r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl', 'rb') as pickledcookies:
 #     browser_settings = pickle.load(pickledcookies)
 
 # for cookie in browser_settings['stored_cookies']:
 #     driver.add_cookie({k: v for k,v in cookie.items() if k!= 'expiry'})
-#     # Interesting that expiry had to be excluded 
+#     # Interesting that expiry had to be excluded
 #     # print(cookie)
-
-

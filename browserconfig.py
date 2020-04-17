@@ -53,7 +53,7 @@ elif current_browser == 'opera':
 
 if current_browser == 'chrome':
     current_options = selenium.webdriver.chrome.options.Options()
-    current_options.add_argument('--headless')  # see .set_headless below for a more hip way
+    # current_options.add_argument('--headless')  # see .set_headless below for a more hip way
     # current_options.set_headless(headless=True)
     # current_options.add_argument('--disable-extensions')
     # current_options.add_argument('--window-size=1920,1080')

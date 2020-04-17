@@ -5,7 +5,7 @@ from selenium import webdriver
 
 import pagemodels.headerpage
 import tests.pickledlogin
-import secrets
+import browserconfig
 
 # VIDEO OF EXECUTION
 # https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
@@ -15,8 +15,10 @@ class HeaderPageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ launch the webdriver and login. See tests.pickled.login for more"""
-        chromedriver_path = secrets.chromedriver_path
-        cls.driver = webdriver.Chrome(executable_path=chromedriver_path)
+        cls.driver = browserconfig.driver_runner(
+            executable_path=browserconfig.driver_path,
+            options=browserconfig.current_options
+        )
         tests.pickledlogin.pickled_login(cls.driver)
 
     @classmethod

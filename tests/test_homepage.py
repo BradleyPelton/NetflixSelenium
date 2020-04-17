@@ -3,7 +3,7 @@ import time
 
 from selenium import webdriver
 
-import secrets
+import browserconfig
 import pagemodels.homepage
 import pagemodels.showtoolspage
 import tests.test_loginpage
@@ -34,8 +34,10 @@ class HomePageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ launch the webdriver and login. See tests.pickledlogin for more"""
-        chromedriver_path = secrets.chromedriver_path
-        cls.driver = webdriver.Chrome(executable_path=chromedriver_path)
+        cls.driver = browserconfig.driver_runner(
+            executable_path=browserconfig.driver_path,
+            options=browserconfig.current_options
+        )
         tests.pickledlogin.pickled_login(cls.driver)
 
     @classmethod

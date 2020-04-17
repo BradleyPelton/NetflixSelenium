@@ -1,6 +1,3 @@
-import unittest
-import time
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -9,7 +6,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
-
 
 import pagemodels.basepage
 import tests.pickledlogin
@@ -50,15 +46,20 @@ import browserconfig
 
 
 # # # # DELETE ME
-# chromedriver_path = secrets.chromedriver_path
-# driver = webdriver.Chrome(executable_path=chromedriver_path)
-
-# driver = browserconfig.driver_runner(executable_path=browserconfig.driver_path)
+# driver = browserconfig.driver_runner(
+#     executable_path=browserconfig.driver_path,
+#     options=browserconfig.current_options
+# )
 # tests.pickledlogin.pickled_login(driver)
 
 # driver.get('https://www.netflix.com/watch/60023071?trackId=14170286&tctx=2%2C1%2C\
 #     fc2cbd3b-8737-4f69-9a21-570f1a21a1a3-42400306%2C3f5aa22b-d569-486c-b94d-a8503e6725\
 #     ae_22068878X3XX1586569622702%2C3f5aa22b-d569-486c-b94d-a8503e6725ae_ROOT')
+
+# a = VideoPage(driver)
+# a.volume_slider_is_open()
+# a.open_volume_slider()
+# a.open_volume_slider_if_not_open()
 
 
 class VideoPage(pagemodels.basepage.BasePage):
@@ -73,10 +74,13 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.FULL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Full screen"]')
         self.NORMAL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Exit full screen"]')
         self.MUTED_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Muted"]')
-        self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
+
+        self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
+        self.VOLUME_SLIDER_CONTAINER = (By.CSS_SELECTOR, 'div.slider-container')
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
         self.VOLUME_S = (By.CSS_SELECTOR, 'div.slider-bar-container')
-        self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
+        self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
+
         self.SEEK_BACK_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Back"]')
         self.SEEK_FORWARD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
         self.TIME_REMAINING = (By.CSS_SELECTOR, 'time.time-remaining__time')
@@ -94,9 +98,7 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     # IDLE FUNCTIONS
     def player_is_idle(self):
-        """ return bool is player is idle. If player is playing, it is considered idle
-            IDLE IF AND ONLY IF BUTTONS ARE BEING DISPLAYED.
-            INITIAL IDLE COUNTS AS IDLE"""
+        """ return True if player is idle(ui isnt displayed), false if else"""
         try:
             seek_forward_button = self.driver.find_element(*self.SEEK_FORWARD_BUTTON)
             if seek_forward_button.is_displayed():
@@ -109,18 +111,19 @@ class VideoPage(pagemodels.basepage.BasePage):
             print(" player_is_idle COULDNT FIND THE SEEK_FORWAD, IS THE PLAYER TOTALLY IDLE???")
             return True
 
-
     def wake_up_idle_player(self):
-        """ TODO- BUG- if player is TOTALLY idle, no activity in several minutes, this wont wake.
-        when player is totally idle, a small play button appears in the center of the page"""
+        """ wake up the player if partially idle or totally idle"""
         try:
+            # Player is totally idle
             big_play_idle_button = self.driver.find_element(*self.BIG_PLAY_IDLE_BUTTON)
             print("found big play idle button!")
             big_play_idle_button.click()
         except NoSuchElementException:
-            # print("couldnt find big play idle button")
+            # Player is only partially idle
+            print("couldnt find big play idle button")
             video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
             video_player_container.click()  # Click the center of the screen to wake it up
+
         # WAIT FOR THE PAGE TO COMPLETELY WAKE UP
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located(self.SEEK_FORWARD_BUTTON))
@@ -133,8 +136,7 @@ class VideoPage(pagemodels.basepage.BasePage):
     # PAUSE AND UNPAUSE FUNCTIONS
     def player_is_paused(self):
         """Returns true if player is paused, False if player is not-paused(is playing).
-        PAUSED IS IRREGARDLESS OF IDLE. IDLE DOES NOT IMPLY PAUSED
-        A PLAYER IS ALWAYS PAUSED OR NOT PAUSED. THUS NOT NOT PAUSED IMPLIES PAUSED """
+        IDLE DOES NOT IMPLY PAUSED. PAUSED DOES NOT IMPLY IDLE. NOT NOT PAUSED implies PAUSED """
         self.wake_up_if_idle()
         try:
             self.driver.find_element(*self.SMALL_PLAY_BUTTON)
@@ -149,8 +151,7 @@ class VideoPage(pagemodels.basepage.BasePage):
             print("player_is_paused couldnt find either play nor pause button, SOMETHING IS WRONG")
 
     def pause_player(self):
-        """ self-explanatory """
-        self.wake_up_if_idle()
+        """ pause the player if unpaused, else do nothing """
         if self.player_is_paused():
             print("player is already paused, pause_player is not executing")
         else:
@@ -159,7 +160,6 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def unpause_player(self):
         """ unpause player if paused. if not paused, do nothing """
-        self.wake_up_if_idle()
         if self.player_is_paused():
             small_play_button = self.driver.find_element(*self.SMALL_PLAY_BUTTON)
             small_play_button.click()
@@ -184,15 +184,23 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def mute_player(self):
         """ mute if unmuted. if already muted, do nothing"""
-        """ BUG- mute_player causes the volume slider to open and never close"""
+        # BUG- test fails 10% of the time IF ITS THE FIRST TEST TO BE EXECUTED
+        # test always bombs out after failed to find self.MUTED_BUTTON. Not reproducible
         self.wake_up_if_idle()
         if self.player_is_muted():
             print("player is already muted, mute_player not executing")
         else:
             volume_button = self.driver.find_element(*self.VOLUME_BUTTON)
             volume_button.click()
-            # small problem appeared. Muted the player causes the volume bar to stay open for
-            # TODO- CLEAN THIS UP
+
+        # Volume slider doesnt close until the user moves the mouse outside of the vol container
+        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+        action = ActionChains(self.driver)
+        action.move_to_element(video_player_container).perform()
+
+        # Adding a wait until the muted button appears
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.MUTED_BUTTON))
 
     def unmute_player(self):
         """ unmute player if muted. If alraedy unmuted, do nothing"""
@@ -200,16 +208,22 @@ class VideoPage(pagemodels.basepage.BasePage):
         if self.player_is_muted():
             muted_button = self.driver.find_element(*self.MUTED_BUTTON)
             muted_button.click()
-            # small problem appeared. Muted the player causes the volume bar to stay open for
-            # TODO- CLEAN THIS UP
         else:
             print("player is already unmuted, unmute_player not executing")
+
+        # Volume slider doesnt close until the user moves the mouse outside of the vol container
+        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+        action = ActionChains(self.driver)
+        action.move_to_element(video_player_container).perform()  # move the cursor to the center
+
+        # Adding a wait until the volume button(unmuted button) appears
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.VOLUME_BUTTON))
 
     # VOLUME FUNCTIONS
     def volume_slider_is_open(self):
         """ returns true if the slider is open, false if else"""
         # intentionally not waking up idle player. Idle player implies slider is not open
-        self.wake_up_if_idle()
         try:
             self.driver.find_element(*self.VOLUME_SLIDER)
             return True
@@ -219,17 +233,16 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def open_volume_slider(self):
         """ hover over the volume button causing the volume slider to open"""
-        """ TODO- TEST NEED TO TEST ALL VOLUME STATES (low,medium,high, muted) """
         self.wake_up_if_idle()
         if self.volume_slider_is_open():
             print("volume slider is already open, open_volume slider is not executing")
         volume_container = self.driver.find_element(*self.VOLUME_CONTAINER)
+        # volume_container is a container for the volume button, NOT THE SLIDER
         action = ActionChains(self.driver)
         action.move_to_element(volume_container).perform()
         # wait for the slider to appear
         wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.slider-container')))
-        # TODO- slider-container was never identified. See if VOLUME_CONTAINER or other works
+        wait.until(EC.visibility_of_element_located(self.VOLUME_SLIDER_CONTAINER))
 
     def open_volume_slider_if_not_open(self):
         """ opens slider if not open, if open do nothing"""
@@ -239,8 +252,7 @@ class VideoPage(pagemodels.basepage.BasePage):
             self.open_volume_slider()
 
     def get_current_volume(self) -> float:
-        """ TODO"""
-        self.wake_up_if_idle()
+        """ return the current volume as a float 0 <= x <= 1 , 1 being max volume, 0 being muted"""
         self.open_volume_slider_if_not_open()
         if self.player_is_muted():
             return 0.0
@@ -289,7 +301,7 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def make_full_screen(self):
         """ make full screen if not full screen. if full screen, do nothing"""
-        self.wake_up_if_idle()  # TODO- DUPLICATE WAKE UPS, SEE ABOUT FIXING THIS
+        self.wake_up_if_idle()
         if self.player_is_full_screen():
             print("player is already full screen! not executing make_full_screen")
         else:
@@ -298,7 +310,7 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def make_normal_screen(self):
         """ make normal_screen if player is full screen. if normal screen already, do nothing"""
-        self.wake_up_if_idle()  # TODO- DUPLICATE WAKE UPS, SEE ABOUT FIING THIS
+        self.wake_up_if_idle()
         if not self.player_is_full_screen():
             print("player is already normal screen, make_normal_screen not executing")
         else:
@@ -308,13 +320,12 @@ class VideoPage(pagemodels.basepage.BasePage):
     # SUBTITLE & AUDIO LANGUAGE FUNCTIONS
     def subtitle_menu_is_open(self):
         """ return true if the subtitle menu is open, false if else"""
-        """ TODO- CLEAN THIS UP"""
         # INTENTIONALLY NOT WAKING UP PLAYER. IDLE PLAYER MEANS MENU IS NOT OEPN
         try:
             self.driver.find_element(*self.ENGLISH_SUBTITLE_BUTTON)
             return True  # TODO- MINOR BUG - not all shows will have english subtitles
         except NoSuchElementException:
-            return False  # SLOPPY CODE. OTHER CASES EXIST, BAD TRY EXCEPT
+            return False
 
     def open_subtitle_menu_if_not_open(self):
         """ open subtitle menu if it is not already open. If it is open, do nothing"""
@@ -331,6 +342,7 @@ class VideoPage(pagemodels.basepage.BasePage):
             # never used again, leaving the raw CSS SELECTOR in there
 
     def has_subtitles(self):
+        """ return true if the player has subtitles, false if else"""
         self.wake_up_idle_player()
         self.open_subtitle_menu_if_not_open()
         try:
@@ -342,7 +354,6 @@ class VideoPage(pagemodels.basepage.BasePage):
     def remove_subtitles(self):
         """ return true if the player already has subtitles enabled (OF ANY LANGUAGE).
         False if else"""
-        """ TODO- UNTESTED"""
         self.wake_up_if_idle()
         self.open_subtitle_menu_if_not_open()
         #
@@ -361,9 +372,8 @@ class VideoPage(pagemodels.basepage.BasePage):
         english.click()
 
     def get_current_audio(self):
-        """ assert that the audio is currently english
-        NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description
-        """
+        """ return a str that represents the current audio language """
+        # NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description
         self.wake_up_idle_player()
         self.open_subtitle_menu_if_not_open()
 
@@ -382,7 +392,6 @@ class VideoPage(pagemodels.basepage.BasePage):
 
     def change_audio_to_spanish(self):
         """spoken language != subtitles. This function changes the verbal language to spanish"""
-        """not fully tested, TODO-TEST"""
         self.wake_up_if_idle()
         self.open_subtitle_menu_if_not_open()
         spanish_audio_button = self.driver.find_element(*self.SPANISH_AUDIO_BUTTON)
@@ -423,7 +432,6 @@ class VideoPage(pagemodels.basepage.BasePage):
     def get_remaining_time_in_seconds(self):
         """ returns the amount of time left in this specific show AS DISPLAYED IN THE BOTTOM RIGHT
         CORNER. NOTE- see get_show_duration . This could be refactored to use seek_time_scrubber"""
-        """ NOT TESTED, TODO- Test"""
         self.wake_up_if_idle()
         time_remaining = self.driver.find_element(*self.TIME_REMAINING)
         if time_remaining.text == '':
@@ -550,3 +558,5 @@ class VideoPage(pagemodels.basepage.BasePage):
     #     pass
     # def skip_recap(driver):
         # """very similar to skip_intro but with the "Skip Recap" button. See '7 deadly sins'"""
+
+
