@@ -1,41 +1,19 @@
-
 import pickle 
 import datetime
 import test_loginpage
 
-
 browser_settings = dict()
-
 # browser_settings['last_updated'] = datetime.date.today()
 
-
-
-
+############################################################################################
+# NOT CURRENTLY FUNCTIONING
+############################################################################################
 # This is a huge time sink. The docs do recommend using an API to log in because the log in process
 # is cumbersome. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # https://github.com/GooogIe/Netflix-login-API/blob/master/Netflix.py
 # HUGE SHOUTOUT TO https://github.com/GooogIe/Netflix-login-API/blob/master/Netflix.py
 # 95% of this was ripped from his repo and (TODO-)fitted to this use case.
-
-
-
 
 
 # TODO- Get it working in postman. csrf get still isnt working
