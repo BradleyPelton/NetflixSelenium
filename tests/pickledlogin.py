@@ -38,18 +38,18 @@ def pickled_login(driver):
     ) as pickledcookies:
         browser_settings = pickle.load(pickledcookies)
 
-        driver.delete_all_cookies()  # precaution in case anything is stored
+        driver.delete_all_cookies()  # precaution in case anything is stored before we start
+
         driver.get('https://netflix.com')
 
-        # add all of the cookies from the previous login
         if browser_settings['last_updated'] == datetime.date.today():
+            # add all of the cookies from the previous login
             for cookie in browser_settings['stored_cookies']:
                 driver.add_cookie({k: v for k, v in cookie.items() if k != 'expiry'})
             driver.refresh()
-            # assert 'browse' in driver.get_current_url
+            # refreshing the login page, with valid cookies, sends a user to the home page
         else:
             login_page = pagemodels.loginpage.LoginPage(driver)
-            login_page.load()
             login_page.user_login(
                 secrets.bradleys_email, secrets.bradleys_password
             )

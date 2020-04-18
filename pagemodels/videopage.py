@@ -75,7 +75,7 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.NORMAL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Exit full screen"]')
         self.MUTED_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Muted"]')
 
-        self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"]')
+        self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"] > button')
         self.VOLUME_SLIDER_CONTAINER = (By.CSS_SELECTOR, 'div.slider-container')
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
         self.VOLUME_S = (By.CSS_SELECTOR, 'div.slider-bar-container')
@@ -95,6 +95,8 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.SPANISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-Spanish"]')
         self.ENGLISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-English [Original]"]')
         self.SUBTITLE_LANGUAGE_LIST = (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')
+
+        self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
 
     # IDLE FUNCTIONS
     def player_is_idle(self):
@@ -278,6 +280,12 @@ class VideoPage(pagemodels.basepage.BasePage):
         action_2.move_to_element_with_offset(
             volume_slider, 0, y_offset    # volume_bar.size['height']*volume_percentage
             ).click().perform()
+
+        # Volume slider doesnt close until the user moves the mouse outside of the vol container
+        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+        action = ActionChains(self.driver)
+        action.move_to_element(video_player_container).perform()  # move the cursor to the center
+
         # BUG- volume seems to be off by .0133756 percent, a little over a single pixel
         # Not sure whats causing it. Test using change_volume_using_percentage and
         # get_current_volume
@@ -356,24 +364,20 @@ class VideoPage(pagemodels.basepage.BasePage):
         False if else"""
         self.wake_up_if_idle()
         self.open_subtitle_menu_if_not_open()
-        #
-        assert self.has_subtitles()
+
         subtitles_off_button = self.driver.find_element(*self.SUBTITLE_OFF_BUTTON)
         subtitles_off_button.click()
-        # BUG- UNPAUSES PLAYER, but it does remove subtitles
 
     def add_english_subtitles(self):
-        # TODO- IT WORKS BUT SEEMS SKETCHY. NEEDS TO BE TESTED. I THOUGHT SINCE THE SUBTITLE MODAL
-        # WAS ALREADY OPENT THA OPENING IT AGAIN WITH SUBTITLES_BUTTON.CLICK() WAS GOING TO CAUSE A
-        # PROBLEM. INVESTIGATE
+        """ add english subtitles to a show"""
         self.wake_up_if_idle()
         self.open_subtitle_menu_if_not_open()
+
         english = self.driver.find_element(*self.ENGLISH_SUBTITLE_BUTTON)
         english.click()
 
     def get_current_audio(self):
         """ return a str that represents the current audio language """
-        # NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description
         self.wake_up_idle_player()
         self.open_subtitle_menu_if_not_open()
 
@@ -381,35 +385,38 @@ class VideoPage(pagemodels.basepage.BasePage):
         return currently_selected_audio.text
 
     def change_audio_to_english_original(self):
-        """NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description] and
-        English[Original] . For the sake of consistency, this test suite will only focus on english
-        only shows until refactored for other languages.
-        """
+        """ Change the audio to english """
+        # NOTE- THERE IS A DIFFERENCE BETWEEN English audio and English[Audio Description] and
+        # English[Original].
         self.wake_up_idle_player()
         self.open_subtitle_menu_if_not_open()
+
         english_audio_button = self.driver.find_element(*self.ENGLISH_AUDIO_BUTTON)
         english_audio_button.click()
+
+        # Subtitle Menu doesnt close until the user moves the mouse outside of the menu
+        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+        action = ActionChains(self.driver)
+        action.move_to_element(video_player_container).perform()  # move the cursor to the center
+
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.invisibility_of_element_located(self.ENGLISH_AUDIO_BUTTON))
 
     def change_audio_to_spanish(self):
         """spoken language != subtitles. This function changes the verbal language to spanish"""
         self.wake_up_if_idle()
         self.open_subtitle_menu_if_not_open()
+
         spanish_audio_button = self.driver.find_element(*self.SPANISH_AUDIO_BUTTON)
         spanish_audio_button.click()
 
-    # def change_audio_to_original_language(self):
-        # for li in ul:
-        #     if 'original' in li.text:
-        #         li.click()
+        # Subtitle Menu doesnt close until the user moves the mouse outside of the menu
+        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+        action = ActionChains(self.driver)
+        action.move_to_element(video_player_container).perform()  # move the cursor to the center
 
-    # def change_spoken_language(driver , language):
-    #     """ going to add this to the "nice to have" category. Not pressing."""
-    #     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken
-    #     language to that language"""
-    #     pass
-
-    # def change_all_settings(**KWARGS):
-    #     """ a super function that takes in a list of options and performs them"""
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.invisibility_of_element_located(self.SPANISH_AUDIO_BUTTON))
 
     # SKIP FUNCTIONS
     def skip_backward(self):
@@ -479,17 +486,21 @@ class VideoPage(pagemodels.basepage.BasePage):
         """
         INPUT:
         percentage_left: float     e.g. .5 for 50%, .25 for 25%, .1 for 10%
-        NOTE- NETFLIX CALLS THIS THE SCRUBBER?
-        THIS IS THE BIG ONE. THE HARD PROBLEM.
         NOTE- Even If I could change the position by editing the html, thats not really testing the
         functionality of the slider. I need to use mouse locations to mimic user behavior
         """
         self.wake_up_if_idle()
         time_scrubber_bar = self.driver.find_element(*self.TIME_SCRUBBER_BAR)
+
         action = ActionChains(self.driver)
         action.move_to_element_with_offset(
             time_scrubber_bar, time_scrubber_bar.size['width']*percentage_left, 0).perform()
         action.click().perform()
+
+        #
+        video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
+        action2 = ActionChains(self.driver)
+        action2.move_to_element(video_player_container).perform()  # move the cursor to the center
 
     def change_to_exact_time(self, hours, minutes, seconds):
         """ User provides a time in the movie they want to navigate to
@@ -514,6 +525,18 @@ class VideoPage(pagemodels.basepage.BasePage):
         print(exact_time_as_percentage)
         self.change_to_percentage_time(exact_time_as_percentage)
 
+    # BACK FUNCTIONS
+    def go_back_to_shows(self):
+        """ use the back button located inside of the player to return to the previous show list"""
+        self.wake_up_if_idle()
+        back_button = self.driver.find_element(*self.BACK_BUTTON)
+        back_button.click()
+
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.HOME_BUTTON))
+    ##################################################################################
+    # FUCNTIONS THAT DIDNT MAKE THE FIRST CUT
+
     # REPORT FUNCTIONS
     # def report_issue(self):
     #     """ It was once considered to add the ability to automate the process of reporting issues
@@ -521,12 +544,19 @@ class VideoPage(pagemodels.basepage.BasePage):
     #     led to this function being scrapped """
     #     pass
 
-    # BACK FUNCTIONS
-    def go_back_to_shows(self):
-        """ use the back button located inside of the player to return to the previous show list"""
-        self.wake_up_if_idle()
-        back_button = self.driver.find_element(*self.BACK_BUTTON)
-        back_button.click()
+    # def change_audio_to_original_language(self):
+    # for li in ul:
+    #     if 'original' in li.text:
+    #         li.click()
+
+    # def change_spoken_language(driver , language):
+    #     """ going to add this to the "nice to have" category. Not pressing."""
+    #     """ TODO- GENERALIZATION FUCNTION takes in language: str and changes the spoken
+    #     language to that language"""
+    #     pass
+
+    # def change_all_settings(**KWARGS):
+    #     """ a super function that takes in a list of options and performs them"""
 
     # CREDITS FUCNTIONS
     # def view_credits(self):

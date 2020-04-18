@@ -15,10 +15,16 @@ class HeaderPageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ launch the webdriver and login. See tests.pickled.login for more"""
-        cls.driver = browserconfig.driver_runner(
-            executable_path=browserconfig.driver_path,
-            desired_capabilities=browserconfig.capabilities
-        )
+        if browserconfig.current_browser in ['chrome', 'firefox']:
+            cls.driver = browserconfig.driver_runner(
+                executable_path=browserconfig.driver_path,
+                desired_capabilities=browserconfig.capabilities
+            )
+        elif browserconfig.current_browser == 'edge':
+            cls.driver = browserconfig.driver_runner(
+                executable_path=browserconfig.driver_path,
+                desired_capabilities=browserconfig.capabilities  
+            )
         tests.pickledlogin.pickled_login(cls.driver)
 
     @classmethod
