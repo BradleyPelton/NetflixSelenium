@@ -23,14 +23,14 @@ current_browser = 'chrome'
 #########################################################################
 
 if current_browser == 'chrome':
-    driver_path = secrets.chromedriver_path
+    driver_path = secrets.MY_CHOMEDRIVER_PATH
     driver_runner = webdriver.Chrome
 elif current_browser == 'firefox':
-    driver_path = secrets.geckodriver_path
+    driver_path = secrets.MY_GECKODRIVER_PATH
     driver_runner = webdriver.Firefox
     # BUG TODO- VIDEO WONT PLAY FOR FIREFOX. I've tried signing in, drm toggle on/off
 elif current_browser == 'edge':
-    driver_path = secrets.msedgedriver_path
+    driver_path = secrets.MY_MSEDGEDRIVER_PATH
     driver_runner = webdriver.Edge
     # TODO- NICE TO HAVE- squelch warnings in edge
 elif current_browser == 'safari':

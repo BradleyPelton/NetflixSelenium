@@ -11,6 +11,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 from pagemodels.basepage import BasePage
+import browserconfig
 import secrets
 import pagemodels.showtoolspage
 import tests.pickledlogin
@@ -22,43 +23,47 @@ import tests.pickledlogin
 # 'div.slider-item > div > div > a.slider-refocus'
 
 # # # DELETE ME
-# chromedriver_path = secrets.chromedriver_path
-# driver = webdriver.Chrome(executable_path=chromedriver_path)
-# tests.pickledlogin.pickled_login(driver)
+driver = browserconfig.driver_runner(
+    executable_path=browserconfig.driver_path,
+    desired_capabilities=browserconfig.capabilities
+)
+tests.pickledlogin.pickled_login(driver)
 
-# a = HomePage(driver)
-# b = ShowToolsPage(driver)
+a = HomePage(driver)
+b = ShowToolsPage(driver)
 
-# que = a.get_queue_row()
-# first_show = a.get_first_show_in_row(que)
-# print(first_show.text)
+que = a.get_queue_row()
+first_show = a.get_first_show_in_row(que)
+print(first_show.text)
 
-# gen_rows = a.get_genre_rows()
-# first_row = gen_rows[0]
-# first_show = a.get_first_show_in_row(first_row)
-# print(first_show.text)
+gen_rows = a.get_genre_rows()
+first_row = gen_rows[0]
+first_show = a.get_first_show_in_row(first_row)
+print(first_show.text)
 
-# b.mouse_over_show_element(first_show)
-# b.show_is_being_previewed()
-# b.mouse_over_show_if_not_moused_over(first_show)
-# b.is_upvoted_from_jawbone(first_show)
-# b.is_downvoted_from_jawbone(first_show)
-# b.upvote_from_jawbone(first_show)
-# b.close_jawbone()
-# b.downvote_from_jawbone(first_show)
-# b.remove_downvote_or_upvote_from_jawbone(first_show)
+genre_shows = a.get_currently_displayed_in_row(first_row)
 
-# COOL HIGHLIST FUCNTION FOR DEBUGGING
-# def highlight(element):
-#     """Highlights (blinks) a Selenium Webdriver element"""
-#     driver = element._parent
-#     def apply_style(s):
-#         driver.execute_script("arguments[0].setAttribute('style', arguments[1]);",
-#                               element, s)
-#     original_style = element.get_attribute('style')
-#     apply_style("background: yellow; border: 2px solid red;")
-#     time.sleep(.3)
-#     apply_style(original_style)
+# BOB CONTAINER
+b.mouse_over_show_element(first_show)
+b.show_is_being_previewed()
+b.mouse_over_show_if_not_moused_over(first_show)
+
+
+# JAWBONE
+#general
+b.open_jawbone_if_not_open(first_show)
+b.close_jawbone()
+# upvote/down
+b.is_upvoted_from_jawbone(first_show)
+b.is_downvoted_from_jawbone(first_show)
+b.upvote_from_jawbone(first_show)
+b.downvote_from_jawbone(first_show)
+b.remove_downvote_or_upvote_from_jawbone(first_show)
+# my list
+b.is_in_my_list_from_jawbone(first_show)
+b.add_show_to_my_list_from_jawbone(first_show)
+b.remove_show_from_my_list_from_jawbone(first_show)
+
 
 class HomePage(BasePage):
     def __init__(self, driver):
@@ -96,12 +101,14 @@ class HomePage(BasePage):
 
     # ROW OPERATIONS
     def get_queue_row(self):
-        """ TODO- UNTESTED"""
         q_row = self.driver.find_element(*self.QUEUE_ROW)
         return q_row
 
     def get_genre_rows(self) -> list:
-        """ TODO- UNTESTED"""
+        # the first paint doesnt include a genre row, need to wait for one to load
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.presence_of_element_located(self.GENRE_ROWS))
+
         all_genre_rows = self.driver.find_elements(*self.GENRE_ROWS)
         return all_genre_rows
 
@@ -183,17 +190,29 @@ class HomePage(BasePage):
 
     def row_page_right(self, row_element):
         """take in the row_element and click the chevron right to see the next page of shows"""
+        first_show = self.get_first_show_in_row(row_element)  # grabbing a show to facilitate wait
+
         right_chevron = row_element.find_element(*self.RIGHT_CHEVRON)
         right_chevron.click()
-        # BUG- SOMETIMES I CANT PAGE RIGHT. ElementClickInterceptedException
+
+        # waiting for the row to change by waiting for the staleness of the first show in the row
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.staleness_of(first_show))
 
     def row_page_left(self, row_element):
-        """take in the row_element and click the chevron left to see the previous page of shows.
-        LEFTDOESNT EXIST FOR SOME ROWS UNTIL RIGHT IS CLICKED ONCE (and thus there is something to
-        go left)
-        """
-        left_chevron = row_element.find_element(*self.LEFT_CHEVRON)
-        left_chevron.click()
+        """take in the row_element and click the chevron left to see the previous page of shows."""
+        # LEFT DOESNT EXIST FOR SOME ROWS UNTIL RIGHT IS CLICKED ONCE (and thus there is something
+        # to go left)
+        first_show = self.get_first_show_in_row(row_element)  # grabbing a show to facilitate wait
+        try:
+            left_chevron = row_element.find_element(*self.LEFT_CHEVRON)
+            left_chevron.click()
+        except NoSuchElementException:
+            print("row_page_left couldnt find left chevron. Did you row_page_right first?")
+        
+        # waiting for the row to change by waiting for the staleness of the first show in the row
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.staleness_of(first_show))
 
     def get_recommended_genres(self) -> list:
         """TODO """
@@ -237,31 +256,26 @@ class HomePage(BasePage):
                 time.sleep(1)  # Sloppy work to use SLEEP TODO- CLEAN
         return final_show_titles_list
 
-    def get_first_show_in_row(self, row_element):
-        """ return a show_element. NOTE- SHOW ELEMENTS ARE JUST AS SPECIAL AS ROW_ELEMNTS. THIS
-        TEST SUITE CONSIDERS THE TWO TO BE FUNDAMENTAL. THUS THE SHOW_ELEMENT MUST FIT THE
-        STANDARDS, i.e. show = driver.find_elements_by_css_selector('a[class="slider-refocus"]')
-        """
-        # TODO- NOTE- TODO
-
-        return self.get_currently_displayed_in_row(row_element)[0]
-
     def get_currently_displayed_in_row(self, row_element):
-        """ return a list of show elements THAT ARE ACTIVELY DISPLAYED IN ROW. BY ACTIVEL DISPLAYED
-        I MEAN VISIBLE TO THE NAKED EYE"""
-
+        """ return a list of show elements THAT ARE ACTIVELY DISPLAYED IN ROW. ACTIVELY DISPLAYED
+        IMPLIES VISIBLE TO THE NAKED EYE"""
         slider_items = row_element.find_elements_by_css_selector('div.slider-item')
         # print(f"found {len(slider_items)} slider items")
         currently_displayed_shows = []  # LIST OF SHOW_ELEMENTS, NOT TITLES
 
         for item in slider_items:
             try:
-                temp = item.find_element_by_css_selector('div > div > div > a')
-                # print(temp.get_attribute('aria-hidden'))
-                if temp.get_attribute('aria-hidden') == 'false':
-                    # CAN NOT JUST ADD TEMP TO A LIST. NEED TO CONFORM TO SHOW_ELEMENT OBJECT
+                show_a_tag = item.find_element_by_css_selector('div > div > div > a')
+                # print(show_a_tag.get_attribute('aria-hidden'))
+                if show_a_tag.get_attribute('aria-hidden') == 'false':
+                    # CAN NOT JUST ADD show_a_tag TO A LIST. NEED TO CONFORM TO SHOW_ELEMENT OBJECT
                     new_show_element = item.find_element(*self.SHOW_ELEMENTS)
                     currently_displayed_shows.append(new_show_element)
             except NoSuchElementException:
                 continue
         return currently_displayed_shows
+
+    def get_first_show_in_row(self, row_element):
+        """ return the first SHOW_ELEMENT , in proper format, in the row row_element"""
+        return self.get_currently_displayed_in_row(row_element)[0]
+

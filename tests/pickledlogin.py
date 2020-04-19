@@ -40,7 +40,7 @@ def pickled_login(driver):
 
         driver.delete_all_cookies()  # precaution in case anything is stored before we start
 
-        driver.get('https://netflix.com')
+        driver.get('https://netflix.com/login')
 
         if browser_settings['last_updated'] == datetime.date.today():
             # add all of the cookies from the previous login

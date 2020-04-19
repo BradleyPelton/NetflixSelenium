@@ -6,7 +6,7 @@ add more functionality for users(e.g. advanced searching)
 - "I HAVE NO IDEA WHAT IM LOOKING AT." Watch [gif of test execution](https://gyazo.com/37be44a9993676c4161adff157960e45) then
 checkout [VideoPage tests](https://github.com/BradleyPelton/NetflixSelenium/blob/master/tests/test_videopage.py), it contains very straightforward tests(mute, pause, add subtitles, etc.).
 - This test suite is organized in a Page-Object-Model(POM) design pattern. TLDR: tests contain the 
-test logic (asserts, etc.), and Page objects [pagemodels](https://github.com/BradleyPelton/NetflixSelenium/tree/master/pagemodels) hold the logic for interacting with the page (click 'x' button, etc.).
+test logic (asserts, etc.), and Page objects [pagemodels](https://github.com/BradleyPelton/NetflixSelenium/tree/master/pagemodels) hold the logic for interacting with the page (e.g. press_play_buttonn).
 - The POM design pattern is most the verbose(and the most complex) to write, but is the easiest to 
 maintain in both speed and complexity. See [selenium.dev/POM](https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/)
 
@@ -49,4 +49,4 @@ Please kindly email me if you have any questions or concerns bradleypelton@gmail
 ## Acknowledgements
 - First and foremost to Netflix for creating a beautiful UI. The UI is opitimized for screen-readers
 which also makes it heaven for locating elements. Almost every element has a human-readable data-uia
-- Shoutout to the helpful devs on the Selenium Slack/IRC channel (see (slack.com/selenium)[https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y])
+- Shoutout to the helpful devs on the Selenium Slack/IRC channel ,see (slack.com/selenium)[https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y]

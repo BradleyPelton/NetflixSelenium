@@ -69,8 +69,7 @@ class ShowToolsPage(BasePage):
         self.BOB_PLAY_HITZONE = (By.CSS_SELECTOR, 'div.bob-play-hitzone')
         self.BOB_PLAY_BUTTON = (By.CSS_SELECTOR, 'div.bob-overview a[data-uia="play-button"]')
         self.BOB_JAWBONE_HITZONE = (By.CSS_SELECTOR, 'div.bob-overlay > a.bob-jaw-hitzone')
-        self.BOB_ALREADY_UPVOTED_BUTTON = (
-            By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs up (click to remove rating)"]')
+        self.BOB_ALREADY_UPVOTED_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs up\ (click to remove rating)"]')
         self.BOB_ALREADY_DOWNVOTED_BUTTON = (
             By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs down (click to remove rating)"]')
         self.BOB_UPVOTE_BUTTON = (
@@ -105,13 +104,16 @@ class ShowToolsPage(BasePage):
 
     def close_jawbone(self):
         """ close any open jawbone """
-        # TODO- UNTESTED
         if self.is_jawbone_open():
             print("attempting to close jawbone")
             jawbone_close_button = self.driver.find_element(*self.JAWBONE_CLOSE_BUTTON)
             jawbone_close_button.click()
         else:
             raise KeyError("CLOSE JAWBONE WAS CALLED WHEN JAWBONE WASNT OPEN")
+
+        # wait for the jawbone to close
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.invisibility_of_element(self.JAWBONE_CLOSE_BUTTON))
 
     def is_in_my_list_from_jawbone(self, show_element) -> bool:
         """ RETURNS TRUE IF SHOW IS ALREADY IN My-List, FALSE IF ELSE"""
@@ -128,31 +130,40 @@ class ShowToolsPage(BasePage):
         self.open_jawbone_if_not_open(show_element)
 
         my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
+        span_my_list_button_not_added = my_list_button.find_element_by_css_selector(
+            'span.nf-flat-button-icon.nf-flat-button-icon-mylist-add'
+        )
+        # TODO- save the locator once this has been tested
+
         my_list_button.click()
-        # add_to_my_list_button = self.driver.find_element_by_css_selector(
-        # 'a[aria-label="Add To My List"] > span'
-        # )
-        # add_to_my_list_button.click()
-        # if self.is_in_my_list_from_jawbone(show_element):
-        #     print("SHOW IS ALREADY IN YOUR LIST, NOT EXECUTING add_show_to_my_list_from_jawbone")
-        # else:
-        #     my_list_button.click()
+
+        # # wait for my the span below my_list_button to no longer have the class 'add' to my list
+        # ideally we would just wait until my_list_button.attribute[data-uia] is not "add my list"
+        # but that doesnt exist, so we have to make due with observing the span below
+        wait = WebDriverWait(self.driver, 10)
+        wait.until_not(EC.invisibility_of_element_located(span_my_list_button_not_added))
 
     def remove_show_from_my_list_from_jawbone(self, show_element):
         self.open_jawbone_if_not_open(show_element)
 
         my_list_button = self.driver.find_element(*self.MY_LIST_BUTTON)
+        span_my_list_button_already_added = my_list_button.find_element_by_css_selector(
+            'span.nf-flat-button-icon.nf-flat-button-icon-mylist-added'
+        )
+        # TODO- save the locator once this has been tested
 
         if self.is_in_my_list_from_jawbone(show_element):
             my_list_button.click()
         else:
             print("SHOW ISNT IN YOUR LIST, NOT EXECUTING remove_show_from_my_list_from_jawbone ")
 
+        # # wait for my the span below my_list_button to no longer have the class 'added' mylist
+        wait = WebDriverWait(self.driver, 10)
+        wait.until_not(EC.invisibility_of_element_located(span_my_list_button_already_added))
+
     def play_show_from_jawbone(self, show_element):
         """ Plays the show passed in as the parameter show_element """
-        """ NOT TESTED, TODO- TEST """
         self.open_jawbone_if_not_open(show_element)
-        time.sleep(3)
         try:
             jawbone_play_button = self.driver.find_element(*self.JAWBONE_PLAY_BUTTON)
             jawbone_play_button.click()
@@ -161,6 +172,10 @@ class ShowToolsPage(BasePage):
                 'div.jawbone-actions > a[aria-label="Next Episode"] > span'
             )
             next_episode_button.click()
+
+        # wait for the show to play by observing the url changing to the Akira Player
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.url_contains('https://www.netflix.com/watch/'))
 
     # def is_show(self, show_element):
     #     """ not sure about needed this function or not. Leaving it here just in case"""
@@ -327,7 +342,6 @@ class ShowToolsPage(BasePage):
         """upvote if not already upvoted, pass if already upvoted
             weird edge cases: the upvote button disappears when a show is downvoted"""
         self.open_jawbone_if_not_open(show_element)
-        time.sleep(3)
         if self.is_upvoted_from_jawbone(show_element):
             print("already upvoted, upvote_from_jawbone is not doing anything")
         elif self.is_downvoted_from_jawbone(show_element):
@@ -339,6 +353,10 @@ class ShowToolsPage(BasePage):
         else:
             upvote_button = self.driver.find_element(*self.UPVOTE_BUTTON)
             upvote_button.click()
+
+        # wait for the big upvote button to appear, signaling the upvote has processed
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)))
 
     def downvote_from_jawbone(self, show_element):
         """weird edge cases: the upvote button disappears when a show is downvoted"""
@@ -355,6 +373,10 @@ class ShowToolsPage(BasePage):
             downvote_button = self.driver.find_element(*self.DOWNVOTE_BUTTON)
             downvote_button.click()
 
+        # wait for the big downvote button to appear, signaling the downvote has been processed
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
+
     def remove_downvote_or_upvote_from_jawbone(self, show_element):
         """ a cleanup function used to return the state of the show before test execution"""
         self.open_jawbone_if_not_open(show_element)
@@ -364,11 +386,21 @@ class ShowToolsPage(BasePage):
             already_downvoted_big_downvoted_button = self.driver.find_element(
                 *self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)
             already_downvoted_big_downvoted_button.click()
+
+            # wait for the big downvote button to disappear
+            wait = WebDriverWait(self.driver, 10)
+            wait.until(EC.invisibility_of_element_located(
+                (self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
         elif self.is_upvoted_from_jawbone(show_element):
             print("remove vote jawbone found an upvoted show")
             already_upvoted_big_upvote_button = self.driver.find_element(
                 *self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)
             already_upvoted_big_upvote_button.click()
+
+            # wait for the big upvote button to disappear
+            wait = WebDriverWait(self.driver, 10)
+            wait.until(EC.invisibility_of_element_located(
+                (self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)))
         else:
             print("remove vote jawbone COULDNT FIND UPVOTED OR DOWNVOTED")
 
@@ -383,6 +415,7 @@ class ShowToolsPage(BasePage):
         """ Mouse over a show_element to force the bob-container to open """
         action = ActionChains(self.driver)
         action.move_to_element(show_element).perform()
+
         # Wait for BOB CONTAINER to open
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located((self.BOB_PLAY_HITZONE)))
@@ -390,8 +423,7 @@ class ShowToolsPage(BasePage):
     def show_is_being_previewed(self):
         """ RETURN TRUE IF THERE IS A SHOW THAT IS CURRENTLY BEING MOUSED OVER. NOT TO BE CONFUSED
         WITH JAWBONE OPEN. EQUIVALENT TO is_bob_container_open() if it existed"""
-        """NOTE- only one show can be previewed at a time so its valid just to search the entire
-        dom"""
+        # NOTE- only one show can be previewed at a time so its valid just to search the entire dom
         try:
             self.driver.find_element(*self.BOB_PLAY_BUTTON)
             return True
@@ -419,8 +451,12 @@ class ShowToolsPage(BasePage):
         bob_play_hitzone = self.driver.find_element(*self.BOB_PLAY_HITZONE)
         bob_play_hitzone.click()
 
+        # wait for the show to play by observing the url changing
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.url_contains('https://www.netflix.com/watch/'))
+
     # BOB MY-LIST FUCNTIONS
-    def show_is_in_my_list_from_show_preview(self, show_element):
+    def is_in_my_list_from_show_preview(self, show_element):
         """ """
         self.mouse_over_show_if_not_moused_over(show_element)
         bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
@@ -441,20 +477,23 @@ class ShowToolsPage(BasePage):
     def add_show_to_my_list_from_show_preview(self, show_element):
         """ add show to my list using the bob container. If show already in my list, do nothing"""
         self.mouse_over_show_if_not_moused_over(show_element)
-        if self.show_is_in_my_list_from_show_preview(show_element):
+        if self.is_in_my_list_from_show_preview(show_element):
             print("show already in my list, add_show_to_my_list_from_show_preview not executing")
         else:
             bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
             bob_my_list_button.click()
 
+        # TODO- NEED A EXPLICIT WAIT HERE
+
     def remove_show_from_my_list_from_show_preview(self, show_element):
         """ """
         self.mouse_over_show_if_not_moused_over(show_element)
-        if not self.show_is_in_my_list_from_show_preview(show_element):
+        if not self.is_in_my_list_from_show_preview(show_element):
             print("show not in mylistalready, remove_show_from_my_list_from_show_preview not exe")
         else:
             bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
             bob_my_list_button.click()
+        # TODO- NEED A EXPLICIT WAIT HERE
 
     # BOB UPVOTE/DOWNVOTE FUCNTIONS
     def is_upvoted_from_show_preview(self, show_element):
@@ -480,17 +519,23 @@ class ShowToolsPage(BasePage):
         self.mouse_over_show_if_not_moused_over(show_element)
         if self.is_upvoted_from_show_preview(show_element):
             print("show is already upvoted, upvote_from_show_preview not executing")
-        elif self.is_upvoted_from_show_preview(show_element):
-            bob_already_upvoted_button = self.driver.find_element(*self.BOB_ALREADY_UPVOTED_BUTTON)
-            bob_already_upvoted_button.click()
+        elif self.is_downvoted_from_show_preview(show_element):
+            bob_already_downoted_button = self.driver.find_element(
+                *self.BOB_ALREADY_DOWNVOTED_BUTTON)
+            bob_already_downoted_button.click()
             # HAVE TO WAIT FOR DOWNVOTE UNCLICK TO PROCESS AND FOR THE UPVOTE BUTTON TO APPEAR
             wait = WebDriverWait(self.driver, 10)
             wait.until(EC.visibility_of_element_located(self.BOB_UPVOTE_BUTTON))
+
             bob_upvote_button = self.driver.find_element(*self.BOB_UPVOTE_BUTTON)
             bob_upvote_button.click()
         else:
             bob_upvote_button = self.driver.find_element(*self.BOB_UPVOTE_BUTTON)
             bob_upvote_button.click()
+
+        # wait for the big upvote button to appear, signaling the upvote has been processed
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_UPVOTED_BUTTON)))
 
     def downvote_from_show_preview(self, show_element):
         """ downvote from preview if not downvoted, else do nothing"""
@@ -503,16 +548,26 @@ class ShowToolsPage(BasePage):
             # HAVE TO WAIT FOR UPVOTE UNCLICK TO PROCESS AND FOR THE DOWNVOTE BUTTON TO APPEAR
             wait = WebDriverWait(self.driver, 10)
             wait.until(EC.visibility_of_element_located(self.BOB_DOWNVOTE_BUTTON))
+
             bob_downvote_button = self.driver.find_element(*self.BOB_DOWNVOTE_BUTTON)
             bob_downvote_button.click()
         else:
             bob_downvote_button = self.driver.find_element(*self.BOB_DOWNVOTE_BUTTON)
             bob_downvote_button.click()
 
+        # wait for the big downvote button to appear, signaling the downvote has been processed
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_DOWNVOTED_BUTTON)))
+
     def remove_upvote_or_downvote_from_show_preview(self):
+        # TODO- Could be handy, I'm already cleaning up the votes from the jawbone which has this
+        # function already
         pass
 
     def get_genre_and_tags_from_show_preview():
         """ the show preview sometimes contains both tags and genres. I need a new function to
         retrieve though """
         pass
+
+
+
