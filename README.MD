@@ -13,7 +13,8 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
 ## Examples/Videos
 - Watch VIDEO TESTS https://gyazo.com/37be44a9993676c4161adff157960e45
 - Watch HOME PAGE TESTS https://gyazo.com/6821682827f79a47ce16e66c34ce2fbb (TODO-REFILM)
-- Watch HEADER TOOLS TESTS https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a 
+- Watch HEADER TOOLS TESTS https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
+- Watch LOGIN TESTS https://gyazo.com/dd49e25639ec1b5c6fcac0ab5251fc4e
 
 # Getting Started
 
@@ -24,6 +25,10 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
     - Google Chrome version 81.0.4044.92, ChromeDriver version 81.0.4044.69
     - Firefox version v75.0, geckodriver-v0.26.0-win64
     - Edge version 81.0.416.53, msedgedriver version: 81.0.409.0
+
+## Constants/Secrets
+- You need to create a `secrets.py` file in the home directory that will hold all of your 
+credentials and paths. In `secrets.py` set the following constant strings `MY_EMAIL, MY_PASSWORD,MY_CHOMEDRIVER_PATH, MY_GECKODRIVER_PATH, MY_MSEDGEDRIVER_PATH`
 
 ## Running the tests
 Tests are executed using the standard unittest framework commands

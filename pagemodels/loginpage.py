@@ -1,15 +1,10 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
 from pagemodels.basepage import BasePage
 
-# TODO STILL NEEDS WORK
-# TEST ISNT FINDING ERROR MESSAGE FOR INCORRECT LOGIN
 
 class LoginPage(BasePage):
     def __init__(self, driver):
@@ -17,10 +12,10 @@ class LoginPage(BasePage):
         # LOCATORS
         self.USERNAME_FIELD = (By.CSS_SELECTOR, 'input[name="userLoginId"]')
         self.PASSWORD_FIELD = (By.CSS_SELECTOR, 'input[name="password"]')
-        self.ERROR_MESSAGE = (By.CSS_SELECTOR, 'div.error-message-container')
-        self.HOME_BUTTON = (By.CSS_SELECTOR, 'a.logo.icon-logoUpdate.active')
+        self.ERROR_MESSAGE = (By.CSS_SELECTOR, 'div[data-uia="error-message-container"]')
         self.INVALID_USERNAME_MESSAGE = (By.CSS_SELECTOR, 'div[data-uia="login-field+error"]')
         self.INVALID_PASSWORD_MESSAGE = (By.CSS_SELECTOR, 'div[data-uia="password-field+error"]')
+        self.HOME_BUTTON = (By.CSS_SELECTOR, 'a.logo.icon-logoUpdate.active')
 
     def user_login(self, username, password):
         """NOT MEANT FOR TESTING. meant to be used by setUpClasses and pickledLogin"""
@@ -31,19 +26,26 @@ class LoginPage(BasePage):
         password_field.send_keys(password)
         password_field.submit()
 
-        # Wait for the login to finish
+        # wait for the login to fail or succeed
+        # Netflix does something interesting here. If you submit invalid credentials, the login
+        # page refreshes. Thus the password_field will always become stale after each login attempt
         wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.visibility_of_element_located(self.HOME_BUTTON))
+        wait.until(EC.staleness_of(password_field))
 
     def fake_login(self, username, password):
-        """ login that is expected to fail. Works exactly the same as user_login and will even
-        successfully login if passed correct credentials. Splitting the two for sanity's sake"""
+        """ identical to the "real login" user_login, but kept seperate for clarity's sake """
         username_field = self.driver.find_element(*self.USERNAME_FIELD)
         username_field.send_keys(username)
 
         password_field = self.driver.find_element(*self.PASSWORD_FIELD)
         password_field.send_keys(password)
         password_field.submit()
+
+        # wait for the login to fail or succeed
+        # Netflix does something interesting here. If you submit invalid credentials, the login
+        # page refreshes. Thus the password_field will always become stale after each login attempt
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.staleness_of(password_field))
 
     def login_successful(self):
         """ return true if login failed, false if else"""
@@ -57,7 +59,8 @@ class LoginPage(BasePage):
             self.driver.find_element(*self.HOME_BUTTON)
             return True
         except NoSuchElementException:
-            print("login_successful COULDNT DTERMINE EITHER LOGGED IN OR NOT, SOMETHING BROKE")
+            print("login_successful COULDNT DETERMINE EITHER LOGGED IN OR NOT, SOMETHING BROKE")
+            raise
 
     def is_invalid_password(self):
         """ return true if a the warning is present for an invalid password"""
@@ -76,3 +79,16 @@ class LoginPage(BasePage):
             return True
         except NoSuchElementException:
             return False
+
+    def submit_empty_fields(self):
+        """ identical to the "real login" user_login, but kept seperate for clarity's sake """
+        username_field = self.driver.find_element(*self.USERNAME_FIELD)
+        username_field.send_keys('')
+
+        password_field = self.driver.find_element(*self.PASSWORD_FIELD)
+        password_field.send_keys('')
+        password_field.submit()
+
+        # wait for the invalid username message (it's invalid because it's blank)
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.presence_of_element_located(self.INVALID_USERNAME_MESSAGE))

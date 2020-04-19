@@ -1,7 +1,7 @@
 import unittest
 import time
 
-from selenium import webdriver
+# from selenium import webdriver
 
 import browserconfig
 import pagemodels.homepage
@@ -28,12 +28,15 @@ import tests.pickledlogin
 
 # VIDEO OF EXECUTION
 # https://gyazo.com/6821682827f79a47ce16e66c34ce2fbb
+
+
 class HomePageTests(unittest.TestCase):
     """ tests for the homepage of netflix. AKA netflix.com/browse"""
 
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver and login. See tests.pickledlogin for more"""
+        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)
+         and then login using pickled cookies. (SEE tests/pickledlogin.py)"""
         if browserconfig.current_browser in ['chrome', 'firefox']:
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
@@ -42,7 +45,7 @@ class HomePageTests(unittest.TestCase):
         elif browserconfig.current_browser == 'edge':
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
-                desired_capabilities=browserconfig.capabilities  
+                desired_capabilities=browserconfig.capabilities
             )
         tests.pickledlogin.pickled_login(cls.driver)
 

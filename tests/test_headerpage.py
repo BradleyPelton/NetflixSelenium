@@ -1,7 +1,7 @@
 import unittest
 import time
 
-from selenium import webdriver
+# from selenium import webdriver
 
 import pagemodels.headerpage
 import tests.pickledlogin
@@ -10,11 +10,13 @@ import browserconfig
 # VIDEO OF EXECUTION
 # https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
 
-class HeaderPageTests(unittest.TestCase):
 
+class HeaderPageTests(unittest.TestCase):
+    """ test cases for the use of the header features atop most netflix pages"""
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver and login. See tests.pickled.login for more"""
+        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)
+         and then login using pickled cookies. (SEE tests/pickledlogin.py)"""
         if browserconfig.current_browser in ['chrome', 'firefox']:
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
@@ -23,7 +25,7 @@ class HeaderPageTests(unittest.TestCase):
         elif browserconfig.current_browser == 'edge':
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
-                desired_capabilities=browserconfig.capabilities  
+                desired_capabilities=browserconfig.capabilities
             )
         tests.pickledlogin.pickled_login(cls.driver)
 

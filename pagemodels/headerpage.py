@@ -1,16 +1,16 @@
 import time
 
-from selenium import webdriver
+# from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.action_chains import ActionChains
 
 from pagemodels.basepage import BasePage
-import tests.pickledlogin
-import secrets
+# import tests.pickledlogin
+# import secrets
 
 ###########################################################################################
 ###########################################################################################
@@ -131,5 +131,3 @@ class HeaderPage(BasePage):
     # def click_refer_button(driver):
     #     """ waste of time. adding it here just for completeness"""
     #     pass
-
-

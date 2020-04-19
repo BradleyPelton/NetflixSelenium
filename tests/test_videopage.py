@@ -1,7 +1,7 @@
 import unittest
 import time
 
-from selenium import webdriver
+# from selenium import webdriver
 
 import pagemodels.videopage
 import tests.pickledlogin
@@ -17,7 +17,7 @@ import browserconfig
 # 7.) Time/Duration Tests
 # 8.) Exit Player Tests
 # NICE-TO-HAVES
-# 9.) Keyboard shortcuts TODO- 'f' for fullscreen, 'm' for mute
+# 9.) Keyboard shortcuts TODO- 'f' for fullscreen, 'm' for mute, etc.
 
 
 # HELP
@@ -53,7 +53,7 @@ class VideoPageTests(unittest.TestCase):
         cls.driver.quit()
 
     def setUp(self):
-        """ load some random movie, Avengers: Infinity War """
+        """load some random movie, Avengers: Infinity War in this instance"""
         self.driver.get('https://www.netflix.com/watch/80219127?trackId=200254290&tctx=0%2C0%2C3f\
             74b4eb-86f6-4d9d-bb35-a72282cd263c-76893314%2C311384eb-a55b-41d5-bb93-deb09b53bebb_32\
             36856X6XX1587128751673%2C311384eb-a55b-41d5-bb93-deb09b53bebb_ROOT')
@@ -62,7 +62,7 @@ class VideoPageTests(unittest.TestCase):
 
     # PAUSE TESTS
     def test_pause_from_unpaused_state(self):
-        """ from an unpaused state, pause the player"""
+        """from an unpaused state, pause the player"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         self.assertFalse(
@@ -137,7 +137,7 @@ class VideoPageTests(unittest.TestCase):
 
     # VOLUME TESTS
     def test_cut_volume_in_half(self):
-        """ whatever the current volume is, cut it in half using the volume slider"""
+        """whatever the current volume is, cut it in half using the volume slider"""
         # There is a lot going on under the hood with .get_current_volume() and
         # .change_volume_using_percentage() . check out /pagemodels/videopage.py
         video_page = pagemodels.videopage.VideoPage(self.driver)
@@ -154,7 +154,7 @@ class VideoPageTests(unittest.TestCase):
         video_page.change_volume_using_percentage(.5)
 
     def test_double_volume(self):
-        """ double the current volume (upper limit 100%) using the volume slider"""
+        """double the current volume (upper limit 100%) using the volume slider"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_volume = video_page.get_current_volume()  # float
@@ -169,7 +169,7 @@ class VideoPageTests(unittest.TestCase):
         self.assertAlmostEqual(new_volume, target_volume, delta=0.02)
 
     def test_set_volume_to_33_percent(self):
-        """ set the current volume to 33 percent using the volume slider"""
+        """set the current volume to 33 percent using the volume slider"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_volume_using_percentage(.33)
@@ -179,7 +179,7 @@ class VideoPageTests(unittest.TestCase):
 
     # FULLSCREEN TESTS
     def test_full_screen_from_normal_screen_state(self):
-        """ from a normal_screen state, go full screen"""
+        """from a normal_screen state, go full screen"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
         self.assertFalse(
             video_page.player_is_full_screen(),
@@ -190,7 +190,7 @@ class VideoPageTests(unittest.TestCase):
             msg="full screen_from_normal_screen failed to make the player go full screen")
 
     def test_normal_screen_from_full_screen_state(self):
-        """ from a full screen state, go normal screen"""
+        """from a full screen state, go normal screen"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
         video_page.make_full_screen()
         self.assertTrue(
@@ -236,7 +236,7 @@ class VideoPageTests(unittest.TestCase):
             msg="remove_subtitles_from_subtitle_state failed to remove subtitles ")
 
     def test_change_audio_to_spanish_from_english_state(self):
-        """ from english audio state, change to spanish audio"""
+        """from english audio state, change to spanish audio"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
         # DEFAULT STATE IS ALWAYS ENGLISH
         current_audio = video_page.get_current_audio()
@@ -258,7 +258,7 @@ class VideoPageTests(unittest.TestCase):
         video_page.change_audio_to_english_original()
 
     def test_change_audio_to_english_from_spanish_state(self):
-        """ from spanish audio state, change to english audio"""
+        """from spanish audio state, change to english audio"""
         # ENGLISH ORIGINAL NOT ENGLISH. DOESNT WORK ON NON ENGLISH ORIGINAL SHOWS
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
@@ -281,7 +281,7 @@ class VideoPageTests(unittest.TestCase):
 
     # SKIP FORWARD/BACKWARD TESTS
     def test_skip_forward_30_seconds(self):
-        """ using the skip forwad button, skip forwad 30 seconds"""
+        """using the skip forwad button, skip forwad 30 seconds"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_time = video_page.get_remaining_time_in_seconds()
@@ -296,7 +296,7 @@ class VideoPageTests(unittest.TestCase):
         self.assertAlmostEqual(current_time + 30, new_time, delta=5)
 
     def test_skip_back_30_seconds(self):
-        """ using the skip back button, skip back 30 seconds"""
+        """using the skip back button, skip back 30 seconds"""
         # skipping back at 0:00 will cause the test to fail even though the act of skippin
         # back three times will not fail
         video_page = pagemodels.videopage.VideoPage(self.driver)
@@ -318,7 +318,7 @@ class VideoPageTests(unittest.TestCase):
 
 #     # TIME/DURATION TESTS
     def test_go_to_halfway_point(self):
-        """ go to the halfway point in the show/movie using the duration slider"""
+        """go to the halfway point in the show/movie using the duration slider"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_to_percentage_time(.5)
@@ -348,7 +348,7 @@ class VideoPageTests(unittest.TestCase):
     #     current_remaining_time = video_page.get_remaining_time_in_seconds()
 
     def test_restart_show(self):
-        """ restart a show by setting the percentage_time to 0"""
+        """restart a show by setting the percentage_time to 0"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         video_page.change_to_percentage_time(0)
@@ -364,7 +364,7 @@ class VideoPageTests(unittest.TestCase):
 
     # EXIT PLAYER TESTS
     def test_exit_player(self):
-        "exit the player by clicking the built-in back arrow button"
+        """exit the player by clicking the built-in back arrow button"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
         video_page.go_back_to_shows()
 

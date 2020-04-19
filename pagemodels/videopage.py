@@ -1,16 +1,16 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 
 import pagemodels.basepage
-import tests.pickledlogin
-import secrets
-import browserconfig
+# import tests.pickledlogin
+# import secrets
+# import browserconfig
 
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
@@ -42,10 +42,7 @@ import browserconfig
 # 7.) Time/Duration functions
 # 8.) Exit Player functions
 
-
-
-
-# # # # # DELETE ME
+# DELETE ME
 #         cls.driver = browserconfig.driver_runner(
 #             executable_path=browserconfig.driver_path,
 #             desired_capabilities=browserconfig.capabilities
@@ -74,27 +71,29 @@ class VideoPage(pagemodels.basepage.BasePage):
         self.FULL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Full screen"]')
         self.NORMAL_SCREEN_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Exit full screen"]')
         self.MUTED_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Muted"]')
-
         self.VOLUME_CONTAINER = (By.CSS_SELECTOR, 'div[data-uia="volume-container"] > button')
         self.VOLUME_SLIDER_CONTAINER = (By.CSS_SELECTOR, 'div.slider-container')
         self.VOLUME_SLIDER = (By.CSS_SELECTOR, 'div.slider-bar-percentage')
         self.VOLUME_S = (By.CSS_SELECTOR, 'div.slider-bar-container')
         self.VOLUME_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Volume"]')
-
         self.SEEK_BACK_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Back"]')
         self.SEEK_FORWARD_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Seek Forward"]')
         self.TIME_REMAINING = (By.CSS_SELECTOR, 'time.time-remaining__time')
         self.TIME_SCRUBBER = (By.CSS_SELECTOR, 'div[aria-label="Seek time scrubber"]')
         self.TIME_SCRUBBER_BAR = (By.CSS_SELECTOR, 'div.scrubber-bar')
         self.SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Audio & Subtitles"]')
-        self.CURRENT_SUBTITLE_IS_OFF = (By.CSS_SELECTOR, 'li.track.selected[data-uia="track-subtitle-Off"]')
+        self.CURRENT_SUBTITLE_IS_OFF = (
+            By.CSS_SELECTOR, 'li.track.selected[data-uia="track-subtitle-Off"]')
         self.SUBTITLE_OFF_BUTTON = (By.CSS_SELECTOR, 'li.track[data-uia="track-subtitle-Off"]')
-        self.CURRENT_AUDIO = (By.CSS_SELECTOR, 'div.track-list.structural.track-list-audio > ul > li.track.selected')
+        self.CURRENT_AUDIO = (
+            By.CSS_SELECTOR, 'div.track-list.structural.track-list-audio > ul > li.track.selected')
         self.ENGLISH_SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-subtitle-English"]')
         self.SPANISH_SUBTITLE_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-subtitle-Spanish"]')
         self.SPANISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-Spanish"]')
-        self.ENGLISH_AUDIO_BUTTON = (By.CSS_SELECTOR, 'li[data-uia="track-audio-English [Original]"]')
-        self.SUBTITLE_LANGUAGE_LIST = (By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')
+        self.ENGLISH_AUDIO_BUTTON = (
+            By.CSS_SELECTOR, 'li[data-uia="track-audio-English [Original]"]')
+        self.SUBTITLE_LANGUAGE_LIST = (
+            By.CSS_SELECTOR, 'div.track-list.structural.track-list-subtitles')
 
         self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
 
@@ -588,5 +587,3 @@ class VideoPage(pagemodels.basepage.BasePage):
     #     pass
     # def skip_recap(driver):
         # """very similar to skip_intro but with the "Skip Recap" button. See '7 deadly sins'"""
-
-

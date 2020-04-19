@@ -4,15 +4,15 @@
 secrets.py
 
 ### python-auto-generated files
-debug.log
 *.log
+__pycache__
 __pycache__/
 /__pycache__
 /__pycache__/
-__pycache__
+debug.log
 /debug.log
 debug.log/
-debug.log
+/debug.log/
 
 ### COPY-PASTE GITIGNORE
 # Byte-compiled / optimized / DLL files

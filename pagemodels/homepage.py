@@ -165,13 +165,14 @@ class HomePage(BasePage):
     #######################################################################################
 
     def get_row_titles_from_row_list(self, row_list: list) -> list:
-        """ 
+        """
             TODO-INTENDED FOR A LIST OF ROWS, NOW A SINGLE ROW
         INPUT: list of WEBELEMENTS of row elements (div.lolomoRow.lolomoRow_title_card)
             OUTPUT: THE LIST OF TITLES FOR THOSE ROW ELEMENTS
         """
         # THIS FUNC
-        # BUG- TODO- for some reason, get_becauseYouAdded_rows have the title stored in a span.rowTitle
+        # BUG- TODO- for some reason, get_becauseYouAdded_rows have the title stored in
+        # a span.rowTitle
         # instead of a.rowTitle.  FIX BUG TODO Investigate other rows
         row_title_list = []
         for row in row_list:
@@ -202,8 +203,8 @@ class HomePage(BasePage):
         for i in range(10):
             self.driver.execute_script("window.scrollTo(0, 10000000)")
             print(i)
-            time.sleep(1) # TODO- SLOPPY TO USE TIME. REFACTOR
-        #
+            time.sleep(1)  # TODO- SLOPPY TO USE TIME. REFACTOR
+
         genre_rows = self.get_genre_rows(self)
         genres = [genre.text for genre in genre_rows]
         return genres
@@ -264,5 +265,3 @@ class HomePage(BasePage):
             except NoSuchElementException:
                 continue
         return currently_displayed_shows
-
-

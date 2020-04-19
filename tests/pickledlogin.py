@@ -51,7 +51,7 @@ def pickled_login(driver):
         else:
             login_page = pagemodels.loginpage.LoginPage(driver)
             login_page.user_login(
-                secrets.bradleys_email, secrets.bradleys_password
+                secrets.MY_EMAIL, secrets.MY_PASSWORD
             )
 
             browser_settings = dict()

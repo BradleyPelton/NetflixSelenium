@@ -40,11 +40,15 @@ class ShowToolsPage(BasePage):
         super().__init__(driver)
 
         # Locators
-        self.JAWBONE_PLAY_BUTTON = (By.CSS_SELECTOR, 'div.jawbone-actions a[data-uia="play-button"] > span')
-        self.JAWBONE_CLOSE_BUTTON = (By.CSS_SELECTOR, 'div.jawBoneContainer.slider-hover-trigger-layer > button[aria-label="Close"]')
+        self.JAWBONE_PLAY_BUTTON = (
+            By.CSS_SELECTOR, 'div.jawbone-actions a[data-uia="play-button"] > span')
+        self.JAWBONE_CLOSE_BUTTON = (
+            By.CSS_SELECTOR,
+            'div.jawBoneContainer.slider-hover-trigger-layer > button[aria-label="Close"]')
         self.J_CLOSE_2 = (By.CSS_SELECTOR, 'button[aria-label="Close"]')
         self.MY_LIST_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="myListButton"] ')
-        self.JAWBONE_ADD_TO_MY_LIST_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Add To My List"] > span')
+        self.JAWBONE_ADD_TO_MY_LIST_BUTTON = (
+            By.CSS_SELECTOR, 'a[aria-label="Add To My List"] > span')
         self.DURATION = (By.CSS_SELECTOR, 'span.duration')
         self.PROGRESS_SUMMARY = (By.CSS_SELECTOR, 'span.summary')
         self.AUDIO_DESCRIPTION_BADGE = (By.CSS_SELECTOR, 'span.audio-description-badge')
@@ -55,20 +59,28 @@ class ShowToolsPage(BasePage):
         self.CAST_LIST = (By.CSS_SELECTOR, 'div.meta-lists > p.cast.inline-list')
         self.GENRE_LIST = (By.CSS_SELECTOR, 'div.meta-lists > p.genres.inline-list')
         self.TAGS_LIST = (By.CSS_SELECTOR, 'div.meta-lists > p.tags.inline-list')
-        self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs up (click to remove rating)"]')
-        self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs down (click to remove rating)"]')
+        self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON = (
+            By.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs up (click to remove rating)"]')
+        self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON = (
+            By.CSS_SELECTOR, 'a[aria-label="Already rated: thumbs down (click to remove rating)"]')
         self.UPVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Rate thumbs up"]')
         self.DOWNVOTE_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Rate thumbs down"]')
         # BOB LOCATORS
         self.BOB_PLAY_HITZONE = (By.CSS_SELECTOR, 'div.bob-play-hitzone')
         self.BOB_PLAY_BUTTON = (By.CSS_SELECTOR, 'div.bob-overview a[data-uia="play-button"]')
         self.BOB_JAWBONE_HITZONE = (By.CSS_SELECTOR, 'div.bob-overlay > a.bob-jaw-hitzone')
-        self.BOB_ALREADY_UPVOTED_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs up (click to remove rating)"]')
-        self.BOB_ALREADY_DOWNVOTED_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs down (click to remove rating)"]')
-        self.BOB_UPVOTE_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs up"]')
-        self.BOB_DOWNVOTE_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs down"]')
-        self.BOB_MY_LIST_BUTTON = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"]')
-        self.BOB_MY_LIST_STATUS = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
+        self.BOB_ALREADY_UPVOTED_BUTTON = (
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs up (click to remove rating)"]')
+        self.BOB_ALREADY_DOWNVOTED_BUTTON = (
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Already rated: thumbs down (click to remove rating)"]')
+        self.BOB_UPVOTE_BUTTON = (
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs up"]')
+        self.BOB_DOWNVOTE_BUTTON = (
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs down"]')
+        self.BOB_MY_LIST_BUTTON = (
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"]')
+        self.BOB_MY_LIST_STATUS = (
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
 
     # JAWBONE FUCNTIONS
     # FOR SHOW PREVIEW FUNCTIONS(bob-container), SEE LINE 300+
