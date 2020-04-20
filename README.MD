@@ -1,5 +1,5 @@
 # NetflixSelenium
-An automated test suite(Selenium) to test the core functionality of https://netflix.com , as well as
+An automated test suite to test the core functionality of https://netflix.com , as well as
 add more functionality for users(e.g. advanced searching)
 
 ## Quick Guide
@@ -11,8 +11,9 @@ test logic (asserts, etc.), and Page objects [pagemodels](https://github.com/Bra
 maintain in both speed and complexity. See [selenium.dev/POM](https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/)
 
 ## Examples/Videos
-- Watch VIDEO TESTS https://gyazo.com/37be44a9993676c4161adff157960e45
-- Watch HOME PAGE TESTS https://gyazo.com/6821682827f79a47ce16e66c34ce2fbb (TODO-REFILM)
+- Watch VIDEO TESTS 
+[video alt](https://gyazo.com/37be44a9993676c4161adff157960e45)
+- Watch HOME PAGE TESTS https://gyazo.com/8c9e75c1412c7e13e32b0b4bc14a5677
 - Watch HEADER TOOLS TESTS https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
 - Watch LOGIN TESTS https://gyazo.com/dd49e25639ec1b5c6fcac0ab5251fc4e
 

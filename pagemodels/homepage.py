@@ -1,68 +1,26 @@
 import time
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.action_chains import ActionChains
 
 
 from pagemodels.basepage import BasePage
-import browserconfig
-import secrets
-import pagemodels.showtoolspage
-import tests.pickledlogin
+# import browserconfig
+# import secrets
+# import pagemodels.showtoolspage
+# import tests.pickledlogin
 
 
 # The Home page for netflix is netflix.com/browse. Everything leads back to /browse somehow
 
 # RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
-
-# # # DELETE ME
-driver = browserconfig.driver_runner(
-    executable_path=browserconfig.driver_path,
-    desired_capabilities=browserconfig.capabilities
-)
-tests.pickledlogin.pickled_login(driver)
-
-a = HomePage(driver)
-b = ShowToolsPage(driver)
-
-que = a.get_queue_row()
-first_show = a.get_first_show_in_row(que)
-print(first_show.text)
-
-gen_rows = a.get_genre_rows()
-first_row = gen_rows[0]
-first_show = a.get_first_show_in_row(first_row)
-print(first_show.text)
-
-genre_shows = a.get_currently_displayed_in_row(first_row)
-
-# BOB CONTAINER
-b.mouse_over_show_element(first_show)
-b.show_is_being_previewed()
-b.mouse_over_show_if_not_moused_over(first_show)
-
-
-# JAWBONE
-#general
-b.open_jawbone_if_not_open(first_show)
-b.close_jawbone()
-# upvote/down
-b.is_upvoted_from_jawbone(first_show)
-b.is_downvoted_from_jawbone(first_show)
-b.upvote_from_jawbone(first_show)
-b.downvote_from_jawbone(first_show)
-b.remove_downvote_or_upvote_from_jawbone(first_show)
-# my list
-b.is_in_my_list_from_jawbone(first_show)
-b.add_show_to_my_list_from_jawbone(first_show)
-b.remove_show_from_my_list_from_jawbone(first_show)
 
 
 class HomePage(BasePage):
@@ -89,7 +47,7 @@ class HomePage(BasePage):
         #########
         self.ROW_TITLE = (By.CSS_SELECTOR, 'a.rowTitle')
         self.RIGHT_CHEVRON = (By.CSS_SELECTOR, 'span.handle.handleNext.active')
-        self.LEFT_CHEVRON = (By.CSS_SELECTOR, 'span.handle.handlePrev.active' )
+        self.LEFT_CHEVRON = (By.CSS_SELECTOR, 'span.handle.handlePrev.active')
         ###########
         self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
 
@@ -209,7 +167,7 @@ class HomePage(BasePage):
             left_chevron.click()
         except NoSuchElementException:
             print("row_page_left couldnt find left chevron. Did you row_page_right first?")
-        
+
         # waiting for the row to change by waiting for the staleness of the first show in the row
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.staleness_of(first_show))
@@ -278,4 +236,3 @@ class HomePage(BasePage):
     def get_first_show_in_row(self, row_element):
         """ return the first SHOW_ELEMENT , in proper format, in the row row_element"""
         return self.get_currently_displayed_in_row(row_element)[0]
-

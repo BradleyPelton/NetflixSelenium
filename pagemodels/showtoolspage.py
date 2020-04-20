@@ -1,5 +1,3 @@
-import time
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -101,6 +99,8 @@ class ShowToolsPage(BasePage):
             # WAIT UNTIL JAWBONE FINISHES LOADING
             wait = WebDriverWait(self.driver, 10)
             wait.until(EC.visibility_of_element_located(self.MY_LIST_BUTTON))
+            wait = WebDriverWait(self.driver, 10)
+            wait.until(EC.visibility_of_element_located(self.MY_LIST_BUTTON))
 
     def close_jawbone(self):
         """ close any open jawbone """
@@ -138,7 +138,7 @@ class ShowToolsPage(BasePage):
         my_list_button.click()
 
         # # wait for my the span below my_list_button to no longer have the class 'add' to my list
-        # ideally we would just wait until my_list_button.attribute[data-uia] is not "add my list"
+        # ideally we would just wait until my_list_button.attribute[data-uia] != "add my list"
         # but that doesnt exist, so we have to make due with observing the span below
         wait = WebDriverWait(self.driver, 10)
         wait.until_not(EC.invisibility_of_element_located(span_my_list_button_not_added))
@@ -177,14 +177,6 @@ class ShowToolsPage(BasePage):
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.url_contains('https://www.netflix.com/watch/'))
 
-    # def is_show(self, show_element):
-    #     """ not sure about needed this function or not. Leaving it here just in case"""
-    #     pass
-
-    # def is_movie(self, show_element):
-    #     """ movie is defined as not TV show. Everything is either a series episodes or a movie"""
-    #     pass
-
     def get_duration_from_jawbone(self, show_element) -> str:
         """ RETURNS STR, e.g.'1h 27m' FOR MOVIE, '1 Season' FOR SHOW """
         """ NOT TESTED- TODO- THIS SHOULD RECIEVE EXTRA ATTENTION TO TEST"""
@@ -208,24 +200,6 @@ class ShowToolsPage(BasePage):
         progress_summary = self.driver.find_element(*self.PROGRESS_SUMMARY)
         # print(f"show {show_element.text} has saved progress. {progress_summary.text} remain")
         return progress_summary.text
-
-    # def is_netflix_original(self, show_element) -> bool:
-    #     """ return true if this show/movie is a netflix original, false if else"""
-    #     # this one might be tricky. The only designation that a show is a Netflix
-    #     # original seems to be the "N SERIES" logo that is added on to the series
-    #     # logo(same image). Might have to compare against a list of confirmed
-    #     # netflix originals or do some cool image analysis to see if the top left
-    #     # pixel is the nextflix red
-    #     pass
-
-    # def has_new_episodes(self, show_element) -> bool:
-    #     """ IF A SHOW HAS the "NEW EPISODES" tile added to the image, return True
-    #     false if else"""
-    #     # Might be equally as hard to determine as _is_netflix_original
-    #     # Netflix adds a "new episodes" box ontop of the the boxart
-    #     # My only idea for runny this function is to improt some module
-    #     # that can determine which pixels are supposed to be the netflix red
-    #     pass
 
     def has_audio_description_available_from_jawbone(self, show_element):
         """ return True if the show has an audio description available, False if else"""
@@ -271,10 +245,6 @@ class ShowToolsPage(BasePage):
 
         release_year = self.driver.find_element(*self.RELEASE_YEAR)
         return release_year.text
-
-    # def get_number_of_episodes(self):
-    #     """TODO-not sure if this is going to be hard or not. """
-    #     pass
 
     def get_actors_list(self, show_element) -> list:
         """ returns list of actors. TODO- IF actors arent available from JAWBONE,
@@ -445,6 +415,9 @@ class ShowToolsPage(BasePage):
         bob_jawbone_hitzone = self.driver.find_element(*self.BOB_JAWBONE_HITZONE)
         bob_jawbone_hitzone.click()
 
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((self.JAWBONE_CLOSE_BUTTON)))
+
     def play_show_from_show_preview(self, show_element):
         """ play the show from the bob container by clicking in the center of the bob container"""
         self.mouse_over_show_if_not_moused_over(show_element)
@@ -483,7 +456,11 @@ class ShowToolsPage(BasePage):
             bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
             bob_my_list_button.click()
 
-        # TODO- NEED A EXPLICIT WAIT HERE
+        # inner_span = bob_my_list_button.find_element_by_css_selector('span[role="status"]')
+        # wait for the inner span to change text from "Add To My List" to "Remove from my list"
+        wait = WebDriverWait(self.driver, 10)
+        # wait.until(EC.text_to_be_present_in_element(inner_span, 'Remove'))
+        wait.until(EC.text_to_be_present_in_element((self.BOB_MY_LIST_STATUS), 'Remove'))
 
     def remove_show_from_my_list_from_show_preview(self, show_element):
         """ """
@@ -493,7 +470,12 @@ class ShowToolsPage(BasePage):
         else:
             bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
             bob_my_list_button.click()
-        # TODO- NEED A EXPLICIT WAIT HERE
+
+        # inner_span = bob_my_list_button.find_element_by_css_selector('span[role="status"]')
+
+        wait = WebDriverWait(self.driver, 10)
+        # wait.until(EC.text_to_be_present_in_element(inner_span, 'Add To My'))
+        wait.until(EC.text_to_be_present_in_element((self.BOB_MY_LIST_STATUS), 'Add To My'))
 
     # BOB UPVOTE/DOWNVOTE FUCNTIONS
     def is_upvoted_from_show_preview(self, show_element):
@@ -559,15 +541,44 @@ class ShowToolsPage(BasePage):
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_DOWNVOTED_BUTTON)))
 
-    def remove_upvote_or_downvote_from_show_preview(self):
-        # TODO- Could be handy, I'm already cleaning up the votes from the jawbone which has this
-        # function already
-        pass
+    # def remove_upvote_or_downvote_from_show_preview(self):
+    #     # TODO- Could be handy, I'm already cleaning up the votes from the jawbone which has this
+    #     # function already
+    #     pass
 
-    def get_genre_and_tags_from_show_preview():
-        """ the show preview sometimes contains both tags and genres. I need a new function to
-        retrieve though """
-        pass
+    # def get_genre_and_tags_from_show_preview():
+    #     """ the show preview sometimes contains both tags and genres. I need a new function to
+    #     retrieve though """
+    #     pass
 
+    # DIDNT MAKE THE FIRST CUT
+    # def is_show(self, show_element):
+    #     """ not sure about needed this function or not. Leaving it here just in case"""
+    #     pass
 
+    # def is_movie(self, show_element):
+    #     """ movie is defined as not TV show. Everything is either a series episodes or a movie"""
+    #     pass
+
+    # def is_netflix_original(self, show_element) -> bool:
+    #     """ return true if this show/movie is a netflix original, false if else"""
+    #     # this one might be tricky. The only designation that a show is a Netflix
+    #     # original seems to be the "N SERIES" logo that is added on to the series
+    #     # logo(same image). Might have to compare against a list of confirmed
+    #     # netflix originals or do some cool image analysis to see if the top left
+    #     # pixel is the nextflix red
+    #     pass
+
+    # def has_new_episodes(self, show_element) -> bool:
+    #     """ IF A SHOW HAS the "NEW EPISODES" tile added to the image, return True
+    #     false if else"""
+    #     # Might be equally as hard to determine as _is_netflix_original
+    #     # Netflix adds a "new episodes" box ontop of the the boxart
+    #     # My only idea for runny this function is to improt some module
+    #     # that can determine which pixels are supposed to be the netflix red
+    #     pass
+
+    # def get_number_of_episodes(self):
+    #     """TODO-not sure if this is going to be hard or not. """
+    #     pass
 
