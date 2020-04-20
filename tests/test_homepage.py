@@ -8,9 +8,6 @@ import pagemodels.showtoolspage
 import tests.test_loginpage
 import tests.pickledlogin
 
-# # - ROWS: Queue, genre , continue watching , trending now, similars, because you added,\
-# # new release, top ten, netflix originals, popular titles, big row, most watched
-
 # IMPORTANT VOCABULARY:
 # Jawbone-
 # Bob-container- AKA SHOW_PREVIEW
@@ -30,6 +27,9 @@ import tests.pickledlogin
 
 # 2020-04-19 ALL TESTS PASSING
 # REFACTOR COMPLETE, all time.sleeps removed
+
+# TODO- tests still don't perfectly clean up after themselves. Add more cleanup tasks
+# namely, removing a show from my-list is complicated. Once removed, I would have to search for it
 
 
 class HomePageTests(unittest.TestCase):

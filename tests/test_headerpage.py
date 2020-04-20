@@ -1,5 +1,4 @@
 import unittest
-import time
 
 # from selenium import webdriver
 
@@ -9,6 +8,8 @@ import browserconfig
 
 # VIDEO OF EXECUTION
 # https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
+
+# 2020-04-20 All tests passing, refactor complete
 
 
 class HeaderPageTests(unittest.TestCase):
@@ -31,27 +32,25 @@ class HeaderPageTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """ TODO-"""
+        """ closes the browser and shuts down the driver executable"""
         cls.driver.quit()
 
     def setUp(self):
         """ return to the home page, netflix.com/browse, the staging place for header tests"""
         self.driver.get("https://netflix.com/browse")
 
-    # # (TEST CATEGORY NAME HERE?)
     def test_logout_from_header(self):
         """ logout from the header """
         header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
         header_page.logout()
-        # user is redirected to https://www.netflix.com/logout
+        # user is redirected to https://www.netflix.com/logout after loging out
 
         self.assertIn('logout', self.driver.current_url)
 
         # CLEANUP
         # log back in using the pickled cookies
         tests.pickledlogin.pickled_login(self.driver)
-        time.sleep(5)
 
     def test_navigate_home_from_my_list(self):
         """ using the giant Netflix logo in the top left, navigate to the home page /browse/
@@ -79,19 +78,10 @@ class HeaderPageTests(unittest.TestCase):
         header_page.search("shawshank")
 
         self.assertIn("The Shawshank Redemption", self.driver.page_source)
-        # sloppy assert. I could build a function that finds the first show in the search box
-        # TODO- NICE TO HAVE
         # I kind of like this assert now that I think about it. Its testing both the search
         # function and Netflix's search algorithm.
-
-    # def test_clear_all_notifications(self):
-    #     """ this is easy to do, but impossible to perfect. Netflix doesnt allow any sort of
-    #     'mark notification as unread' so I have no way of generating notifications. Since I have
-    #     no way of managing the state, THIS TEST CAN NEVER BE RAN MORE THAN ONCE A DAY. Thus I am
-    #     forced to leave it out in order to avoid inconsistent test results"""
-    #     header_page = pagemodels.headerpage.HeaderPage(self.driver)
-
-    #     header_page.clear_notifications()
+        # NOTE- test will not fail if "The Shawkshank Redemeption" is removed. Netflix displays
+        # "similar to {title_name}" for titles its search algorithm recognizes
 
     def test_click_top_notification(self):
         """ click the top notification and assert that the page has changed"""
@@ -99,13 +89,20 @@ class HeaderPageTests(unittest.TestCase):
 
         header_page.click_top_notification()
 
-        time.sleep(3)
-
-        # assert that we navigated to a different page
-        # Possible options: title page or notification page
+        # assert that we navigated to a notification page or a title page(only 2 options)
         self.assertTrue(
             'title' in self.driver.current_url or 'notification' in self.driver.current_url
         )
 
-        # I could have 5 more test here for each one of the header buttons.
-        # Those are about as elementary tests as possible. Skipping them but TODO- OKAY TO HAVE
+    # DIDNT MAKE THE FIRST CUT OF TESTS
+    # I could have 5 more test here for each one of the header buttons.
+    # Those are about as elementary of tests as possible. Skipping them but TODO- OKAY TO HAVE
+
+        # def test_clear_all_notifications(self):
+    #     """ this is easy to do, but impossible to perfect. Netflix doesnt allow any sort of
+    #     'mark notification as unread' so I have no way of generating notifications. Since I have
+    #     no way of managing the state, THIS TEST CAN NEVER BE RAN MORE THAN ONCE A DAY. Thus I am
+    #     forced to leave it out in order to avoid inconsistent test results"""
+    #     header_page = pagemodels.headerpage.HeaderPage(self.driver)
+
+    #     header_page.clear_notifications()

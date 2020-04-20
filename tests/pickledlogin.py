@@ -63,7 +63,11 @@ def pickled_login(driver):
             ) as pickledcookies:
                 pickle.dump(browser_settings, pickledcookies)
 
-# with open(r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl', 'rb') as pickledcookies:
+
+# with open(
+#     r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
+#     'rb'
+# ) as pickledcookies:
 #     browser_settings = pickle.load(pickledcookies)
 
 # for cookie in browser_settings['stored_cookies']:

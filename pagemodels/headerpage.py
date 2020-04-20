@@ -1,10 +1,8 @@
-import time
-
 # from selenium import webdriver
 from selenium.webdriver.common.by import By
 # from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 # from selenium.webdriver.common.action_chains import ActionChains
 
@@ -22,15 +20,6 @@ from pagemodels.basepage import BasePage
 ###########################################################################################
 ###########################################################################################
 
-# chromedriver_path = secrets.chromedriver_path
-# driver = webdriver.Chrome(executable_path=chromedriver_path)
-# tests.pickledlogin.pickled_login(driver)
-
-# a = HeaderPage(driver)
-# a.logout()
-
-# b = driver.find_element_by_css_selector('a[aria-label="Netflix"]')
-
 
 class HeaderPage(BasePage):
     def __init__(self, driver):
@@ -43,8 +32,10 @@ class HeaderPage(BasePage):
         self.MANAGE_PROFILES_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Manage Profiles"]')
         self.NOTIFICATION_MENU_BUTTON = (By.CSS_SELECTOR, 'button[aria-label="Notifications"]')
         self.NOTIFICATIONS_CONTAINER = (By.CSS_SELECTOR, 'ul.notifications-container')
+        self.NOTIFICATIONS = (By.CSS_SELECTOR, 'ul.notifications-container div > li.notification')
         self.SEARCH_FIELD = (By.CSS_SELECTOR, 'input[data-uia="search-box-input"]')
         self.SEARCH_BUTTON = (By.CSS_SELECTOR, 'button.searchTab')
+        self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
 
     def logout(self):
         """ self explanatory, tested"""
@@ -62,11 +53,9 @@ class HeaderPage(BasePage):
         home_button.click()
 
     def navigate_to_manage_profile(self):
-        """ navigate to the manage profiles page, https://www.netflix.com/profiles/manage, by clicking
-        on the manage profiles button from the account dropdown from the header
+        """ navigate to the manage profiles page, https://www.netflix.com/profiles/manage, by
+        clicking on the manage profiles button from the account dropdown from the header
         """
-        """ NOTE- while these functions contribute to completeness by testing individual buttons, it
-        is much more important to test key features in the first version of the automation suite"""
         account_dropdown_button = self.driver.find_element(*self.ACCOUNT_DROPDOWN_BUTTON)
         account_dropdown_button.click()
 
@@ -75,7 +64,6 @@ class HeaderPage(BasePage):
 
     def clear_notifications(self):
         """ CLEAR NOTIFICATIONS BY OPENING THE NOTIFICATIONS DROPDOWN AND THEN CLOSING IT"""
-        """ TODO- NEED NOTIFIATIONS TO APPEAR AGAIN TO TEST. TODO"""
         notifications_menu_button = self.driver.find_element(*self.NOTIFICATION_MENU_BUTTON)
         notifications_menu_button.click()
         notifications_menu_button.click()
@@ -85,15 +73,17 @@ class HeaderPage(BasePage):
         notifications_menu_button = self.driver.find_element(*self.NOTIFICATION_MENU_BUTTON)
         notifications_menu_button.click()
 
-        notifications_container = self.driver.find_element(*self.NOTIFICATIONS_CONTAINER)
-        notifications = notifications_container.find_elements_by_css_selector(
-            'div > li.notification')
+        notifications = self.driver.find_elements(*self.NOTIFICATIONS)
 
         top_notification = notifications[0]
         top_notification.click()
 
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.staleness_of(top_notification))
+
     def search_field_is_open(self) -> bool:
-        """ return True if the search field is open, False if else"""
+        """ return True if the search field is open, False if else. (Netflix's serach field
+        doesnt appear until the user clicks the search button with a magnifiying glass"""
         try:
             self.driver.find_element(*self.SEARCH_FIELD)
             return True
@@ -108,25 +98,23 @@ class HeaderPage(BasePage):
 
     def search(self, search_term: str):
         """ uses the search bar in the header to search for search_term"""
-        """ TODO- This is a exactly what a serach is in theory, but in practice, Netflix handles
-        a little differently. Notice when searching things manually, the netflix app actually
-        searches after EVERY SINGLE key press. Thus if we were to search for "Top Gun" manually,
-        the observerwill notice that 7 DIFFERENT page results are displayed in the results
-        (len("Top Gun")). This is the fundamental difference between automation testing and
-        automating user behavior. We needto actually mimic user behavior. In this case the 2 differ
-        because Selenium.send_keys() sends all of the keys at the same time.
-        TODO- THIS IS GOOD THEORY. GOOD DISCUSSION. READDD MEEEE"""
         if self.search_field_is_open():
             self.clear_search()
         else:
-            # TODO- Turn open_seach_field into a function??? Seems a little verbose
             search_button = self.driver.find_element(*self.SEARCH_BUTTON)
             search_button.click()
-        search_field = self.driver.find_element(*self.SEARCH_FIELD)
-        search_field.send_keys(search_term)
 
-        # let the results load
-        time.sleep(3)
+        search_field = self.driver.find_element(*self.SEARCH_FIELD)
+        # search_field.send_keys(search_term)
+
+        # old idea: one key stroke at a time with some added waits to represent "think time"
+        # pass one character in at a time to better simulate user activity
+        for char in search_term:
+            search_field.send_keys(char)
+
+        # wait until the first show is displayed after the search
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.SHOW_ELEMENTS))
 
     # def click_refer_button(driver):
     #     """ waste of time. adding it here just for completeness"""

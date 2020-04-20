@@ -1,7 +1,4 @@
 import unittest
-import time
-
-# from selenium import webdriver
 
 import pagemodels.videopage
 import tests.pickledlogin
@@ -16,15 +13,13 @@ import browserconfig
 # 6.) Skip_forward/backward Tests
 # 7.) Time/Duration Tests
 # 8.) Exit Player Tests
-# NICE-TO-HAVES
 # 9.) Keyboard shortcuts TODO- 'f' for fullscreen, 'm' for mute, etc.
 
 
 # HELP
 # NO IDEA WHAT IM LOOKING AT
 # VIDEO EXAMPLE OF EXECUTION:
-# https://gyazo.com/37be44a9993676c4161adff157960e45
-# https://gyazo.com/e8bb9e87d4793b0ae203cbd54f1a1c73
+# https://gyazo.com/7c703e6bba5af706849052df65772089
 
 
 class VideoPageTests(unittest.TestCase):
@@ -57,8 +52,8 @@ class VideoPageTests(unittest.TestCase):
         self.driver.get('https://www.netflix.com/watch/80219127?trackId=200254290&tctx=0%2C0%2C3f\
             74b4eb-86f6-4d9d-bb35-a72282cd263c-76893314%2C311384eb-a55b-41d5-bb93-deb09b53bebb_32\
             36856X6XX1587128751673%2C311384eb-a55b-41d5-bb93-deb09b53bebb_ROOT')
-        time.sleep(5)  # NOTE- Necessary evil. Page Load event doesnt include the video loading
-        # There are no good elements to grab. Only time.sleep in the entire test fixture
+        video_page = pagemodels.videopage.VideoPage(self.driver)
+        video_page.initial_spinner_wait()  # wait for the player to load
 
     # PAUSE TESTS
     def test_pause_from_unpaused_state(self):
@@ -334,19 +329,6 @@ class VideoPageTests(unittest.TestCase):
         # Maybe it would be eliminated by making a .get_current_time_in_seconds function
         # instead of relying on .get_remaining_time_in_seconds()
 
-    # # # # # GO TO CREDITS COMPLICATES THINGS
-    # # # # # TODO- I NEED A  videopage FUCNTIONS TO "watch credits" to redisplay the scrubber
-    # def test_go_to_credits(self):
-    #     """ UNTESTED, DO NOT USE"""
-    #     """ go to the .98  point in the show/movie USING THE SLIDER"""
-    #     video_page = pagemodels.videopage.VideoPage(self.driver)
-
-    #     video_page.change_to_percentage_time(.98)
-
-    #     show_duration = video_page.get_show_duration_in_seconds()
-
-    #     current_remaining_time = video_page.get_remaining_time_in_seconds()
-
     def test_restart_show(self):
         """restart a show by setting the percentage_time to 0"""
         video_page = pagemodels.videopage.VideoPage(self.driver)
@@ -371,6 +353,21 @@ class VideoPageTests(unittest.TestCase):
         self.assertNotIn('watch', self.driver.current_url)
         # when watching a show, the url structure is "https://www.netflix.com/watch/600230...""
 
+    # TESTS THAT DIDNT MAKE THE FIRST CUT
+    # # # # # GO TO CREDITS COMPLICATES THINGS
+    # # # # # TODO- I NEED A  videopage FUCNTIONS TO "watch credits" to redisplay the scrubber
+    # def test_go_to_credits(self):
+    #     """ UNTESTED, DO NOT USE"""
+    #     """ go to the .98  point in the show/movie USING THE SLIDER"""
+    #     video_page = pagemodels.videopage.VideoPage(self.driver)
 
-# # if __name__ == "__main__":
-# #     unittest.main()
+    #     video_page.change_to_percentage_time(.98)
+
+    #     show_duration = video_page.get_show_duration_in_seconds()
+
+    #     current_remaining_time = video_page.get_remaining_time_in_seconds()
+
+
+
+# # # if __name__ == "__main__":
+# # #     unittest.main()

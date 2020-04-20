@@ -64,7 +64,7 @@ class LoginPageTests(unittest.TestCase):
         login_page = pagemodels.loginpage.LoginPage(self.driver)
         login_page.submit_empty_fields()
 
-        # Assert that the credentials are invalid (missing implies invalid)
+        # Assert that the credentials are invalid (missing also implies invalid)
         self.assertTrue(login_page.is_invalid_username)
         self.assertTrue(login_page.is_invalid_password)
 

@@ -1,5 +1,3 @@
-import time
-
 # from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -16,8 +14,11 @@ from pagemodels.basepage import BasePage
 # import pagemodels.showtoolspage
 # import tests.pickledlogin
 
+# # - ROWS: Queue, genre , continue watching , trending now, similars, because you added,\
+# # new release, top ten, netflix originals, popular titles, big row, most watched
 
-# The Home page for netflix is netflix.com/browse. Everything leads back to /browse somehow
+
+# The Home page for netflix is netflix.com/browse. Everything leads back to /browse 
 
 # RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
@@ -180,8 +181,7 @@ class HomePage(BasePage):
         for i in range(10):
             self.driver.execute_script("window.scrollTo(0, 10000000)")
             print(i)
-            time.sleep(1)  # TODO- SLOPPY TO USE TIME. REFACTOR
-
+            # removed a sleep here, add a wait if necessary
         genre_rows = self.get_genre_rows(self)
         genres = [genre.text for genre in genre_rows]
         return genres
@@ -211,7 +211,6 @@ class HomePage(BasePage):
             else:
                 final_show_titles_list += current_titles
                 self.row_page_right(row_element)
-                time.sleep(1)  # Sloppy work to use SLEEP TODO- CLEAN
         return final_show_titles_list
 
     def get_currently_displayed_in_row(self, row_element):

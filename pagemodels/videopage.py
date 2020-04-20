@@ -1,23 +1,27 @@
-# from selenium import webdriver
-# from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 
 import pagemodels.basepage
-# import tests.pickledlogin
-# import secrets
-# import browserconfig
+import tests.pickledlogin
+import secrets
+import browserconfig
 
 # NETFLIX CALLS THE PLAYER THE nfp AkiraPlayer. netflix player AkiraPlayer?
 
 ############################################################################################
 # PHASES:
 
+# LOADING PHASE- LOADING-SPINNER is present. page is technically finished loading,
+# but the player isnt finished loading
+
 # ACTIVE
+
 # FIRST IDLE PHASE: UI DISAPPARS, ONLY VIDEO REMAINS
 # SECOND IDLE PHASE: TITLE APPEARS, EVERYTHING GETS DARKER AS OVERLAY APPEARS
 # IDLE PHASE 1.5- diplays just the rating. Seems to only happen when the video is first played
@@ -27,8 +31,6 @@ import pagemodels.basepage
 # VIDEO IS PLAYING, BUTTONS ARE GONE (BACK TO IDLE BUT VIDEO IS PLAYING)
 
 # CREDITS ARE ROLLING, VIDEO PLAYER IS MADE SMALL, RECOMMENDATIONS ARE DISPLAYED
-# TODO- I DID NOT ACCOUNT FOR THIS!!!! TODO- NEED TO FACTOR THIS IN AS WELL
-# HAPPENS AFTER change_time_using_slidebar(.99)
 ############################################################################################
 
 # Function CATEGORIES
@@ -43,17 +45,20 @@ import pagemodels.basepage
 # 8.) Exit Player functions
 
 # DELETE ME
-#         cls.driver = browserconfig.driver_runner(
-#             executable_path=browserconfig.driver_path,
-#             desired_capabilities=browserconfig.capabilities
-#         )
+# driver = browserconfig.driver_runner(
+#     executable_path=browserconfig.driver_path,
+#     desired_capabilities=browserconfig.capabilities
+# )
 # tests.pickledlogin.pickled_login(driver)
+
+# a = VideoPage(driver)
 
 # driver.get('https://www.netflix.com/watch/80219127?trackId=200254290&tctx=0%2C0%2C3f74b4eb-86\
 #     f6-4d9d-bb35-a72282cd263c-76893314%2C311384eb-a55b-41d5-bb93-deb09b53bebb_3236856X6XX158712875\
 #     1673%2C311384eb-a55b-41d5-bb93-deb09b53bebb_ROOT')
+# a.initial_spinner_wait()
 
-# a = VideoPage(driver)
+
 # a.volume_slider_is_open()
 # a.open_volume_slider()
 # a.open_volume_slider_if_not_open()
@@ -97,7 +102,28 @@ class VideoPage(pagemodels.basepage.BasePage):
 
         self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
 
+        self.SPINNER = (By.CSS_SELECTOR, 'div.nf-loading-spinner')
+
     # IDLE FUNCTIONS
+    def initial_spinner_wait(self):
+        """ When the video page initally loads, the page-finished-loading event fires before the
+        video is ready to play/interact. Not to be confused with video buffering, this is the
+        player itself loading"""
+
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(
+            EC.presence_of_element_located(self.SPINNER),
+            message='couldnt find the loading spinner, the page probably failed to load'
+        )
+
+        # spinner = self.driver.find_element(
+
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(
+            EC.invisibility_of_element_located(self.SPINNER),
+            message='loading spinner never disappeared OR video took too long to load'
+        )
+
     def player_is_idle(self):
         """ return True if player is idle(ui isnt displayed), false if else"""
         try:
@@ -587,3 +613,5 @@ class VideoPage(pagemodels.basepage.BasePage):
     #     pass
     # def skip_recap(driver):
         # """very similar to skip_intro but with the "Skip Recap" button. See '7 deadly sins'"""
+
+
