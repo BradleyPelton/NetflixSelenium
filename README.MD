@@ -12,7 +12,7 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
 
 ## Examples/Videos
 - Watch VIDEO TESTS 
-![video alt](https://gyazo.com/37be44a9993676c4161adff157960e45)
+![video alt](https://i.gyazo.com/37be44a9993676c4161adff157960e45.gif)
 - Watch HOME PAGE TESTS https://gyazo.com/8c9e75c1412c7e13e32b0b4bc14a5677
 - Watch HEADER TOOLS TESTS https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
 - Watch LOGIN TESTS https://gyazo.com/dd49e25639ec1b5c6fcac0ab5251fc4e
