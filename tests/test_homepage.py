@@ -33,12 +33,12 @@ import tests.pickledlogin
 
 
 class HomePageTests(unittest.TestCase):
-    """ tests for the homepage of netflix. AKA netflix.com/browse"""
+    """Tests for the homepage of netflix. AKA netflix.com/browse ."""
 
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)
-         and then login using pickled cookies. (SEE tests/pickledlogin.py)"""
+        """Launch the webdriver of choice with selected options(see browserconfig.py).
+        Then login using pickled cookies(see tests/pickledlogin.py)."""
         if browserconfig.current_browser in ['chrome', 'firefox']:
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
@@ -53,16 +53,16 @@ class HomePageTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """ TODO-"""
+        """Closes the browser and shuts down the driver executable."""
         cls.driver.quit()
 
     def setUp(self):
-        """ load some random movie, Minority Report with Tom Cruise in this instance """
+        """Navigate to the home page."""
         self.driver.get("https://www.netflix.com/browse")
 
     # ROW FUNCTIONS/OPERATIONS
     def test_scroll_right_queue_row(self):
-        """ scroll right in the queue/mylist row and assert the displayed shows have changed"""
+        """Scroll right in the queue/mylist row and assert the displayed shows have changed."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         queue_row = home_page.get_queue_row()
 
@@ -81,8 +81,8 @@ class HomePageTests(unittest.TestCase):
         self.assertTrue(intersection_titles == [])
 
     def test_scroll_left_queue_row(self):
-        """ scroll right then left in the queue/mylist row and assert the displayed shows have
-     changed"""
+        """Scroll right then left in the queue/mylist row and assert the displayed shows have
+        changed."""
         # have to scroll right before scroll left is an option
         home_page = pagemodels.homepage.HomePage(self.driver)
         queue_row = home_page.get_queue_row()
@@ -107,7 +107,7 @@ class HomePageTests(unittest.TestCase):
     # SHOW FUNCTIONS (see showtoolspage.py)
     # PLAY TESTS
     def test_play_first_show_in_my_list_from_jawbone(self):
-        """ """
+        """Grab the first show in my-list/queue and play it from the jawbone."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
@@ -121,7 +121,7 @@ class HomePageTests(unittest.TestCase):
         self.assertIn('watch', self.driver.current_url)
 
     def test_play_first_show_in_my_list_from_show_preview(self):
-        """ """
+        """Grab the first show in my-list/queue and play it from the show_preview/bob-container."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         queue_row = home_page.get_queue_row()
 
@@ -134,7 +134,7 @@ class HomePageTests(unittest.TestCase):
         self.assertIn('watch', self.driver.current_url)
 
     def test_play_first_show_in_continue_watching_row(self):
-
+        """Grab the first show in the 'continue watching row' and play it from the jawbone."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         cont_watching_row = home_page.get_continue_watching_row()
 
@@ -150,7 +150,7 @@ class HomePageTests(unittest.TestCase):
 
     # ADD/REMOVE MY LIST TESTS
     def test_add_show_to_my_list_from_jawbone(self):
-        """ add show to my list and assert that the show is now in my-list row"""
+        """Add show to my list and assert that the show is now in my-list row."""
         # TODO-BUG test passes when the first show found is not in my list
         # but once it starts iterating over show in genre_shows, close_jawbone() fails
         # and we start getting results about is_in_my_list from the previous show.
@@ -186,8 +186,8 @@ class HomePageTests(unittest.TestCase):
         self.assertIn(saved_title_name, new_show_titles)
 
     def test_remove_show_from_my_list_from_jawbone(self):
-        """ remove a show from my-list from the jawbone
-        and assert that the show is not in my-list row"""
+        """Remove the first show from my-list/queue from the jawbone and assert that the show is
+        not in my-list/queue row after."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         queue_row = home_page.get_queue_row()
 
@@ -206,8 +206,8 @@ class HomePageTests(unittest.TestCase):
         self.assertNotIn(first_show_in_q_title, new_show_titles)
 
     def test_add_show_to_my_list_from_show_preview(self):
-        """ add show to my list from the show preview
-        and assert that the show is now in my-list row"""
+        """Add a random show to my list with the show preview and assert that the show is now in
+        my-list/queue row."""
         # WORKED LIKE A CHARM. PRETTY COMPLICATED TEST. NICE TO SHOW OFF
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
@@ -240,8 +240,8 @@ class HomePageTests(unittest.TestCase):
         self.assertIn(saved_title_name, new_show_titles)
 
     def test_remove_show_from_my_list_from_show_preview(self):
-        """ remove a show from my list from the show_preview
-        and assert that the show is not in my-list(queue) row"""
+        """Remove a show from my-list/queue via the show_preview and assert that the show is not in
+        my-list/queue row."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
@@ -262,7 +262,7 @@ class HomePageTests(unittest.TestCase):
 
     # UPVOTE/DOWNVOTE TESTS
     def test_upvote_show_from_jawbone(self):
-        """ upvote A RANDOM SHOW from the jawbone and assert upvoted"""
+        """Upvote a random show from the jawbone and assert upvoted."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
         # WE NEED TO FIND A RANDOM SHOW THAT IS NOT UPVOTED
@@ -287,7 +287,7 @@ class HomePageTests(unittest.TestCase):
         show_tools.remove_downvote_or_upvote_from_jawbone(show)
 
     def test_downvote_show_from_jawbone(self):
-        """ downvote A RANdoM SHOW from the jawbone and assert downvoted"""
+        """Downvote a random show from the jawbone and assert downvoted."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
@@ -313,7 +313,7 @@ class HomePageTests(unittest.TestCase):
         show_tools.remove_downvote_or_upvote_from_jawbone(show)
 
     def test_upvote_show_from_show_preview(self):
-        """ upvote a random show from the show preview and assert its upvoted """
+        """Upvote a random show from the show preview and assert its upvoted."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
@@ -340,7 +340,7 @@ class HomePageTests(unittest.TestCase):
         show_tools.remove_downvote_or_upvote_from_jawbone(show)
 
     def test_downvote_show_from_show_preview(self):
-        """ downvote a random show from the show preview and assert its downvoted"""
+        """Downvote a random show from the show preview and assert its downvoted."""
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 

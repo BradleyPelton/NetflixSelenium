@@ -1,7 +1,7 @@
 import pickle
 import datetime
 
-import browserconfig
+# import browserconfig
 import secrets
 import pagemodels.loginpage
 
@@ -29,8 +29,9 @@ import pagemodels.loginpage
 # )
 
 def pickled_login(driver):
-    """ IF TODAYS COOKIES ARE STILL VALID, USE TODAYS COOKIES TO LOG IN.
-    ELSE: LOGIN THE OLD FASHION WAY AND STORE COOKIES
+    """If stored cookies are still valid (less than 24 hours old), use them to log in. Else, log in
+    from https://netflix.com/login with credentials stored in secrets.py and save the newly created
+    cookies.
     """
     with open(
         r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
@@ -63,13 +64,15 @@ def pickled_login(driver):
             ) as pickledcookies:
                 pickle.dump(browser_settings, pickledcookies)
 
-
+# Print current cookies
 # with open(
 #     r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
 #     'rb'
 # ) as pickledcookies:
-#     browser_settings = pickle.load(pickledcookies)
+    # browser_settings = pickle.load(pickledcookies)
+    # print(browser_settings)
 
+# Manually load the cookies
 # for cookie in browser_settings['stored_cookies']:
 #     driver.add_cookie({k: v for k,v in cookie.items() if k!= 'expiry'})
 #     # Interesting that expiry had to be excluded

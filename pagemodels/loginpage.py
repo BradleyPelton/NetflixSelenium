@@ -18,7 +18,7 @@ class LoginPage(BasePage):
         self.HOME_BUTTON = (By.CSS_SELECTOR, 'a.logo.icon-logoUpdate.active')
 
     def user_login(self, username, password):
-        """NOT MEANT FOR TESTING. meant to be used by setUpClasses and pickledLogin"""
+        """NOT MEANT FOR TESTING, meant to be used by setUpClasses and pickledLogin."""
         username_field = self.driver.find_element(*self.USERNAME_FIELD)
         username_field.send_keys(username)
 
@@ -33,7 +33,7 @@ class LoginPage(BasePage):
         wait.until(EC.staleness_of(password_field))
 
     def fake_login(self, username, password):
-        """ identical to the "real login" user_login, but kept seperate for clarity's sake """
+        """Identical to the "real login", user_login, but kept seperate for clarity's sake."""
         username_field = self.driver.find_element(*self.USERNAME_FIELD)
         username_field.send_keys(username)
 
@@ -48,7 +48,7 @@ class LoginPage(BasePage):
         wait.until(EC.staleness_of(password_field))
 
     def login_successful(self):
-        """ return true if login failed, false if else"""
+        """Return true if login was successful, false if else."""
         try:
             self.driver.find_element(*self.ERROR_MESSAGE)  # Error message if invalid combination
             return False
@@ -63,7 +63,7 @@ class LoginPage(BasePage):
             raise
 
     def is_invalid_password(self):
-        """ return true if a the warning is present for an invalid password"""
+        """Return true if the warning is present for an invalid password."""
         # Invalid implies password is not between 4 and 60 characters. Could be missing entirely
         try:
             self.driver.find_element(*self.INVALID_PASSWORD_MESSAGE)
@@ -72,7 +72,7 @@ class LoginPage(BasePage):
             return False
 
     def is_invalid_username(self):
-        """ return true if the warning is present for an invalid username """
+        """Return true if the warning is present for an invalid username."""
         # Invalid username implies invalid email or phone number. Could be missing entirely
         try:
             self.driver.find_element(*self.INVALID_USERNAME_MESSAGE)
@@ -81,7 +81,7 @@ class LoginPage(BasePage):
             return False
 
     def submit_empty_fields(self):
-        """ identical to the "real login" user_login, but kept seperate for clarity's sake """
+        """Submit the username and password fields although they are completely blank."""
         username_field = self.driver.find_element(*self.USERNAME_FIELD)
         username_field.send_keys('')
 

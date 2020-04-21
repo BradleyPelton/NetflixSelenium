@@ -13,11 +13,11 @@ import browserconfig
 
 
 class HeaderPageTests(unittest.TestCase):
-    """ test cases for the use of the header features atop most netflix pages"""
+    """Test cases for the use of the header features atop most netflix pages."""
     @classmethod
     def setUpClass(cls):
-        """ launch the webdriver of choice with selected options. (SEE browserconfig.py)
-         and then login using pickled cookies. (SEE tests/pickledlogin.py)"""
+        """Launch the webdriver of choice with selected options(see browserconfig.py).
+        Then login using pickled cookies(see tests/pickledlogin.py)."""
         if browserconfig.current_browser in ['chrome', 'firefox']:
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
@@ -32,15 +32,15 @@ class HeaderPageTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """ closes the browser and shuts down the driver executable"""
+        """Closes the browser and shuts down the driver executable."""
         cls.driver.quit()
 
     def setUp(self):
-        """ return to the home page, netflix.com/browse, the staging place for header tests"""
+        """Return to the home page, netflix.com/browse, the staging place for header tests."""
         self.driver.get("https://netflix.com/browse")
 
     def test_logout_from_header(self):
-        """ logout from the header """
+        """Logout from the header."""
         header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
         header_page.logout()
@@ -53,8 +53,8 @@ class HeaderPageTests(unittest.TestCase):
         tests.pickledlogin.pickled_login(self.driver)
 
     def test_navigate_home_from_my_list(self):
-        """ using the giant Netflix logo in the top left, navigate to the home page /browse/
-        from my-list"""
+        """Using the giant Netflix logo in the top left, navigate to the home page /browse/
+        from the my-list page."""
         self.driver.get("https://www.netflix.com/browse/my-list")
         header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
@@ -63,7 +63,7 @@ class HeaderPageTests(unittest.TestCase):
         self.assertEqual("https://www.netflix.com/browse", self.driver.current_url)
 
     def test_navigate_to_manage_profile(self):
-        """ using the header account dropdown, navigate to the manage profile page"""
+        """Using the header account dropdown, navigate to the manage profile page."""
         header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
         header_page.navigate_to_manage_profile()
@@ -72,7 +72,7 @@ class HeaderPageTests(unittest.TestCase):
         self.assertIn('profiles/manage', self.driver.current_url)
 
     def test_search_for_shawshank(self):
-        """using the search field, search for shawshank"""
+        """Using the search field, search for 'shawshank' and assert that shawshank was found."""
         header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
         header_page.search("shawshank")
@@ -84,7 +84,7 @@ class HeaderPageTests(unittest.TestCase):
         # "similar to {title_name}" for titles its search algorithm recognizes
 
     def test_click_top_notification(self):
-        """ click the top notification and assert that the page has changed"""
+        """Click the top notification and assert that the page has changed."""
         header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
         header_page.click_top_notification()

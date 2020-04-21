@@ -38,7 +38,7 @@ class HeaderPage(BasePage):
         self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
 
     def logout(self):
-        """ self explanatory, tested"""
+        """From the account dropdown in the header, logout."""
         account_dropdown_button = self.driver.find_element(*self.ACCOUNT_DROPDOWN_BUTTON)
         account_dropdown_button.click()
 
@@ -48,13 +48,13 @@ class HeaderPage(BasePage):
         logout_button.click()
 
     def navigate_to_home(self):
-        """ navigate home using the home button in the top left corner """
+        """Navigate home using the home button in the top left corner of the header."""
         home_button = self.driver.find_element(*self.HOME_BUTTON)
         home_button.click()
 
     def navigate_to_manage_profile(self):
-        """ navigate to the manage profiles page, https://www.netflix.com/profiles/manage, by
-        clicking on the manage profiles button from the account dropdown from the header
+        """Navigate to the manage profiles page, https://www.netflix.com/profiles/manage, by
+        clicking on the manage profiles button from the account dropdown in the header.
         """
         account_dropdown_button = self.driver.find_element(*self.ACCOUNT_DROPDOWN_BUTTON)
         account_dropdown_button.click()
@@ -63,13 +63,13 @@ class HeaderPage(BasePage):
         manage_profiles_button.click()
 
     def clear_notifications(self):
-        """ CLEAR NOTIFICATIONS BY OPENING THE NOTIFICATIONS DROPDOWN AND THEN CLOSING IT"""
+        """Clear notifications by opening the notifications dropdown and then closing it."""
         notifications_menu_button = self.driver.find_element(*self.NOTIFICATION_MENU_BUTTON)
         notifications_menu_button.click()
         notifications_menu_button.click()
 
     def click_top_notification(self):
-        """ self-explanatory. Works from every non-video page"""
+        """Click the top notification form the notification dropdown in the header."""
         notifications_menu_button = self.driver.find_element(*self.NOTIFICATION_MENU_BUTTON)
         notifications_menu_button.click()
 
@@ -82,8 +82,8 @@ class HeaderPage(BasePage):
         wait.until(EC.staleness_of(top_notification))
 
     def search_field_is_open(self) -> bool:
-        """ return True if the search field is open, False if else. (Netflix's serach field
-        doesnt appear until the user clicks the search button with a magnifiying glass"""
+        """Return true if the search field is open, false if else."""
+        # Netflix's serach field doesnt appear until the user clicks the search button.
         try:
             self.driver.find_element(*self.SEARCH_FIELD)
             return True
@@ -91,13 +91,12 @@ class HeaderPage(BasePage):
             return False
 
     def clear_search(self):
-        """ search field is non-empty IFF it is open. Thus we dont have to open the search field
-        here"""
+        """Clear the search field as seen from the header."""
         search_field = self.driver.find_element(*self.SEARCH_FIELD)
         search_field.clear()
 
     def search(self, search_term: str):
-        """ uses the search bar in the header to search for search_term"""
+        """Search for 'search_term' show in Netflix by using the search field."""
         if self.search_field_is_open():
             self.clear_search()
         else:

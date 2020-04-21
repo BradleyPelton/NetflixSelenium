@@ -13,6 +13,12 @@
 
 # Trending is already on the home page, The other 4 rows are unique
 
+########################################################################################
+########################################################################################
+# THIS PAGE IS NOT CURRENTLY SUPPORTED. YOUR RESULTS MAY VARY
+########################################################################################
+########################################################################################
+
 
 def main_recommendation_latest(driver) -> int:
     """ DUPLICATE FUCNTION FROM /homepage.py . Works just as well"""
