@@ -1,27 +1,48 @@
-# from selenium import webdriver
-# from selenium.webdriver.chrome.options import Options
+import random
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-# from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.action_chains import ActionChains
 
-
+import pagemodels.showtoolspage
 from pagemodels.basepage import BasePage
-# import browserconfig
-# import secrets
-# import pagemodels.showtoolspage
-# import tests.pickledlogin
+import browserconfig
+import secrets
+import pagemodels.showtoolspage
+import tests.pickledlogin
 
 # # - ROWS: Queue, genre , continue watching , trending now, similars, because you added,\
 # # new release, top ten, netflix originals, popular titles, big row, most watched
 
 
-# The Home page for netflix is netflix.com/browse. Everything leads back to /browse 
+# The Home page for netflix is netflix.com/browse. Everything leads back to /browse
 
 # RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
+
+
+
+# DELETE ME
+driver = browserconfig.driver_runner(
+    executable_path=browserconfig.driver_path,
+    desired_capabilities=browserconfig.capabilities
+)
+tests.pickledlogin.pickled_login(driver)
+
+a = HomePage(driver)
+b = ShowToolsPage(driver)
+
+# que = a.get_queue_row()
+
+print(a.get_random_show().text)
+
+
+
 
 
 class HomePage(BasePage):
@@ -212,3 +233,42 @@ class HomePage(BasePage):
     def get_first_show_in_row(self, row_element):
         """Return the first show_element, in proper format, in the row row_element."""
         return self.get_currently_displayed_in_row(row_element)[0]
+
+    def get_random_row(self):
+        """ return a random row THAT IS NOT my-lsit or continue watching"""
+
+        abc = (By.CSS_SELECTOR, 'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="genre"]')
+
+all_rows = driver.find_elements_by_css_selector('div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card')
+
+desired_rows = [
+    row for row in all_rows 
+    if row.get_attribute('data-list-context') not in ()
+]
+    def get_random_show(self, row_element=None, condition=None):
+        """ CONDITION MUST BE A BOBCONTAINER FUCNTION e.g. is_in_my_list, is_upvoted"""
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+
+        if not row_element:
+            all_genre_rows = self.get_genre_rows()
+            print(f"found {len(all_genre_rows)} genre rows")
+            random_genre_row = random.choice(all_genre_rows)
+            # No need to assert len(all_genre_rows) != 0 , random does it with .choice()
+            show_choices = self.get_currently_displayed_in_row(random_genre_row)
+            print(f"found {len(show_choices)} shows in that row")
+        if row_element:
+            show_choices = self.get_currently_displayed_in_row(row_element)
+            print(f"found {len(show_choices)} in the specified row")
+
+        random.shuffle(show_choices)
+
+        if not condition:
+            return show_choices[0]
+        else:
+            for show in show_choices:
+                if show_tools.condition(show):
+                    return show
+            else:
+                # Improbable edge case where a random genre will show a bunch of shows, all of
+                # which do not meet condition above
+                raise Exception("get_random_show FAILED TO FIND A RANDOM SHOW")

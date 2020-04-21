@@ -1,5 +1,6 @@
 import unittest
 
+import secrets
 import pagemodels.videopage
 import tests.pickledlogin
 import browserconfig
@@ -38,7 +39,7 @@ class VideoPageTests(unittest.TestCase):
         elif browserconfig.current_browser == 'edge':
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
-                desired_capabilities=browserconfig.capabilities
+                capabilities=browserconfig.capabilities
             )
         tests.pickledlogin.pickled_login(cls.driver)
 
@@ -48,10 +49,8 @@ class VideoPageTests(unittest.TestCase):
         cls.driver.quit()
 
     def setUp(self):
-        """Load some random movie, Avengers: Infinity War in this instance."""
-        self.driver.get('https://www.netflix.com/watch/80219127?trackId=200254290&tctx=0%2C0%2C3f\
-            74b4eb-86f6-4d9d-bb35-a72282cd263c-76893314%2C311384eb-a55b-41d5-bb93-deb09b53bebb_32\
-            36856X6XX1587128751673%2C311384eb-a55b-41d5-bb93-deb09b53bebb_ROOT')
+        """Load some random movie, Avengers: Infinity War in this instance, stored in secrets.py"""
+        self.driver.get(secrets.URL_OF_VIDEO_TO_TEST)
         video_page = pagemodels.videopage.VideoPage(self.driver)
         video_page.initial_spinner_wait()  # Wait for the player to load
 
@@ -336,7 +335,7 @@ class VideoPageTests(unittest.TestCase):
         # WHEN PAUSED, delta < 0.01, WHEN NOT PAUSED AND GOOD CONNECTION, delta < 5
         self.assertAlmostEqual(current_remaining_time-30, new_remaining_time, delta=5)
 
-#     # TIME/DURATION TESTS
+# #     # TIME/DURATION TESTS
     def test_go_to_halfway_point(self):
         """Go to the halfway point in the show/movie using the duration slider."""
         video_page = pagemodels.videopage.VideoPage(self.driver)
@@ -362,6 +361,7 @@ class VideoPageTests(unittest.TestCase):
         video_page.change_to_percentage_time(0)
 
         current_remaining_time = video_page.get_remaining_time_in_seconds()
+
         show_duration = video_page.get_show_duration_in_seconds()
 
         self.assertAlmostEqual(current_remaining_time, show_duration, delta=5)
@@ -379,9 +379,9 @@ class VideoPageTests(unittest.TestCase):
         self.assertNotIn('watch', self.driver.current_url)
         # when watching a show, the url structure is "https://www.netflix.com/watch/600230...""
 
-    # TESTS THAT DIDNT MAKE THE FIRST CUT
-    # # # # # GO TO CREDITS COMPLICATES THINGS
-    # # # # # TODO- I NEED A  videopage FUCNTIONS TO "watch credits" to redisplay the scrubber
+    # # # # # # # TESTS THAT DIDNT MAKE THE FIRST CUT
+    # # # # GO TO CREDITS COMPLICATES THINGS
+    # # # # TODO- I NEED A  videopage FUCNTIONS TO "watch credits" to redisplay the scrubber
     # def test_go_to_credits(self):
     #     """ UNTESTED, DO NOT USE"""
     #     """ go to the .98  point in the show/movie USING THE SLIDER"""

@@ -29,7 +29,7 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
 
 ## Constants/Secrets
 - You need to create a `secrets.py` file in the home directory that will hold all of your 
-credentials and paths. In `secrets.py` set the following constant strings `MY_EMAIL, MY_PASSWORD,MY_CHOMEDRIVER_PATH, MY_GECKODRIVER_PATH, MY_MSEDGEDRIVER_PATH`
+credentials and paths. In `secrets.py` set the following constants as strings `MY_EMAIL, MY_PASSWORD, MY_CHOMEDRIVER_PATH, MY_GECKODRIVER_PATH, MY_MSEDGEDRIVER_PATH, URL_OF_VIDEO_TO_TEST`
 
 ## Running the tests
 Tests are executed using the standard unittest framework commands

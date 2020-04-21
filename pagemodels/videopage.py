@@ -103,7 +103,7 @@ class VideoPage(pagemodels.basepage.BasePage):
                 # print("player is idle")
                 return True
         except NoSuchElementException:
-            print(" player_is_idle COULDNT FIND THE SEEK_FORWAD, IS THE PLAYER TOTALLY IDLE???")
+            # print(" player_is_idle COULDNT FIND THE SEEK_FORWAD, IS THE PLAYER TOTALLY IDLE???")
             return True
 
     def wake_up_idle_player(self):
@@ -481,9 +481,13 @@ class VideoPage(pagemodels.basepage.BasePage):
             time_scrubber_bar, time_scrubber_bar.size['width']*percentage_left, 0).perform()
         action.click().perform()
 
+        # force the ui to go back to idle state by moving cursor to the center and waiting
         video_player_container = self.driver.find_element(*self.VIDEO_PLAYER_CONTAINER)
         action2 = ActionChains(self.driver)
         action2.move_to_element(video_player_container).perform()  # move the cursor to the center
+        # NOTE- this adds about 5 seconds to each duration test. TODO- try to speed up if possible
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.invisibility_of_element_located(time_scrubber_bar))
 
     def change_to_exact_time(self, hours, minutes, seconds):
         """User provides a time in the movie they want to navigate to (e.g. 1 hour, 35 minutes,

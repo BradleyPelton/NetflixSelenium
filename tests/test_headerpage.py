@@ -26,7 +26,7 @@ class HeaderPageTests(unittest.TestCase):
         elif browserconfig.current_browser == 'edge':
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
-                desired_capabilities=browserconfig.capabilities
+                capabilities=browserconfig.capabilities
             )
         tests.pickledlogin.pickled_login(cls.driver)
 

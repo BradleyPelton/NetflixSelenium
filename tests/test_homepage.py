@@ -9,10 +9,10 @@ import tests.test_loginpage
 import tests.pickledlogin
 
 # IMPORTANT VOCABULARY:
-# Jawbone-
-# Bob-container- AKA SHOW_PREVIEW
-# show_element-
-# row_element
+# Jawbone- Large menu displayed when clicking on show_element. Houses 99% of show information
+# Bob-container/show-preview - mousing over a show displays upvote,downvote, play buttons
+# show_element- uniform element that represents a show across this entire test suite
+# row_element- uniform element that represents a row(containing show_elements)
 
 # TEST CATEGORIES (CTRL + K + CTRL + 0 TO COLLAPSE ALL)
 # 1.) ROW TESTS (e.g. row left row right)
@@ -33,7 +33,7 @@ import tests.pickledlogin
 
 
 class HomePageTests(unittest.TestCase):
-    """Tests for the homepage of netflix. AKA netflix.com/browse ."""
+    """Tests for the homepage of netflix, AKA netflix.com/browse ."""
 
     @classmethod
     def setUpClass(cls):
@@ -47,7 +47,7 @@ class HomePageTests(unittest.TestCase):
         elif browserconfig.current_browser == 'edge':
             cls.driver = browserconfig.driver_runner(
                 executable_path=browserconfig.driver_path,
-                desired_capabilities=browserconfig.capabilities
+                capabilities=browserconfig.capabilities
             )
         tests.pickledlogin.pickled_login(cls.driver)
 
@@ -77,13 +77,13 @@ class HomePageTests(unittest.TestCase):
 
         intersection_titles = [title for title in new_show_titles if title in current_shows_titles]
 
-        # assert that the list of displayed shows has changed entirely
+        # Assert that the list of displayed shows has changed entirely.
         self.assertTrue(intersection_titles == [])
 
     def test_scroll_left_queue_row(self):
         """Scroll right then left in the queue/mylist row and assert the displayed shows have
         changed."""
-        # have to scroll right before scroll left is an option
+        # Have to scroll right before scroll left is an option.
         home_page = pagemodels.homepage.HomePage(self.driver)
         queue_row = home_page.get_queue_row()
 
@@ -101,7 +101,7 @@ class HomePageTests(unittest.TestCase):
 
         intersection_titles = [title for title in new_show_titles if title in current_shows_titles]
 
-        # assert that the list of displayed shows has changed entirely
+        # Assert that the list of displayed shows has changed entirely.
         self.assertTrue(intersection_titles == [])
 
     # SHOW FUNCTIONS (see showtoolspage.py)
@@ -117,7 +117,7 @@ class HomePageTests(unittest.TestCase):
 
         show_tools.play_show_from_jawbone(first_show)
 
-        # 'watch' is always in the url for the netflix AKIRA PLAYER
+        # 'watch' is always in the url for the netflix akira player.
         self.assertIn('watch', self.driver.current_url)
 
     def test_play_first_show_in_my_list_from_show_preview(self):
@@ -130,7 +130,7 @@ class HomePageTests(unittest.TestCase):
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
         show_tools.play_show_from_show_preview(first_show)
 
-        # 'watch' is always in the url for the netflix AKIRA PLAYER
+        # 'watch' is always in the url for the netflix akira player.
         self.assertIn('watch', self.driver.current_url)
 
     def test_play_first_show_in_continue_watching_row(self):
@@ -143,10 +143,10 @@ class HomePageTests(unittest.TestCase):
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
         show_tools.play_show_from_jawbone(first_show)
 
-        # 'watch' is always in the url for the netflix AKIRA PLAYER
+        # 'watch' is always in the url for the netflix akira player.
         self.assertIn('watch', self.driver.current_url)
-        # TODO- THIS ASSERTS THAT ANY SHOW IS BEING WATCHED. NOT that first_show is being watched
-        # SEE IF THERE IS A WAY TO ASSERT THE TITLE IS PRESENT SOMEWHERE
+        # TODO- This asserts that any show is being watched, not that first_show is being watched.
+        # See if there is a way to assert the title is present somewhere.
 
     # ADD/REMOVE MY LIST TESTS
     def test_add_show_to_my_list_from_jawbone(self):
@@ -158,24 +158,23 @@ class HomePageTests(unittest.TestCase):
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-        # WE NEED TO FIND A RANDOM SHOW THAT IS NOT IN MY LIST ALREADY
+        # We need to find a random show that is not in my list already.
         first_genre_row = home_page.get_genre_rows()[0]
         genre_shows = home_page.get_currently_displayed_in_row(first_genre_row)
 
         for show in genre_shows:
             if show_tools.is_in_my_list_from_jawbone(show):
                 show_tools.close_jawbone()
-                # continue
             else:
                 saved_title_name = show.text
                 print(f"attempting to add {saved_title_name} to my-list")
                 show_tools.add_show_to_my_list_from_jawbone(show)
                 break
         else:
-            # improbable edge case where a random genre will show a bunch of shows
-            # ALL OF WHICH ARE ALREADY IN MY LIST
-            print("test_add_show_to_my_list_from_show_preview FAILED TO FIND A RANDOM SHOW")
-            raise KeyError("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
+            # Improbable edge case where a random genre will show a bunch of shows, all of which
+            # are already in my list.
+            print("test_add_show_to_my_list_from_jawbone FAILED TO FIND A RANDOM SHOW")
+            raise Exception("test_add_show_to_my_list_from_jawbone WEIRD EDGE CASE")
 
         self.driver.get('https://netflix.com')
 
@@ -208,11 +207,10 @@ class HomePageTests(unittest.TestCase):
     def test_add_show_to_my_list_from_show_preview(self):
         """Add a random show to my list with the show preview and assert that the show is now in
         my-list/queue row."""
-        # WORKED LIKE A CHARM. PRETTY COMPLICATED TEST. NICE TO SHOW OFF
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-        # WE NEED TO FIND A RANDOM SHOW THAT IS NOT IN MY LIST ALREADY
+        # We need to find a random show that is not in my list already.
         first_genre_row = home_page.get_genre_rows()[1]
         genre_shows = home_page.get_currently_displayed_in_row(first_genre_row)
 
@@ -226,10 +224,10 @@ class HomePageTests(unittest.TestCase):
                 show_tools.add_show_to_my_list_from_show_preview(show)
                 break
         else:
-            # improbable edge case where a random genre will show a bunch of shows
-            # ALL OF WHICH ARE ALREADY IN MY LIST
+            # Improbable edge case where a random genre will show a bunch of shows, all of which
+            # are already in my list.
             print("test_add_show_to_my_list_from_show_preview FAILED TO FIND A RANDOM SHOW")
-            raise KeyError("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
+            raise Exception("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
 
         self.driver.get('https://netflix.com/browse')
 
@@ -276,10 +274,10 @@ class HomePageTests(unittest.TestCase):
                 show_tools.upvote_from_jawbone(show)
                 break
         else:
-            # improbable edge case where a random genre will show a bunch of shows
-            # ALL OF WHICH ARE ALREADY upvoted
-            print("test_add_show_to_my_list_from_show_preview FAILED TO FIND A RANDOM SHOW")
-            raise KeyError("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
+            # Improbable edge case where a random genre will show a bunch of shows, all of which
+            # are already in my list.
+            print("test_upvote_show_from_jawbone FAILED TO FIND A RANDOM SHOW")
+            raise Exception("test_upvote_show_from_jawbone WEIRD EDGE CASE")
 
         self.assertTrue(show_tools.is_upvoted_from_jawbone(show))
 
@@ -302,10 +300,10 @@ class HomePageTests(unittest.TestCase):
                 show_tools.downvote_from_jawbone(show)
                 break
         else:
-            # improbable edge case where a random genre will show a bunch of shows
-            # ALL OF WHICH ARE ALREADY downvoted
-            print("test_add_show_to_my_list_from_show_preview FAILED TO FIND A RANDOM SHOW")
-            raise KeyError("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
+            # Improbable edge case where a random genre will show a bunch of shows, all of which
+            # are already in my list.
+            print("test_downvote_show_from_jawbone FAILED TO FIND A RANDOM SHOW")
+            raise Exception("test_downvote_show_from_jawbone WEIRD EDGE CASE")
 
         self.assertTrue(show_tools.is_downvoted_from_jawbone(show))
 
@@ -328,10 +326,10 @@ class HomePageTests(unittest.TestCase):
                 show_tools.upvote_from_show_preview(show)
                 break
         else:
-            # improbable edge case where a random genre will show a bunch of shows
-            # ALL OF WHICH ARE ALREADY upvoted
-            print("test_add_show_to_my_list_from_show_preview FAILED TO FIND A RANDOM SHOW")
-            raise KeyError("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
+            # Improbable edge case where a random genre will show a bunch of shows, all of which
+            # are already in my list.
+            print("test_upvote_show_from_show_preview FAILED TO FIND A RANDOM SHOW")
+            raise Exception("test_upvote_show_from_show_preview WEIRD EDGE CASE")
 
         self.assertTrue(show_tools.is_upvoted_from_show_preview(show))
 
@@ -355,10 +353,10 @@ class HomePageTests(unittest.TestCase):
                 show_tools.downvote_from_show_preview(show)
                 break
         else:
-            # improbable edge case where a random genre will show a bunch of shows
-            # ALL OF WHICH ARE ALREADY downvoted
-            print("test_add_show_to_my_list_from_show_preview FAILED TO FIND A RANDOM SHOW")
-            raise KeyError("test_add_show_to_my_list_from_show_preview WEIRD EDGE CASE")
+            # Improbable edge case where a random genre will show a bunch of shows, all of which
+            # are already in my list.
+            print("test_downvote_show_from_show_preview FAILED TO FIND A RANDOM SHOW")
+            raise Exception("test_downvote_show_from_show_preview WEIRD EDGE CASE")
 
         self.assertTrue(show_tools.is_downvoted_from_show_preview(show))
 
