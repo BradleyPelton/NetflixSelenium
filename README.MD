@@ -50,4 +50,4 @@ Please kindly email me if you have any questions or concerns bradleypelton@gmail
 ## Acknowledgements
 - First and foremost to Netflix for creating a beautiful UI. The UI is opitimized for screen-readers
 which also makes it heaven for locating elements. Almost every element has a human-readable data-uia
-- Shoutout to the helpful devs on the Selenium Slack/IRC channel ,see (slack.com/selenium)[https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y]
+- Shoutout to the helpful devs on the Selenium Slack/IRC channel ,see [slack.com/selenium](https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y)

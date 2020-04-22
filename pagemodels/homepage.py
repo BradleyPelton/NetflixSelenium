@@ -1,4 +1,5 @@
 import random
+import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -28,21 +29,24 @@ import tests.pickledlogin
 
 
 # DELETE ME
-driver = browserconfig.driver_runner(
-    executable_path=browserconfig.driver_path,
-    desired_capabilities=browserconfig.capabilities
-)
-tests.pickledlogin.pickled_login(driver)
+# driver = browserconfig.driver_runner(
+#     executable_path=browserconfig.driver_path,
+#     desired_capabilities=browserconfig.capabilities
+# )
+# tests.pickledlogin.pickled_login(driver)
 
-a = HomePage(driver)
-b = ShowToolsPage(driver)
+# a = HomePage(driver)
+# b = ShowToolsPage(driver)
 
-# que = a.get_queue_row()
+# con = b.is_in_my_list_from_show_preview
 
-print(a.get_random_show().text)
+# # print(a.get_random_row().text)
+# print(a.get_random_show(a.get_random_row()).text)
 
-
-
+# a.get_semi_random_show(condition=con)
+# sho = a.get_totally_random_show()
+# print(sho.text)
+# # is_downvoted_from_show_preview
 
 
 class HomePage(BasePage):
@@ -54,6 +58,7 @@ class HomePage(BasePage):
         self.BILLBOARD_PLAY_BUTTON = (By.CSS_SELECTOR, 'div.billboard-row  a.playLink')
         self.MORE_INFO_BUTTON = (By.CSS_SELECTOR, 'a[data-uia="play-button"] + a')
         # ROW OPERATORS LOCATORS
+        self.ALL_ROWS = (By.CSS_SELECTOR, 'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card')
         self.QUEUE_ROW = (By.CSS_SELECTOR, 'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="queue"]')
         self.GENRE_ROWS = (By.CSS_SELECTOR, 'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="genre"]')
         self.CONTINUE_WATCHING_ROW = (By.CSS_SELECTOR, 'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="continueWatching"]')
@@ -72,6 +77,8 @@ class HomePage(BasePage):
         self.LEFT_CHEVRON = (By.CSS_SELECTOR, 'span.handle.handlePrev.active')
         ###########
         self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
+        self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
+
 
     def scroll_to_top_of_page(self):
         """Scroll to the top of the page."""
@@ -235,27 +242,31 @@ class HomePage(BasePage):
         return self.get_currently_displayed_in_row(row_element)[0]
 
     def get_random_row(self):
-        """ return a random row THAT IS NOT my-lsit or continue watching"""
+        """Return a random row that contains standard show elements. (excludes my-list, big-row,
+        topTen, etc.)"""
 
-        abc = (By.CSS_SELECTOR, 'div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card[data-list-context="genre"]')
+        all_rows = self.driver.find_elements(*self.ALL_ROWS)
 
-all_rows = driver.find_elements_by_css_selector('div.lolomo.is-fullbleed > div.lolomoRow.lolomoRow_title_card')
+        desired_rows = [
+            row for row in all_rows
+            if row.get_attribute('data-list-context') in
+            ['genre', 'popularTitles', 'trendingNow', 'similars', 'becauseYouAdded']
+        ]
 
-desired_rows = [
-    row for row in all_rows 
-    if row.get_attribute('data-list-context') not in ()
-]
-    def get_random_show(self, row_element=None, condition=None):
+        return random.choice(desired_rows)
+
+    def get_semi_random_show(self, row_element=None, condition=None, condition_bool=None):
         """ CONDITION MUST BE A BOBCONTAINER FUCNTION e.g. is_in_my_list, is_upvoted"""
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
+        if condition_bool.lower() == 'true':
+            raise Exception("get_semi_random_show param condition_bool is either False or None")
+
+        # get a list of random shows from a random row or row_element if specified
         if not row_element:
-            all_genre_rows = self.get_genre_rows()
-            print(f"found {len(all_genre_rows)} genre rows")
-            random_genre_row = random.choice(all_genre_rows)
-            # No need to assert len(all_genre_rows) != 0 , random does it with .choice()
-            show_choices = self.get_currently_displayed_in_row(random_genre_row)
-            print(f"found {len(show_choices)} shows in that row")
+            random_row = self.get_random_row()
+            show_choices = self.get_currently_displayed_in_row(random_row)
+            print(f"found {len(show_choices)} shows in a random row")
         if row_element:
             show_choices = self.get_currently_displayed_in_row(row_element)
             print(f"found {len(show_choices)} in the specified row")
@@ -263,12 +274,56 @@ desired_rows = [
         random.shuffle(show_choices)
 
         if not condition:
+            # if no condition is passed in, return any random show
             return show_choices[0]
+        elif condition and condition_bool:
+            if condition_bool.lower() == 'false':
+                # find a show where the condition IS FALSE
+                for show in show_choices:
+                    print("gate 1")
+                    print(show.text)
+                    if not condition(show):
+                        return show
+                    else:
+                        home_button = self.driver.find_element(*self.HOME_BUTTON)
+                        bob_play_hitzone = self.driver.find_element(*show_tools.BOB_PLAY_HITZONE)
+
+                        action = ActionChains(self.driver)
+                        action.move_to_element(home_button).perform()
+
+                        wait = WebDriverWait(self.driver, 10)
+                        wait.until(EC.invisibility_of_element_located(bob_play_hitzone))
         else:
+            # find a show that where condition is TRUE
             for show in show_choices:
-                if show_tools.condition(show):
+                # find a show where the condition is true
+                print("gate 1")
+                print(show.text)
+                if condition(show):
                     return show
-            else:
-                # Improbable edge case where a random genre will show a bunch of shows, all of
-                # which do not meet condition above
-                raise Exception("get_random_show FAILED TO FIND A RANDOM SHOW")
+                else:
+                    home_button = self.driver.find_element(*self.HOME_BUTTON)
+                    bob_play_hitzone = self.driver.find_element(*show_tools.BOB_PLAY_HITZONE)
+
+                    action = ActionChains(self.driver)
+                    action.move_to_element(home_button).perform()
+
+                    wait = WebDriverWait(self.driver, 10)
+                    wait.until(EC.invisibility_of_element_located(bob_play_hitzone))
+
+        # Improbable edge case where a random genre will show a bunch of shows, all of
+        # which did not satisfy condition & condition_bool
+        raise Exception("get_semi_random_show FAILED TO FIND A RANDOM SHOW")
+
+    def get_totally_random_show(self):
+        """Get a random show that is currently displayed on the homepage."""
+        # May or may not be in my list, upvoted, downvoted
+        # BUG- RETURNING NOT SHOW ELEMENTS SOMETIMES, show.text is printing ''
+        # I dont think all
+
+        all_shows = self.driver.find_elements(*self.SHOW_ELEMENTS)
+        print(f"get_totally_random_show found {len(all_shows)} shows")
+
+        return random.choice(all_shows)
+
+

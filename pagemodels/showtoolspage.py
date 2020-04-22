@@ -79,6 +79,9 @@ class ShowToolsPage(BasePage):
         self.BOB_MY_LIST_STATUS = (
             By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
 
+        self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
+        
+
     # JAWBONE FUCNTIONS
     # FOR SHOW PREVIEW FUNCTIONS(bob-container), SEE LINE 300+
     def is_jawbone_open(self):
@@ -406,6 +409,17 @@ class ShowToolsPage(BasePage):
         else:
             self.mouse_over_show_element(show_element)
 
+    def close_show_preview(self):
+        """Close any show preview by mousing over the home button at the top of the page"""
+        home_button = self.driver.find_element(*self.HOME_BUTTON)
+        bob_play_hitzone = self.driver.find_element(*self.BOB_PLAY_HITZONE)
+
+        action = ActionChains(self.driver)
+        action.move_to_element(home_button).perform()
+
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.invisibility_of_element_located(bob_play_hitzone))
+
     def open_jawbone_from_show_preview(self, show_element):
         """Open the jawbone of show_element via the show_preview."""
         # TODO- Add logic to check if jawbone is already open.
@@ -413,8 +427,13 @@ class ShowToolsPage(BasePage):
         bob_jawbone_hitzone = self.driver.find_element(*self.BOB_JAWBONE_HITZONE)
         bob_jawbone_hitzone.click()
 
+        # ADDED A DUPLICATE WAIT, ONE WORKS FOR SOME TESTS, THE OTHER WORKS FOR OTHER TESTS
+        # TODO- CLEAN THIS UP
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located((self.JAWBONE_CLOSE_BUTTON)))
+
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((self.MY_LIST_BUTTON)))
 
     def play_show_from_show_preview(self, show_element):
         """Play the show from the bob container/show-preview."""
