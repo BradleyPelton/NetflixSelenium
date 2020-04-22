@@ -75,7 +75,7 @@ class ShowToolsPage(BasePage):
         self.BOB_DOWNVOTE_BUTTON = (
             By.CSS_SELECTOR, 'div.bob-actions-wrapper a[aria-label="Rate thumbs down"]')
         self.BOB_MY_LIST_BUTTON = (
-            By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"]')
+            By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > a')
         self.BOB_MY_LIST_STATUS = (
             By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > span')
 

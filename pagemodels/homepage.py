@@ -38,6 +38,19 @@ import tests.pickledlogin
 # a = HomePage(driver)
 # b = ShowToolsPage(driver)
 
+# driver.get('https://netflix.com/browse')
+# driver.execute_script("window.scrollTo(0, 10000000)")
+
+# a.scroll_to_bottom_of_page()
+
+# a.get_random_row()
+
+# l1 = driver.find_element(*a.SMALL_LOADING_CARD)
+# l1.is_displayed()
+
+
+
+
 # con = b.is_in_my_list_from_show_preview
 
 # # print(a.get_random_row().text)
@@ -78,6 +91,8 @@ class HomePage(BasePage):
         ###########
         self.SHOW_ELEMENTS = (By.CSS_SELECTOR, 'a[class="slider-refocus"]')
         self.HOME_BUTTON = (By.CSS_SELECTOR, 'a[aria-label="Netflix"]')
+        self.SMALL_LOADING_CARD = (By.CSS_SELECTOR, 'div.smallTitleCard.loadingTitle')
+        self.LOADING_ROW = (By.CSS_SELECTOR, 'div.lolomoRow.lolomoRow_title_card.lolomoPreview')
 
 
     def scroll_to_top_of_page(self):
@@ -86,7 +101,19 @@ class HomePage(BasePage):
 
     def scroll_to_bottom_of_page(self):
         """Scroll to the botom of the page."""
+        # THIS LOADS EVERY SINGLE ROW AND TAKES ABOUT 9 SECONDS TO FINISH
+        print(f"script started at {time.time()}")
         self.driver.execute_script("window.scrollTo(0, 10000000)")
+
+        small_loading_card = self.driver.find_element(*self.SMALL_LOADING_CARD)
+
+        # wait = WebDriverWait(self.driver, 10)
+        # wait.until(EC.visibility_of_element_located(self.SMALL_LOADING_CARD))
+
+        # Wait for all the placeholder loading cards to disappear
+        wait = WebDriverWait(self.driver, 15)
+        wait.until(EC.staleness_of(small_loading_card))
+        print(f"finished loading script at {time.time()}")
 
     # ROW OPERATIONS
     def get_queue_row(self):
@@ -252,7 +279,7 @@ class HomePage(BasePage):
             if row.get_attribute('data-list-context') in
             ['genre', 'popularTitles', 'trendingNow', 'similars', 'becauseYouAdded']
         ]
-
+        print(f"get_random_row found {len(desired_rows)} rows to choose from")
         return random.choice(desired_rows)
 
     def get_semi_random_show(self, row_element=None, condition=None, condition_bool=None):
@@ -261,6 +288,9 @@ class HomePage(BasePage):
 
         if condition_bool.lower() == 'true':
             raise Exception("get_semi_random_show param condition_bool is either False or None")
+
+        # We need to scroll to the bottom of the page to generate more shows to increase randomness
+        # self.scroll_to_bottom_of_page()
 
         # get a list of random shows from a random row or row_element if specified
         if not row_element:

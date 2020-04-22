@@ -26,8 +26,7 @@ import tests.pickledlogin
 # VIDEO OF EXECUTION
 #  https://gyazo.com/8c9e75c1412c7e13e32b0b4bc14a5677
 
-# 2020-04-19 ALL TESTS PASSING
-# REFACTOR COMPLETE, all time.sleeps removed
+# 2020-04-22 some test are failing
 
 # TODO- tests still don't perfectly clean up after themselves. Add more cleanup tasks
 # namely, removing a show from my-list is complicated. Once removed, I would have to search for it
@@ -62,190 +61,190 @@ class HomePageTests(unittest.TestCase):
         self.driver.get("https://www.netflix.com/browse")
 
     # # ROW FUNCTIONS/OPERATIONS
-    # def test_scroll_right_queue_row(self):
-    #     """Scroll right in the queue/mylist row and assert the displayed shows have changed."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     queue_row = home_page.get_queue_row()
+    def test_scroll_right_queue_row(self):
+        """Scroll right in the queue/mylist row and assert the displayed shows have changed."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        queue_row = home_page.get_queue_row()
 
-    #     current_shows = home_page.get_currently_displayed_in_row(queue_row)
-    #     current_shows_titles = [show.text for show in current_shows]
+        current_shows = home_page.get_currently_displayed_in_row(queue_row)
+        current_shows_titles = [show.text for show in current_shows]
 
-    #     home_page.row_page_right(queue_row)
+        home_page.row_page_right(queue_row)
 
-    #     new_queue_row = home_page.get_queue_row()
-    #     new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
-    #     new_show_titles = [show.text for show in new_shows]
+        new_queue_row = home_page.get_queue_row()
+        new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
+        new_show_titles = [show.text for show in new_shows]
 
-    #     intersection_titles = [title for title in new_show_titles if title in current_shows_titles]
+        intersection_titles = [title for title in new_show_titles if title in current_shows_titles]
 
-    #     # Assert that the list of displayed shows has changed entirely.
-    #     self.assertTrue(intersection_titles == [])
+        # Assert that the list of displayed shows has changed entirely.
+        self.assertTrue(intersection_titles == [])
 
-    # def test_scroll_left_queue_row(self):
-    #     """Scroll right then left in the queue/mylist row and assert the displayed shows have
-    #     changed."""
-    #     # Have to scroll right before scroll left is an option.
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     queue_row = home_page.get_queue_row()
+    def test_scroll_left_queue_row(self):
+        """Scroll right then left in the queue/mylist row and assert the displayed shows have
+        changed."""
+        # Have to scroll right before scroll left is an option.
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        queue_row = home_page.get_queue_row()
 
-    #     home_page.row_page_right(queue_row)
-    #     home_page.row_page_right(queue_row)
+        home_page.row_page_right(queue_row)
+        home_page.row_page_right(queue_row)
 
-    #     current_shows = home_page.get_currently_displayed_in_row(queue_row)
-    #     current_shows_titles = [show.text for show in current_shows]
+        current_shows = home_page.get_currently_displayed_in_row(queue_row)
+        current_shows_titles = [show.text for show in current_shows]
 
-    #     home_page.row_page_left(queue_row)
+        home_page.row_page_left(queue_row)
 
-    #     new_queue_row = home_page.get_queue_row()
-    #     new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
-    #     new_show_titles = [show.text for show in new_shows]
+        new_queue_row = home_page.get_queue_row()
+        new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
+        new_show_titles = [show.text for show in new_shows]
 
-    #     intersection_titles = [title for title in new_show_titles if title in current_shows_titles]
+        intersection_titles = [title for title in new_show_titles if title in current_shows_titles]
 
-    #     # Assert that the list of displayed shows has changed entirely.
-    #     self.assertTrue(intersection_titles == [])
+        # Assert that the list of displayed shows has changed entirely.
+        self.assertTrue(intersection_titles == [])
 
-    # # SHOW FUNCTIONS (see showtoolspage.py)
-    # # PLAY TESTS
-    # def test_play_first_show_in_my_list_from_jawbone(self):
-    #     """Grab the first show in my-list/queue and play it from the jawbone."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+    # SHOW FUNCTIONS (see showtoolspage.py)
+    # PLAY TESTS
+    def test_play_first_show_in_my_list_from_jawbone(self):
+        """Grab the first show in my-list/queue and play it from the jawbone."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     queue_row = home_page.get_queue_row()
+        queue_row = home_page.get_queue_row()
 
-    #     first_show = home_page.get_first_show_in_row(queue_row)
+        first_show = home_page.get_first_show_in_row(queue_row)
 
-    #     show_tools.play_show_from_jawbone(first_show)
+        show_tools.play_show_from_jawbone(first_show)
 
-    #     # 'watch' is always in the url for the netflix akira player.
-    #     self.assertIn('watch', self.driver.current_url)
+        # 'watch' is always in the url for the netflix akira player.
+        self.assertIn('watch', self.driver.current_url)
 
-    # def test_play_first_show_in_my_list_from_show_preview(self):
-    #     """Grab the first show in my-list/queue and play it from the show_preview/bob-container."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     queue_row = home_page.get_queue_row()
+    def test_play_first_show_in_my_list_from_show_preview(self):
+        """Grab the first show in my-list/queue and play it from the show_preview/bob-container."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        queue_row = home_page.get_queue_row()
 
-    #     first_show = home_page.get_first_show_in_row(queue_row)
+        first_show = home_page.get_first_show_in_row(queue_row)
 
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
-    #     show_tools.play_show_from_show_preview(first_show)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+        show_tools.play_show_from_show_preview(first_show)
 
-    #     # 'watch' is always in the url for the netflix akira player.
-    #     self.assertIn('watch', self.driver.current_url)
+        # 'watch' is always in the url for the netflix akira player.
+        self.assertIn('watch', self.driver.current_url)
 
-    # def test_play_first_show_in_continue_watching_row(self):
-    #     """Grab the first show in the 'continue watching row' and play it from the jawbone."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     cont_watching_row = home_page.get_continue_watching_row()
+    def test_play_first_show_in_continue_watching_row(self):
+        """Grab the first show in the 'continue watching row' and play it from the jawbone."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        cont_watching_row = home_page.get_continue_watching_row()
 
-    #     first_show = home_page.get_first_show_in_row(cont_watching_row)
+        first_show = home_page.get_first_show_in_row(cont_watching_row)
 
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
-    #     show_tools.play_show_from_jawbone(first_show)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+        show_tools.play_show_from_jawbone(first_show)
 
-    #     # 'watch' is always in the url for the netflix akira player.
-    #     self.assertIn('watch', self.driver.current_url)
-    #     # TODO- This asserts that any show is being watched, not that first_show is being watched.
-    #     # See if there is a way to assert the title is present somewhere.
+        # 'watch' is always in the url for the netflix akira player.
+        self.assertIn('watch', self.driver.current_url)
+        # TODO- This asserts that any show is being watched, not that first_show is being watched.
+        # See if there is a way to assert the title is present somewhere.
 
-    # # # ADD/REMOVE MY LIST TESTS
-    # def test_add_show_to_my_list_from_jawbone(self):
-    #     """Add show to my list and assert that the show is now in my-list row."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+    # # ADD/REMOVE MY LIST TESTS
+    def test_add_show_to_my_list_from_jawbone(self):
+        """Add show to my list and assert that the show is now in my-list row."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     # We need to find a random show that is not in my list already.
+        # We need to find a random show that is not in my list already.
 
-    #     test_condition = show_tools.is_in_my_list_from_show_preview
-    #     random_show = home_page.get_semi_random_show(
-    #         condition=test_condition,
-    #         condition_bool='False'
-    #     )
-    #     # get a random show that meets the condition and condition_bool, namely a show that
-    #     # returns false when is_in_my_list(show), i.e. a show not in my list
-    #     saved_title_name = random_show.text
+        test_condition = show_tools.is_in_my_list_from_show_preview
+        random_show = home_page.get_semi_random_show(
+            condition=test_condition,
+            condition_bool='False'
+        )
+        # get a random show that meets the condition and condition_bool, namely a show that
+        # returns false when is_in_my_list(show), i.e. a show not in my list
+        saved_title_name = random_show.text
 
-    #     show_tools.close_show_preview()
-    #     show_tools.add_show_to_my_list_from_jawbone(random_show)
+        show_tools.close_show_preview()
+        show_tools.add_show_to_my_list_from_jawbone(random_show)
 
-    #     self.driver.get('https://netflix.com')
+        self.driver.get('https://netflix.com')
 
-    #     new_queue_row = home_page.get_queue_row()
-    #     new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
-    #     new_show_titles = [show.text for show in new_shows]
+        new_queue_row = home_page.get_queue_row()
+        new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
+        new_show_titles = [show.text for show in new_shows]
 
-    #     self.assertIn(saved_title_name, new_show_titles)
+        self.assertIn(saved_title_name, new_show_titles)
 
-    # def test_remove_show_from_my_list_from_jawbone(self):
-    #     """Remove the first show from my-list/queue from the jawbone and assert that the show is
-    #     not in my-list/queue row after."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     queue_row = home_page.get_queue_row()
+    def test_remove_show_from_my_list_from_jawbone(self):
+        """Remove the first show from my-list/queue from the jawbone and assert that the show is
+        not in my-list/queue row after."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        queue_row = home_page.get_queue_row()
 
-    #     first_show_in_q = home_page.get_first_show_in_row(queue_row)
-    #     first_show_in_q_title = first_show_in_q.text
+        first_show_in_q = home_page.get_first_show_in_row(queue_row)
+        first_show_in_q_title = first_show_in_q.text
 
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
-    #     show_tools.remove_show_from_my_list_from_jawbone(first_show_in_q)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+        show_tools.remove_show_from_my_list_from_jawbone(first_show_in_q)
 
-    #     self.driver.get('https://netflix.com')
+        self.driver.get('https://netflix.com')
 
-    #     new_queue_row = home_page.get_queue_row()
-    #     new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
-    #     new_show_titles = [show.text for show in new_shows]
+        new_queue_row = home_page.get_queue_row()
+        new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
+        new_show_titles = [show.text for show in new_shows]
 
-    #     self.assertNotIn(first_show_in_q_title, new_show_titles)
+        self.assertNotIn(first_show_in_q_title, new_show_titles)
 
-    # def test_add_show_to_my_list_from_show_preview(self):
-    #     """Add a random show to my list with the show preview and assert that the show is now in
-    #     my-list/queue row."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+    def test_add_show_to_my_list_from_show_preview(self):
+        """Add a random show to my list with the show preview and assert that the show is now in
+        my-list/queue row."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     # We need to find a random show that is not in my list already.
+        # We need to find a random show that is not in my list already.
 
-    #     test_condition = show_tools.is_in_my_list_from_show_preview
-    #     random_show = home_page.get_semi_random_show(
-    #         condition=test_condition,
-    #         condition_bool='False'
-    #     )
-    #     # get a random show that meets the condition and condition_bool, namely a show that
-    #     # returns false when is_in_my_list(show), i.e. a show not in my list
-    #     saved_title_name = random_show.text
+        test_condition = show_tools.is_in_my_list_from_show_preview
+        random_show = home_page.get_semi_random_show(
+            condition=test_condition,
+            condition_bool='False'
+        )
+        # get a random show that meets the condition and condition_bool, namely a show that
+        # returns false when is_in_my_list(show), i.e. a show not in my list
+        saved_title_name = random_show.text
 
-    #     show_tools.add_show_to_my_list_from_show_preview(random_show)
+        show_tools.add_show_to_my_list_from_show_preview(random_show)
 
-    #     self.driver.get('https://netflix.com')
+        self.driver.get('https://netflix.com')
 
-    #     new_queue_row = home_page.get_queue_row()
-    #     new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
-    #     new_show_titles = [show.text for show in new_shows]
+        new_queue_row = home_page.get_queue_row()
+        new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
+        new_show_titles = [show.text for show in new_shows]
 
-    #     self.assertIn(saved_title_name, new_show_titles)
+        self.assertIn(saved_title_name, new_show_titles)
 
-    # def test_remove_show_from_my_list_from_show_preview(self):
-    #     """Remove a show from my-list/queue via the show_preview and assert that the show is not in
-    #     my-list/queue row."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+    def test_remove_show_from_my_list_from_show_preview(self):
+        """Remove a show from my-list/queue via the show_preview and assert that the show is not in
+        my-list/queue row."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     queue_row = home_page.get_queue_row()
-    #     first_queue_show = home_page.get_first_show_in_row(queue_row)
-    #     saved_title_name = first_queue_show.text
+        queue_row = home_page.get_queue_row()
+        first_queue_show = home_page.get_first_show_in_row(queue_row)
+        saved_title_name = first_queue_show.text
 
-    #     show_tools.remove_show_from_my_list_from_show_preview(first_queue_show)
+        show_tools.remove_show_from_my_list_from_show_preview(first_queue_show)
 
-    #     # Relaunching the page to see if the show has been removed from my_list
-    #     self.driver.get("https://netflix.com/browse")
+        # Relaunching the page to see if the show has been removed from my_list
+        self.driver.get("https://netflix.com/browse")
 
-    #     new_queue_row = home_page.get_queue_row()
-    #     new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
-    #     new_show_titles = [show.text for show in new_shows]
+        new_queue_row = home_page.get_queue_row()
+        new_shows = home_page.get_currently_displayed_in_row(new_queue_row)
+        new_show_titles = [show.text for show in new_shows]
 
-    #     self.assertNotIn(saved_title_name, new_show_titles)
+        self.assertNotIn(saved_title_name, new_show_titles)
 
-    # UPVOTE/DOWNVOTE TESTS
+    # # # # # # UPVOTE/DOWNVOTE TESTS
     def test_upvote_show_from_jawbone(self):
         """Upvote a random show from the jawbone and assert upvoted."""
         home_page = pagemodels.homepage.HomePage(self.driver)
@@ -264,79 +263,70 @@ class HomePageTests(unittest.TestCase):
 
         # CLEANUP
         show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
-    # def test_downvote_show_from_jawbone(self):
-    #     """Downvote a random show from the jawbone and assert downvoted."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     test_condition = show_tools.is_downvoted_from_show_preview
-    #     random_show = home_page.get_semi_random_show(
-    #         condition=test_condition,
-    #         condition_bool='false'
-    #     )
-    #     # Find a random show that is not already downvoted
+    def test_downvote_show_from_jawbone(self):
+        """Downvote a random show from the jawbone and assert downvoted."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     show_tools.close_show_preview()
-    #     show_tools.downvote_from_jawbone(random_show)
+        test_condition = show_tools.is_downvoted_from_show_preview
+        random_show = home_page.get_semi_random_show(
+            condition=test_condition,
+            condition_bool='false'
+        )
+        # Find a random show that is not already downvoted
 
-    #     self.assertTrue(show_tools.is_downvoted_from_jawbone(random_show))
+        show_tools.close_show_preview()
+        show_tools.downvote_from_jawbone(random_show)
 
-    #     # CLEANUP
-    #     show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
+        self.assertTrue(show_tools.is_downvoted_from_jawbone(random_show))
 
-    # def test_upvote_show_from_show_preview(self):
-    #     """Upvote a random show from the show preview and assert its upvoted."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+        # CLEANUP
+        show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
 
-    #     # WE NEED TO FIND A RANDOM SHOW THAT IS NOT UPVOTED
-    #     first_genre_row = home_page.get_genre_rows()[0]
-    #     genre_shows = home_page.get_currently_displayed_in_row(first_genre_row)
+    def test_upvote_show_from_show_preview(self):
+        """Upvote a random show from the show preview and assert its upvoted."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     for show in genre_shows:
-    #         if not show_tools.is_upvoted_from_show_preview(show):
-    #             saved_title_name = show.text
-    #             print(f"attempting to UPVOTE {saved_title_name} from JAWBONE")
-    #             show_tools.upvote_from_show_preview(show)
-    #             break
-    #     else:
-    #         # Improbable edge case where a random genre will show a bunch of shows, all of which
-    #         # are already in my list.
-    #         print("test_upvote_show_from_show_preview FAILED TO FIND A RANDOM SHOW")
-    #         raise Exception("test_upvote_show_from_show_preview WEIRD EDGE CASE")
+        test_condition = show_tools.is_upvoted_from_show_preview
+        random_show = home_page.get_semi_random_show(
+            condition=test_condition,
+            condition_bool='false'
+        )
+        # Find a random show that is not already upvoted
 
-    #     self.assertTrue(show_tools.is_upvoted_from_show_preview(show))
+        show_tools.upvote_from_show_preview(random_show)
 
-    #     # CLEANUP
-    #     show_tools.open_jawbone_from_show_preview(show)
-    #     show_tools.remove_downvote_or_upvote_from_jawbone(show)
+        self.assertTrue(show_tools.is_upvoted_from_show_preview(random_show))
 
-    # def test_downvote_show_from_show_preview(self):
-    #     """Downvote a random show from the show preview and assert its downvoted."""
-    #     home_page = pagemodels.homepage.HomePage(self.driver)
-    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+        # CLEANUP
+        show_tools.close_show_preview()
+        show_tools.open_jawbone_from_show_preview(random_show)
+        show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
 
-    #     # WE NEED TO FIND A RANDOM SHOW THAT IS NOT DOWNVOTED
-    #     first_genre_row = home_page.get_genre_rows()[0]
-    #     genre_shows = home_page.get_currently_displayed_in_row(first_genre_row)
+    def test_downvote_show_from_show_preview(self):
+        """Downvote a random show from the show preview and assert its downvoted."""
+        home_page = pagemodels.homepage.HomePage(self.driver)
+        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
-    #     for show in genre_shows:
-    #         if not show_tools.is_downvoted_from_show_preview(show):
-    #             saved_title_name = show.text
-    #             print(f"attempting to DOWNVOTE {saved_title_name} from JAWBONE")
-    #             show_tools.downvote_from_show_preview(show)
-    #             break
-    #     else:
-    #         # Improbable edge case where a random genre will show a bunch of shows, all of which
-    #         # are already in my list.
-    #         print("test_downvote_show_from_show_preview FAILED TO FIND A RANDOM SHOW")
-    #         raise Exception("test_downvote_show_from_show_preview WEIRD EDGE CASE")
+        # home_page.scroll_to_bottom_of_page()
 
-    #     self.assertTrue(show_tools.is_downvoted_from_show_preview(show))
+        test_condition = show_tools.is_downvoted_from_show_preview
+        random_show = home_page.get_semi_random_show(
+            condition=test_condition,
+            condition_bool='false'
+        )
+        # Find a random show that is not already downvoted
 
-    #     # CLEANUP
-    #     show_tools.open_jawbone_from_show_preview(show)
-    #     show_tools.remove_downvote_or_upvote_from_jawbone(show)
+        show_tools.downvote_from_show_preview(random_show)
+
+        self.assertTrue(show_tools.is_downvoted_from_show_preview(random_show))
+
+        # CLEANUP
+        show_tools.close_show_preview()
+        show_tools.open_jawbone_from_show_preview(random_show)
+        show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
 
     # # TESTS THAT DIDNT MAKE THE FIRST CUT
     # # # def test_open_explore_all_first_genre_row(self):
