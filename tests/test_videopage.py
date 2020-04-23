@@ -22,6 +22,9 @@ import browserconfig
 # VIDEO EXAMPLE OF EXECUTION:
 # https://gyazo.com/7c703e6bba5af706849052df65772089
 
+# 2020-04-22 All tests passing
+# Tests passed 5 executions in a row. v1 Ready to ship.
+
 
 class VideoPageTests(unittest.TestCase):
     """The following tests test basic use cases for Netflix's video player(dubbed 'Akira player'

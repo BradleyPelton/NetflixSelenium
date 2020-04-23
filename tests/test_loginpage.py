@@ -4,6 +4,9 @@ import secrets
 import browserconfig
 import pagemodels.loginpage
 
+# 2020-04-22 All tests passing
+# Tests passed 5 executions in a row. v1 Ready to ship
+
 
 class LoginPageTests(unittest.TestCase):
     """All of the test cases for successful and unsuccessful login attempts."""

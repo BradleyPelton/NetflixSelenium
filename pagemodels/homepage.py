@@ -222,7 +222,7 @@ class HomePage(BasePage):
         genres = [genre.text for genre in genre_rows]
         return genres
 
-    #####################################################################################
+    ####################################################################################
     # NOTE TO READER. ANY FUNCTIONS RELATED TO INTERACTING WITH SHOW ELEMNTS CAN BE FOUND IN
     # showtools.py. THE FOLLOWING FUCNTIONS FALL IN THE DOMAIN OF ROW_ELEMENT FUCNTIONS
     def get_show_titles_from_row(self, row_element):

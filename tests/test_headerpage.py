@@ -10,6 +10,7 @@ import browserconfig
 # https://gyazo.com/b20fd223076bf34c1f2c9b94a4f1fe0a
 
 # 2020-04-20 All tests passing, refactor complete
+# All tests passed 5 executions in a row. v1 ready to ship.
 
 
 class HeaderPageTests(unittest.TestCase):
