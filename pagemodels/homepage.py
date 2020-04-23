@@ -36,31 +36,21 @@ import tests.pickledlogin
 # tests.pickledlogin.pickled_login(driver)
 
 # a = HomePage(driver)
-# b = ShowToolsPage(driver)
+# b = pagemodels.showtoolspage.ShowToolsPage(driver)
 
-# driver.get('https://netflix.com/browse')
-# driver.execute_script("window.scrollTo(0, 10000000)")
+# que = a.get_queue_row()
+# first_show = a.get_first_show_in_row(que)
 
-# a.scroll_to_bottom_of_page()
+# cont = a.get_continue_watching_row()
+# first_show = a.get_first_show_in_row(cont)
+# first_show.text
 
-# a.get_random_row()
+# b.mouse_over_show_if_not_moused_over(first_show)
 
-# l1 = driver.find_element(*a.SMALL_LOADING_CARD)
-# l1.is_displayed()
-
-
-
-
-# con = b.is_in_my_list_from_show_preview
-
-# # print(a.get_random_row().text)
-# print(a.get_random_show(a.get_random_row()).text)
-
-# a.get_semi_random_show(condition=con)
-# sho = a.get_totally_random_show()
-# print(sho.text)
-# # is_downvoted_from_show_preview
-
+# driver.find_element_by_css_selector('div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-add')
+# # self.BOB_NT_ADD = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-add')
+# driver.find_element_by_css_selector('div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-added')
+# # self.BOB_ALR_ADDED = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-added')
 
 class HomePage(BasePage):
     def __init__(self, driver):
