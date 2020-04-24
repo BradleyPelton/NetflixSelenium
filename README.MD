@@ -28,7 +28,7 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
     - Edge version 81.0.416.53, msedgedriver version: 81.0.409.0
 
 ## Constants/Secrets
-- You need to create a `secrets.py` file in the home directory that will hold all of your 
+- You need to create a `secrets.py` file in the root directory that will hold all of your 
 credentials and paths. In `secrets.py` set the following constants as strings `MY_EMAIL, MY_PASSWORD, MY_CHOMEDRIVER_PATH, MY_GECKODRIVER_PATH, MY_MSEDGEDRIVER_PATH, URL_OF_VIDEO_TO_TEST`
 
 ## Running the tests
@@ -50,4 +50,4 @@ Please kindly email me if you have any questions or concerns bradleypelton@gmail
 ## Acknowledgements
 - First and foremost to Netflix for creating a beautiful UI. The UI is opitimized for screen-readers
 which also makes it heaven for locating elements. Almost every element has a human-readable data-uia
-- Shoutout to the helpful devs on the Selenium Slack/IRC channel ,see [slack.com/selenium](https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y)
+- Shoutout to the helpful devs on the Selenium Slack/IRC channel, see [slack.com/selenium](https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y)

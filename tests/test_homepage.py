@@ -1,5 +1,4 @@
 import unittest
-import time
 
 # from selenium import webdriver
 
@@ -15,29 +14,16 @@ import tests.pickledlogin
 # show_element- uniform element that represents a show across this entire test suite
 # row_element- uniform element that represents a row(containing show_elements)
 
-# TEST CATEGORIES (CTRL + K + CTRL + 0 TO COLLAPSE ALL)
+# TEST CATEGORIES
 # 1.) ROW TESTS (e.g. row left row right)
 # 2.) SHOW TESTS (e.g. upvote show, add show to my list)
 # 2a- PLAY TESTS
 # 2b- MY LIST TESTS
 # 2c- UPVOTE/DOWNVOTE TESTS
-# 2d- GENERAL DATA INTEGRITY TODO(show_preview maturity rating agrees with jawbone maturity rating)
+# 2d- TODO-GENERAL DATA INTEGRITY(show_preview maturity rating agrees with jawbone maturity rating)
 
 # VIDEO OF EXECUTION
-#  https://gyazo.com/8c9e75c1412c7e13e32b0b4bc14a5677
-
-########################################################
-########################################################
-########################################################
-## 2020-04-23 I cheated and introduced time.sleeps into jawbone open and mouse_over
-# ALL TESTS PASSED 3 EXECUTIONS IN A ROW
-# ALL OF THE PROBLEMS ORIGINATE FROM THE BOBCONTAINER AND JAWBONE LOADING
-########################################################
-########################################################
-########################################################
-
-# TODO- tests still don't perfectly clean up after themselves. Add more cleanup tasks
-# namely, removing a show from my-list is complicated. Once removed, I would have to search for it
+# https://gyazo.com/8c9e75c1412c7e13e32b0b4bc14a5677
 
 
 class HomePageTests(unittest.TestCase):
@@ -141,29 +127,14 @@ class HomePageTests(unittest.TestCase):
         # 'watch' is always in the url for the netflix akira player.
         self.assertIn('watch', self.driver.current_url)
 
-    def test_play_first_show_in_continue_watching_row(self):
-        """Grab the first show in the 'continue watching row' and play it from the jawbone."""
-        home_page = pagemodels.homepage.HomePage(self.driver)
-        cont_watching_row = home_page.get_continue_watching_row()
-
-        first_show = home_page.get_first_show_in_row(cont_watching_row)
-
-        show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
-        show_tools.play_show_from_jawbone(first_show)
-
-        # 'watch' is always in the url for the netflix akira player.
-        self.assertIn('watch', self.driver.current_url)
-        # TODO- This asserts that any show is being watched, not that first_show is being watched.
-        # See if there is a way to assert the title is present somewhere.
-
     # # ADD/REMOVE MY LIST TESTS
     def test_add_show_to_my_list_from_jawbone(self):
         """Add show to my list and assert that the show is now in my-list row."""
+        # TODO- test still don't perfectly clean up after itself. Remove from list after
         home_page = pagemodels.homepage.HomePage(self.driver)
         show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
 
         # We need to find a random show that is not in my list already.
-
         test_condition = show_tools.is_in_my_list_from_show_preview
         random_show = home_page.get_semi_random_show(
             condition=test_condition,
@@ -339,6 +310,22 @@ class HomePageTests(unittest.TestCase):
     # # # #     """ some rows have an "Explore all" button next to the title of the row"""
     # # # #     """ TODO- ADD THIS FUCNTIONALITY TO homepage.py, then write this test"""
     # # # #     pass
+
+    # DUPLICATE OF PLAY FROM MY-LSIT
+    # def test_play_first_show_in_continue_watching_row(self):
+    #     """Grab the first show in the 'continue watching row' and play it from the jawbone."""
+    #     home_page = pagemodels.homepage.HomePage(self.driver)
+    #     cont_watching_row = home_page.get_continue_watching_row()
+
+    #     first_show = home_page.get_first_show_in_row(cont_watching_row)
+
+    #     show_tools = pagemodels.showtoolspage.ShowToolsPage(self.driver)
+    #     show_tools.play_show_from_jawbone(first_show)
+
+    #     # 'watch' is always in the url for the netflix akira player.
+    #     self.assertIn('watch', self.driver.current_url)
+    #     # TODO- This asserts that any show is being watched, not that first_show is being watched
+    #     # See if there is a way to assert the title is present somewhere.
 
     # # # # def test_play_random_show(self):
     # # # #     """ not really a test but a cool function I want to have somewhere"""

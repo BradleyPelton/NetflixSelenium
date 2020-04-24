@@ -1,5 +1,3 @@
-import time
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -9,14 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from pagemodels.basepage import BasePage
 
-# SHOWTTOOLS IS NOT AN ACTUAL PAGE. IT IS, HOWEVER, A COLLECTION OF FUNCTIONS
-# THAT ARE APPLICABLE TO 95% OF THE WEB APP. EVERY NON-VIDEOPAGE PAGE IS A COLLECTION OF
-# THESE SHOW ELEMENTS. THUS, THEY ARE GETTING THEIR OWN ELEMENT PAGE
-
-# NOTE- SHOW ELEMENTS ARE OFTEN RETURNED FROM ROW_OPERATIONS. SEE homepage.py IF YOU NEED TO
-# GRAB A SHOW ELEMENT FROM A PAGE, SINCE EVERY SHOW ELEMENT APPEARS IN A ROW, GO THERE
-
-# RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
+# NOTE- A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
 
 # IMPORTANT NOTE
@@ -34,9 +25,26 @@ from pagemodels.basepage import BasePage
 
 # 2.) BOB-CONAINER/SHOW PREVIEW
 
+######################################################################################
+######################################################################################
+######################################################################################
+# WHY IS THIS 700 LINES LONG?
+# I conceded brevity for consitency
+# After a few days of wrangling with test_homepage.py, I decided it was better to
+# add try,except statements to double click a button if the first button click failed to register.
+# This DRASTICALLY increased the length of this file, but increased the consistency of the tests
+# from 90% to 99%. TODO- Refactor for readability if practical
+######################################################################################
+######################################################################################
+######################################################################################
+
 
 # ELEMENT PAGE(SEE ABOVE)
 class ShowToolsPage(BasePage):
+    """Showttools is not an actual page. It is, however, a collection of functions
+    that are applicable to 95% of the web app. every non-videopage page is a collection of
+    these show elements. thus, they are getting their own element page
+    """
     def __init__(self, driver):
         super().__init__(driver)
 
@@ -105,7 +113,6 @@ class ShowToolsPage(BasePage):
             print("open_jawbone_if_not_open is opening jawbone")
             show_element.click()
         # WAIT UNTIL JAWBONE FINISHES LOADING
-        time.sleep(3)
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located(self.MY_LIST_BUTTON))
         wait = WebDriverWait(self.driver, 10)
@@ -154,7 +161,7 @@ class ShowToolsPage(BasePage):
             # below is logic to click it the button again if it didnt respond the first time
             wait = WebDriverWait(self.driver, 5)
             wait.until_not(EC.invisibility_of_element_located(span_my_list_button_not_added))
-        except TimeoutError:
+        except TimeoutException:
             my_list_button.click()
 
         # # wait for my the span below my_list_button to no longer have the class 'add' to my list
@@ -180,7 +187,7 @@ class ShowToolsPage(BasePage):
             # below is logic to click it the button again if it didnt respond the first time
             wait = WebDriverWait(self.driver, 5)
             wait.until_not(EC.invisibility_of_element_located(span_my_list_button_already_added))
-        except TimeoutError:
+        except TimeoutException:
             my_list_button.click()
 
         # # wait for my the span below my_list_button to no longer have the class 'added' mylist
@@ -199,7 +206,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.url_contains('https://www.netflix.com/watch/'))
-            except TimeoutError:
+            except TimeoutException:
                 jawbone_play_button.click()
         except ElementClickInterceptedException:
             next_episode_button = self.driver.find_element_by_css_selector(
@@ -212,7 +219,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.url_contains('https://www.netflix.com/watch/'))
-            except TimeoutError:
+            except TimeoutException:
                 next_episode_button.click()
 
         # wait for the show to play by observing the url changing to the Akira Player
@@ -353,7 +360,8 @@ class ShowToolsPage(BasePage):
             print("already upvoted, upvote_from_jawbone is not doing anything")
         elif self.is_downvoted_from_jawbone(show_element):
             wait = WebDriverWait(self.driver, 10)
-            wait.until(EC.visibility_of_element_located((*self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
+            wait.until(EC.visibility_of_element_located(
+                (*self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
 
             already_downvoted_big_downvoted_button = self.driver.find_element(
                 *self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)
@@ -364,7 +372,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.UPVOTE_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 already_downvoted_big_downvoted_button.click()
 
             wait = WebDriverWait(self.driver, 10)
@@ -377,8 +385,9 @@ class ShowToolsPage(BasePage):
                 # sometimes the downvote button doesnt like to respond the first time
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
-                wait.until(EC.visibility_of_element_located((self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)))
-            except TimeoutError:
+                wait.until(EC.visibility_of_element_located(
+                    (self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)))
+            except TimeoutException:
                 upvote_button.click()
 
         else:
@@ -392,8 +401,9 @@ class ShowToolsPage(BasePage):
                 # sometimes the downvote button doesnt like to respond the first time
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
-                wait.until(EC.visibility_of_element_located((self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)))
-            except TimeoutError:
+                wait.until(EC.visibility_of_element_located(
+                    (self.ALREADY_UPVOTED_BIG_UPVOTE_BUTTON)))
+            except TimeoutException:
                 upvote_button.click()
 
         # wait for the big upvote button to appear, signaling the upvote has processed
@@ -419,7 +429,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.DOWNVOTE_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 already_upvoted_big_upvote_button.click()
 
             wait = WebDriverWait(self.driver, 10)
@@ -432,8 +442,9 @@ class ShowToolsPage(BasePage):
                 # sometimes the downvote button doesnt like to respond the first time
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
-                wait.until(EC.visibility_of_element_located((self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
-            except TimeoutError:
+                wait.until(EC.visibility_of_element_located(
+                    (self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
+            except TimeoutException:
                 downvote_button.click()
 
         else:
@@ -447,8 +458,9 @@ class ShowToolsPage(BasePage):
                 # sometimes the downvote button doesnt like to respond the first time
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
-                wait.until(EC.visibility_of_element_located((self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
-            except TimeoutError:
+                wait.until(EC.visibility_of_element_located(
+                    (self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)))
+            except TimeoutException:
                 downvote_button.click()
 
         # wait for the big downvote button to appear, signaling the downvote has been processed
@@ -462,7 +474,8 @@ class ShowToolsPage(BasePage):
         if self.is_downvoted_from_jawbone(show_element):
             print("remove vote jawbone found a downvoted show")
             wait = WebDriverWait(self.driver, 10)
-            wait.until(EC.visibility_of_element_located(self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON))
+            wait.until(EC.visibility_of_element_located(
+                self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON))
 
             already_downvoted_big_downvoted_button = self.driver.find_element(
                 *self.ALREADY_DOWNVOTED_BIG_DOWNVOTE_BUTTON)
@@ -473,7 +486,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.UPVOTE_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 already_downvoted_big_downvoted_button.click()
 
             # wait for the big downvote button to disappear
@@ -493,7 +506,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.DOWNVOTE_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 already_upvoted_big_upvote_button.click()
 
             # wait for the big upvote button to disappear
@@ -515,7 +528,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.BOB_UPVOTE_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 bob_already_downoted_button.click()
 
             wait = WebDriverWait(self.driver, 10)
@@ -531,7 +544,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.BOB_DOWNVOTE_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 bob_already_upvoted_button.click()
 
             wait = WebDriverWait(self.driver, 10)
@@ -550,7 +563,6 @@ class ShowToolsPage(BasePage):
         action.move_to_element(show_element).perform()
 
         # Wait for bob container/show-preview to open
-        time.sleep(3)
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located((self.BOB_PLAY_HITZONE)))
         wait = WebDriverWait(self.driver, 10)
@@ -647,7 +659,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.text_to_be_present_in_element((self.BOB_MY_LIST_STATUS), 'Remove'))
-            except TimeoutError:
+            except TimeoutException:
                 bob_my_list_button.click()
 
         # inner_span = bob_my_list_button.find_element_by_css_selector('span[role="status"]')
@@ -667,8 +679,6 @@ class ShowToolsPage(BasePage):
     #     bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
     #     bob_my_list_button.click()
 
-    #     time.sleep(3)
-
     #     try:
     #         # An svg element holds the ID value "mylist-add" or "mylist-added"
     #         self.driver.find_element(*self.BOB_NT_ADD)
@@ -678,18 +688,14 @@ class ShowToolsPage(BasePage):
     #         # bob_my_list_button = self.driver.find_element(*self.BOB_MY_LIST_BUTTON)
     #         bob_my_list_button.click()
 
-    #     # bob_nt_add = self.driver.find_element_by_css_selector(
-    #     #     'div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-add'
+    #     # bob_nt_add = self.driver.find_element_by_css_selector(''
     #     # )
 
-    #     # bob_alr_added = self.driver.find_element_by_css_selector(
-    #     #     'div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-added'
+    #     # bob_alr_added = self.driver.find_element_by_css_selector(''
     #     # )
 
     #     # wait = WebDriverWait(self.driver, 10)
     #     # wait.until(EC.presence_of_element_located(self.BOB_ALR_ADDED))
-
-    #     time.sleep(3)
 
     def third_remove_from_my_list_from_show_preview(self, show_element):
         """Remove a show from my list via the show-preview/bob-container."""
@@ -750,7 +756,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_UPVOTED_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 bob_upvote_button.click()
         else:
             wait = WebDriverWait(self.driver, 10)
@@ -764,9 +770,9 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_UPVOTED_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 bob_upvote_button.click()
-    
+
         # wait for the big upvote button to appear, signaling the upvote has been processed
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_UPVOTED_BUTTON)))
@@ -791,7 +797,7 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_DOWNVOTED_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 bob_downvote_button.click()
 
         else:
@@ -806,9 +812,9 @@ class ShowToolsPage(BasePage):
                 # below is logic to click it the button again if it didnt respond the first time
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_DOWNVOTED_BUTTON)))
-            except TimeoutError:
+            except TimeoutException:
                 bob_downvote_button.click()
-    
+
         # wait for the big downvote button to appear, signaling the downvote has been processed
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.visibility_of_element_located((self.BOB_ALREADY_DOWNVOTED_BUTTON)))
@@ -853,4 +859,3 @@ class ShowToolsPage(BasePage):
     # def get_number_of_episodes(self):
     #     """TODO-not sure if this is going to be hard or not. """
     #     pass
-

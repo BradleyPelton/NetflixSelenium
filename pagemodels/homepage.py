@@ -1,10 +1,9 @@
 import random
-import time
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
@@ -12,45 +11,17 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 import pagemodels.showtoolspage
 from pagemodels.basepage import BasePage
-import browserconfig
-import secrets
-import pagemodels.showtoolspage
-import tests.pickledlogin
-
-# # - ROWS: Queue, genre , continue watching , trending now, similars, because you added,\
-# # new release, top ten, netflix originals, popular titles, big row, most watched
+# import browserconfig
+# import secrets
+# import pagemodels.showtoolspage
+# import tests.pickledlogin
 
 
 # The Home page for netflix is netflix.com/browse. Everything leads back to /browse
 
-# RECALL A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
+# RECALL- A show_element HAS A VERY SPECIFIC FORMAT. THE NODE HAS TO BE AN A TAG LOCATED INSIDER
 # 'div.slider-item > div > div > a.slider-refocus'
 
-
-
-# DELETE ME
-# driver = browserconfig.driver_runner(
-#     executable_path=browserconfig.driver_path,
-#     desired_capabilities=browserconfig.capabilities
-# )
-# tests.pickledlogin.pickled_login(driver)
-
-# a = HomePage(driver)
-# b = pagemodels.showtoolspage.ShowToolsPage(driver)
-
-# que = a.get_queue_row()
-# first_show = a.get_first_show_in_row(que)
-
-# cont = a.get_continue_watching_row()
-# first_show = a.get_first_show_in_row(cont)
-# first_show.text
-
-# b.mouse_over_show_if_not_moused_over(first_show)
-
-# driver.find_element_by_css_selector('div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-add')
-# # self.BOB_NT_ADD = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-add')
-# driver.find_element_by_css_selector('div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-added')
-# # self.BOB_ALR_ADDED = (By.CSS_SELECTOR, 'div.bob-actions-wrapper div[data-uia="myListButton"] > a > svg.svg-icon.svg-icon-mylist-added')
 
 class HomePage(BasePage):
     def __init__(self, driver):
@@ -84,7 +55,6 @@ class HomePage(BasePage):
         self.SMALL_LOADING_CARD = (By.CSS_SELECTOR, 'div.smallTitleCard.loadingTitle')
         self.LOADING_ROW = (By.CSS_SELECTOR, 'div.lolomoRow.lolomoRow_title_card.lolomoPreview')
 
-
     def scroll_to_top_of_page(self):
         """Scroll to the top of the page."""
         self.driver.execute_script("window.scrollTo(0, 0)")
@@ -92,7 +62,7 @@ class HomePage(BasePage):
     def scroll_to_bottom_of_page(self):
         """Scroll to the botom of the page."""
         # THIS LOADS EVERY SINGLE ROW AND TAKES ABOUT 9 SECONDS TO FINISH
-        print(f"script started at {time.time()}")
+        # print(f"script started at {time.time()}")
         self.driver.execute_script("window.scrollTo(0, 10000000)")
 
         small_loading_card = self.driver.find_element(*self.SMALL_LOADING_CARD)
@@ -103,7 +73,7 @@ class HomePage(BasePage):
         # Wait for all the placeholder loading cards to disappear
         wait = WebDriverWait(self.driver, 15)
         wait.until(EC.staleness_of(small_loading_card))
-        print(f"finished loading script at {time.time()}")
+        # print(f"finished loading script at {time.time()}")
 
     # ROW OPERATIONS
     def get_queue_row(self):
@@ -345,5 +315,4 @@ class HomePage(BasePage):
         print(f"get_totally_random_show found {len(all_shows)} shows")
 
         return random.choice(all_shows)
-
 
