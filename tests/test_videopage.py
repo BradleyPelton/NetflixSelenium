@@ -24,8 +24,10 @@ import browserconfig
 # https://gyazo.com/7c703e6bba5af706849052df65772089
 
 # 2020-04-22 All tests passing
-# Tests passed 5 executions in a row. v1 Ready to ship.
-
+# Some tests are failing. All with deltas.
+# BUG-
+# WHEN I ADDED THE WAIT FOR CHANGE_CURRENT_TIME ( wait for ui to disappear after mousing to center)
+# FIX
 
 class VideoPageTests(unittest.TestCase):
     """The following tests test basic use cases for Netflix's video player(dubbed 'Akira player'

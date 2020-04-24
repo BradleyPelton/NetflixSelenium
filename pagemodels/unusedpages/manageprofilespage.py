@@ -242,13 +242,13 @@ class ManageProfilesPage(BasePage):
             # NETFLI HIDES THE LAST TWO OPTIONS IF kids_checkbox is checked
             if current_profile_settings['kid']:
                 self.change_kid_bool(False)
-                time.sleep(3)  # TODO-Using time.sleep is laziness. REFACTOR
+                # REMOVED A sleep here, refactor
         elif new_allowed_shows.lower() == 'all maturity levels':
             option = 4
             # NETFLI HIDES THE LAST TWO OPTIONS IF kids_checkbox is checked
             if current_profile_settings['kid']:
                 self.change_kid_bool(False)
-                time.sleep(3)
+                # REMOVED A sleep here, refactor
         else:
             raise TypeError("DIDNT RECOGNIZED new_allowed_shows param in changed_allowed_shows")
 

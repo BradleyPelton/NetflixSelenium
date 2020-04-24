@@ -11,7 +11,7 @@ def play_random_show():
     ASSUMES USER ALREADY LOGGED IN. PLAYS A RANDOM SHOW
     FROM THE USER'S 'MY-LIST' LIST.
     """
-    time.sleep(3)
+    # REMOVED A sleep here, refactor
     driver.get('https://www.netflix.com/browse/my-list')
 
     shows = driver.find_elements_by_css_selector('a[class="slider-refocus"]')

@@ -5,10 +5,11 @@ import selenium.webdriver.edge.options
 
 import secrets
 # THIS IS A CONFIG FILE.
+# PLEASE CHOOSE THE BROWSER YOU WANT TO TEST WITH AND THE OPTIONS/DESIRED CAPABILITIES
 
 
-# UNCOMMENT THE BROWSER YOU WANT TO TEST WITH
-# ONLY ONE BROWSER SHOULD BE UNCOMMENTED AT A TIME
+# UNCOMMENT THE BROWSER YOU WANT TO TEST WITH.
+# ONLY ONE BROWSER SHOULD BE UNCOMMENTED AT A TIME.
 #########################################################################
 #########################################################################
 #########################################################################
@@ -65,11 +66,3 @@ elif current_browser == 'edge':
     current_options = selenium.webdriver.edge.options.Options()
     # current_options.add_argument("--headless")
     capabilities = current_options.to_capabilities()
-
-
-
-# cls.driver = browserconfig.driver_runner(
-#     executable_path=browserconfig.driver_path,
-#     desired_capabilities=browerconfig.capabilities
-# )
-# tests.pickledlogin.pickled_login(driver)

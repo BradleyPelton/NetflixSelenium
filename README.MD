@@ -1,9 +1,13 @@
 # NetflixSelenium
-An automated test suite to test the core functionality of https://netflix.com , as well as
-add additional functionality for users(e.g. advanced searching)
+An automated test suite to test the core functionality of netflix.com , as well as
+add additional functionality for users(video tools, random show picker, etc.).
+KEY FEATURES
+- Optimized for speed(no time.sleep() or implicit waits anywhere)
+- POM design to minimize maintenance costs(in time)
+- Elegant report generation with unittest/xmlrunner
 
 ## Quick Guide
-- "I HAVE NO IDEA WHAT IM LOOKING AT." Watch [gif of test execution](https://gyazo.com/37be44a9993676c4161adff157960e45) then
+- "I HAVE NO IDEA WHAT IM LOOKING AT." Watch [gif of test execution](https://gyazo.com/7c703e6bba5af706849052df65772089), then
 checkout [VideoPage tests](https://github.com/BradleyPelton/NetflixSelenium/blob/master/tests/test_videopage.py), it contains very straightforward tests(mute, pause, add subtitles, etc.).
 - This test suite is organized in a Page-Object-Model(POM) design pattern. TLDR: tests contain the 
 test logic (asserts, etc.), and Page objects [pagemodels](https://github.com/BradleyPelton/NetflixSelenium/tree/master/pagemodels) hold the logic for interacting with the page (e.g. press_play_buttonn).
@@ -21,8 +25,8 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
 
 ## Setup
 ### Prerequsites
-- You need selenium first and foremost `pip install selenium`
-- Choose a browser and webdriver of your choice (see [selenium.dev/webdrivers](https://www.selenium.dev/documentation/en/webdriver/driver_requirements/#quick-reference)) I'm currently using:
+- See `requirements.txt` for the simple requirements.
+- Choose a browser/webdriver of your choice (see [selenium.dev/webdrivers](https://www.selenium.dev/documentation/en/webdriver/driver_requirements/#quick-reference)) I'm currently using:
     - Google Chrome version 81.0.4044.92, ChromeDriver version 81.0.4044.69
     - Firefox version v75.0, geckodriver-v0.26.0-win64
     - Edge version 81.0.416.53, msedgedriver version: 81.0.409.0
@@ -32,13 +36,13 @@ maintain in both speed and complexity. See [selenium.dev/POM](https://www.seleni
 credentials and paths. In `secrets.py` set the following constants as strings `MY_EMAIL, MY_PASSWORD, MY_CHOMEDRIVER_PATH, MY_GECKODRIVER_PATH, MY_MSEDGEDRIVER_PATH, URL_OF_VIDEO_TO_TEST`
 
 ## Running the tests
-Tests are executed using the standard unittest framework commands
+Tests are executed using the standard unittest framework commands(or xmlrunner for reports)
 - To execute all tests `$ python -m xmlrunner discover -o xmltestresults`
 - To execute a specific test module `$ python -m xmlrunner tests/test_headerpage.py -o xmltestresults`
 
 
 ### DEAR NETFLIX DEVS:
-The purpose of this repo is to provide advance searching to users, an area in which your current
+an area in which your current
 app falls short unfortunately. A perfect example is sorting a category by additional characteristics
 (e.g. sorting Action movies by tag='Exciting'). In your current app, a user can sort movies by tag 
 or sort by genre, but not sort genre by tag.
