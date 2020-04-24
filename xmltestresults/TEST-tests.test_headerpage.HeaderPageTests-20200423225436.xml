@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.test_headerpage.HeaderPageTests-20200423225436" tests="5" file="tests/test_headerpage.py" time="5.948" timestamp="2020-04-23T22:54:48" failures="0" errors="5" skipped="0">
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_click_top_notification" time="1.115" timestamp="2020-04-23T22:54:43" file="tests\test_headerpage.py" line="88">
+		<!--Click the top notification and assert that the page has changed.-->
+		<error type="NoSuchElementException" message="Message: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;button[aria-label=&quot;Notifications&quot;]&quot;}
+  (Session info: chrome=81.0.4044.113)
+"><![CDATA[Traceback (most recent call last):
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\tests\test_headerpage.py", line 92, in test_click_top_notification
+    header_page.click_top_notification()
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\pagemodels\headerpage.py", line 73, in click_top_notification
+    notifications_menu_button = self.driver.find_element(*self.NOTIFICATION_MENU_BUTTON)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 976, in find_element
+    return self.execute(Command.FIND_ELEMENT, {
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"button[aria-label="Notifications"]"}
+  (Session info: chrome=81.0.4044.113)
+
+]]></error>
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_logout_from_header" time="0.984" timestamp="2020-04-23T22:54:44" file="tests\test_headerpage.py" line="44">
+		<!--Logout from the header.-->
+		<error type="NoSuchElementException" message="Message: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;div.account-dropdown-button&quot;}
+  (Session info: chrome=81.0.4044.113)
+"><![CDATA[Traceback (most recent call last):
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\tests\test_headerpage.py", line 48, in test_logout_from_header
+    header_page.logout()
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\pagemodels\headerpage.py", line 42, in logout
+    account_dropdown_button = self.driver.find_element(*self.ACCOUNT_DROPDOWN_BUTTON)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 976, in find_element
+    return self.execute(Command.FIND_ELEMENT, {
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"div.account-dropdown-button"}
+  (Session info: chrome=81.0.4044.113)
+
+]]></error>
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_navigate_home_from_my_list" time="2.199" timestamp="2020-04-23T22:54:46" file="tests\test_headerpage.py" line="57">
+		<!--Using the giant Netflix logo in the top left, navigate to the home page /browse/
+        from the my-list page.-->
+		<error type="NoSuchElementException" message="Message: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;a[aria-label=&quot;Netflix&quot;]&quot;}
+  (Session info: chrome=81.0.4044.113)
+"><![CDATA[Traceback (most recent call last):
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\tests\test_headerpage.py", line 63, in test_navigate_home_from_my_list
+    header_page.navigate_to_home()
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\pagemodels\headerpage.py", line 52, in navigate_to_home
+    home_button = self.driver.find_element(*self.HOME_BUTTON)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 976, in find_element
+    return self.execute(Command.FIND_ELEMENT, {
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"a[aria-label="Netflix"]"}
+  (Session info: chrome=81.0.4044.113)
+
+]]></error>
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_navigate_to_manage_profile" time="0.837" timestamp="2020-04-23T22:54:47" file="tests\test_headerpage.py" line="67">
+		<!--Using the header account dropdown, navigate to the manage profile page.-->
+		<error type="NoSuchElementException" message="Message: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;div.account-dropdown-button&quot;}
+  (Session info: chrome=81.0.4044.113)
+"><![CDATA[Traceback (most recent call last):
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\tests\test_headerpage.py", line 71, in test_navigate_to_manage_profile
+    header_page.navigate_to_manage_profile()
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\pagemodels\headerpage.py", line 59, in navigate_to_manage_profile
+    account_dropdown_button = self.driver.find_element(*self.ACCOUNT_DROPDOWN_BUTTON)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 976, in find_element
+    return self.execute(Command.FIND_ELEMENT, {
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"div.account-dropdown-button"}
+  (Session info: chrome=81.0.4044.113)
+
+]]></error>
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_search_for_shawshank" time="0.814" timestamp="2020-04-23T22:54:48" file="tests\test_headerpage.py" line="76">
+		<!--Using the search field, search for 'shawshank' and assert that shawshank was found.-->
+		<error type="NoSuchElementException" message="Message: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;button.searchTab&quot;}
+  (Session info: chrome=81.0.4044.113)
+"><![CDATA[Traceback (most recent call last):
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\tests\test_headerpage.py", line 80, in test_search_for_shawshank
+    header_page.search("shawshank")
+  File "C:\Users\mavri\Desktop\Projects\netflixselenium\pagemodels\headerpage.py", line 103, in search
+    search_button = self.driver.find_element(*self.SEARCH_BUTTON)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 976, in find_element
+    return self.execute(Command.FIND_ELEMENT, {
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\mavri\AppData\Local\Programs\Python\Python38-32\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"css selector","selector":"button.searchTab"}
+  (Session info: chrome=81.0.4044.113)
+
+]]></error>
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+</testsuite>

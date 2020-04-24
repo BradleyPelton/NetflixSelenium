@@ -1,4 +1,5 @@
 import unittest
+import xmlrunner
 
 import secrets
 import pagemodels.videopage
@@ -397,5 +398,8 @@ class VideoPageTests(unittest.TestCase):
     #     current_remaining_time = video_page.get_remaining_time_in_seconds()
 
 
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == '__main__':
+    with open(r'C:\Users\mavri\Desktop\projects\netflixselenium\xmltestresults\pretestresults.xml', 'wb') as output:
+        unittest.main(
+            testRunner=xmlrunner.XMLTestRunner(output=output),
+            failfast=False, buffer=False, catchbreak=False)

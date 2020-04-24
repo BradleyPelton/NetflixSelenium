@@ -33,8 +33,8 @@ credentials and paths. In `secrets.py` set the following constants as strings `M
 
 ## Running the tests
 Tests are executed using the standard unittest framework commands
-- To execute all tests `python -m unittest discover .`
-- To execute a specific test module `python -m unittest -v tests/test_videopage.py`
+- To execute all tests `$ python -m xmlrunner discover -o xmltestresults`
+- To execute a specific test module `$ python -m xmlrunner tests/test_headerpage.py -o xmltestresults`
 
 
 ### DEAR NETFLIX DEVS:

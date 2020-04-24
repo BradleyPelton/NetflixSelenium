@@ -1,4 +1,5 @@
 import unittest
+import xmlrunner
 
 # from selenium import webdriver
 
@@ -330,3 +331,9 @@ class HomePageTests(unittest.TestCase):
     # # # # def test_play_random_show(self):
     # # # #     """ not really a test but a cool function I want to have somewhere"""
     # # # #     pass
+
+if __name__ == '__main__':
+    with open(r'C:\Users\mavri\Desktop\projects\netflixselenium\xmltestresults\pretestresults.xml', 'wb') as output:
+        unittest.main(
+            testRunner=xmlrunner.XMLTestRunner(output=output),
+            failfast=False, buffer=False, catchbreak=False)

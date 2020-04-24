@@ -1,4 +1,5 @@
 import unittest
+import xmlrunner
 
 import secrets
 import browserconfig
@@ -74,5 +75,9 @@ class LoginPageTests(unittest.TestCase):
         self.assertTrue(login_page.is_invalid_username)
         self.assertTrue(login_page.is_invalid_password)
 
-# if __name__ == "__main__":
-#     unittest.main()
+
+if __name__ == '__main__':
+    with open(r'C:\Users\mavri\Desktop\projects\netflixselenium\xmltestresults\pretestresults.xml', 'wb') as output:
+        unittest.main(
+            testRunner=xmlrunner.XMLTestRunner(output=output),
+            failfast=False, buffer=False, catchbreak=False)

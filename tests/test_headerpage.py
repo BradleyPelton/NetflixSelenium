@@ -1,4 +1,5 @@
 import unittest
+import xmlrunner
 
 # from selenium import webdriver
 
@@ -11,6 +12,9 @@ import browserconfig
 
 # 2020-04-20 All tests passing, refactor complete
 # All tests passed 5 executions in a row. v1 ready to ship.
+
+# BUG- First execution will murder the cookies and break the following tests.
+# interestingly, every subsequent test will pass once cookies are hard reset.
 
 
 class HeaderPageTests(unittest.TestCase):
@@ -107,3 +111,10 @@ class HeaderPageTests(unittest.TestCase):
     #     header_page = pagemodels.headerpage.HeaderPage(self.driver)
 
     #     header_page.clear_notifications()
+
+
+if __name__ == '__main__':
+    with open(r'C:\Users\mavri\Desktop\projects\netflixselenium\xmltestresults\pretestresults.xml', 'wb') as output:
+        unittest.main(
+            testRunner=xmlrunner.XMLTestRunner(output=output),
+            failfast=False, buffer=False, catchbreak=False)
