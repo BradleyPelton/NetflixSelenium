@@ -77,7 +77,7 @@ class VideoPageTests(unittest.TestCase):
             msg="pause_from_unpaused_state major test failed"
         )
 
-        # CLEANUP- Netflix's Akira player remembers the paused state in the next test.
+        # TEST CLEANUP- Netflix's Akira player remembers the paused state in the next test.
         video_page.unpause_player()
 
     def test_unpause_from_paused_state(self):
@@ -131,7 +131,7 @@ class VideoPageTests(unittest.TestCase):
             msg="test_mute_from_unmuted_state failed to mute the player"
         )
 
-        # CLEANUP
+        # TEST CLEANUP
         video_page.unmute_player()
 
     # VOLUME TESTS
@@ -149,7 +149,7 @@ class VideoPageTests(unittest.TestCase):
         new_volume = video_page.get_current_volume()
         self.assertAlmostEqual(new_volume, target_volume, delta=0.02)
 
-        # CLEANUP- default state is 50% volume
+        # TEST CLEANUP- default state is 50% volume(not strictly enfored but recommended state).
         video_page.change_volume_using_percentage(.5)
 
     def test_double_volume(self):
@@ -160,7 +160,7 @@ class VideoPageTests(unittest.TestCase):
 
         target_volume = current_volume*2
         if target_volume > 1:
-            # if double the volume is greater than 100%, set target to 100%
+            # If double the volume is greater than 100%, set target to 100%.
             target_volume = 1
         video_page.change_volume_using_percentage(target_volume)
 
@@ -215,7 +215,7 @@ class VideoPageTests(unittest.TestCase):
     def test_add_subtitles_from_no_subtitles_state(self):
         """From a state of no subtitles, add english subtitles."""
         video_page = pagemodels.videopage.VideoPage(self.driver)
-        # adding an extra step here to clean up subtitles from personal use
+        # Adding an extra step here to clean up subtitles if altered during personal use.
         if video_page.has_subtitles():
             video_page.remove_subtitles()
 
@@ -232,7 +232,7 @@ class VideoPageTests(unittest.TestCase):
             msg="add_subitles_from_no_subtitles_state failed to add (english) subtitles "
         )
 
-        # CLEANUP- Netflix's Akira player remembers subtitles from previous viewings.
+        # TEST CLEANUP- Netflix's Akira player remembers subtitles from previous viewings.
         video_page.remove_subtitles()
 
     def test_remove_subtitles_from_subtitle_state(self):
@@ -257,7 +257,7 @@ class VideoPageTests(unittest.TestCase):
     def test_change_audio_to_spanish_from_english_state(self):
         """From english audio state, change to spanish audio."""
         video_page = pagemodels.videopage.VideoPage(self.driver)
-        # DEFAULT STATE IS ALWAYS ENGLISH
+        # Default state is always english.
         current_audio = video_page.get_current_audio()
 
         self.assertIn(
@@ -275,7 +275,7 @@ class VideoPageTests(unittest.TestCase):
             msg="test_change_audio_to_spanish_from_english_state failed to change audio spanish"
         )
 
-        # CLEANUP
+        # TEST CLEANUP
         video_page.change_audio_to_english_original()
 
     def test_change_audio_to_english_from_spanish_state(self):
@@ -315,13 +315,13 @@ class VideoPageTests(unittest.TestCase):
 
         new_time = video_page.get_remaining_time_in_seconds()
 
-        # when paused, delta < 0.01, when not paused and good connection, delta < 5
+        # When paused, delta < 0.01. When not paused and good connection, delta < 5.
         self.assertAlmostEqual(current_time + 30, new_time, delta=5)
 
     def test_skip_back_30_seconds(self):
         """Using the skip back button, skip back 30 seconds."""
-        # skipping back at 0:00 will cause the test to fail even though the act of skipping
-        # back three times will not fail
+        # Skipping back at 0:00 will cause the test to fail even though the act of skipping
+        # back three times will not fail(its possible to press skip back at 0:00).
         video_page = pagemodels.videopage.VideoPage(self.driver)
 
         current_remaining_time = video_page.get_remaining_time_in_seconds()
@@ -338,7 +338,7 @@ class VideoPageTests(unittest.TestCase):
         video_page.skip_backward()
 
         new_remaining_time = video_page.get_remaining_time_in_seconds()
-        # WHEN PAUSED, delta < 0.01, WHEN NOT PAUSED AND GOOD CONNECTION, delta < 5
+        # When paused, delta < 0.01. When not paused and good connection, delta < 5.
         self.assertAlmostEqual(current_remaining_time-30, new_remaining_time, delta=5)
 
 # #     # TIME/DURATION TESTS
@@ -355,7 +355,7 @@ class VideoPageTests(unittest.TestCase):
         # print(f"current time is {current_time}")
 
         self.assertAlmostEqual(show_duration/2, current_remaining_time, delta=10)
-        # Largest observed delta is 6.5 seconds. Not sure what is causing this delta.
+        # Largest observed delta is 6.5 seconds. Not sure what is causing this delta,
         # seems to be intermittent. Could be the off by a pixel again. BUG- low priority
         # Maybe it would be eliminated by making a .get_current_time_in_seconds function
         # instead of relying on .get_remaining_time_in_seconds()
@@ -372,8 +372,7 @@ class VideoPageTests(unittest.TestCase):
 
         self.assertAlmostEqual(current_remaining_time, show_duration, delta=5)
 
-        # CLEANUP
-        # HALFWAY POINT IS THE DEFAULT STATE
+        # TEST CLEANUP- halfway point is the default state
         video_page.change_to_percentage_time(.5)
 
     # EXIT PLAYER TESTS

@@ -1,6 +1,7 @@
 # NetflixSelenium
-An automated test suite to test the core functionality of netflix.com , as well as
+An automated test suite to test the core functionality of https://netflix.com , as well as
 add additional functionality for users(video tools, random show picker, etc.).
+
 KEY FEATURES
 - Optimized for speed(no time.sleep() or implicit waits anywhere)
 - POM design to minimize maintenance costs(in time)

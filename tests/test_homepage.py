@@ -10,8 +10,8 @@ import tests.test_loginpage
 import tests.pickledlogin
 
 # IMPORTANT VOCABULARY:
-# Jawbone- Large menu displayed when clicking on show_element. Houses 99% of show information
-# Bob-container/show-preview - mousing over a show displays upvote,downvote, play buttons
+# Jawbone- Large menu displayed when CLICKING a show_element. Houses 99% of show information
+# Bob-container/show-preview - small menu displayed when MOUSINGOVER a show_element. 50% feautures
 # show_element- uniform element that represents a show across this entire test suite
 # row_element- uniform element that represents a row(containing show_elements)
 
@@ -141,7 +141,7 @@ class HomePageTests(unittest.TestCase):
             condition=test_condition,
             condition_bool='False'
         )
-        # get a random show that meets the condition and condition_bool, namely a show that
+        # Get a random show that meets the condition and condition_bool, namely a show that
         # returns false when is_in_my_list(show), i.e. a show not in my list
         saved_title_name = random_show.text
 
@@ -189,7 +189,7 @@ class HomePageTests(unittest.TestCase):
             condition=test_condition,
             condition_bool='False'
         )
-        # get a random show that meets the condition and condition_bool, namely a show that
+        # Get a random show that meets the condition and condition_bool, namely a show that
         # returns false when is_in_my_list(show), i.e. a show not in my list
         saved_title_name = random_show.text
 
@@ -216,7 +216,7 @@ class HomePageTests(unittest.TestCase):
         # show_tools.mouse_over_show_element(first_queue_show)
         show_tools.third_remove_from_my_list_from_show_preview(first_queue_show)
 
-        # Relaunching the page to see if the show has been removed from my_list
+        # Relaunching the page to see if the show has been removed from my_list .
         self.driver.get("https://netflix.com/browse")
 
         new_queue_row = home_page.get_queue_row()
@@ -236,13 +236,13 @@ class HomePageTests(unittest.TestCase):
             condition=test_condition,
             condition_bool='false'
         )
-        # Find a random show that is not already upvoted
+        # Find a random show that is not already upvoted.
 
         show_tools.close_show_preview()
         show_tools.upvote_from_jawbone(random_show)
         self.assertTrue(show_tools.is_upvoted_from_jawbone(random_show))
 
-        # CLEANUP
+        # TEST CLEANUP
         show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
 
     def test_downvote_show_from_jawbone(self):
@@ -255,7 +255,7 @@ class HomePageTests(unittest.TestCase):
             condition=test_condition,
             condition_bool='false'
         )
-        # Find a random show that is not already downvoted
+        # Find a random show that is not already downvoted.
 
         show_tools.close_show_preview()
         show_tools.open_jawbone_if_not_open(random_show)
@@ -263,7 +263,7 @@ class HomePageTests(unittest.TestCase):
 
         self.assertTrue(show_tools.is_downvoted_from_jawbone(random_show))
 
-        # CLEANUP
+        # TEST CLEANUP
         show_tools.remove_downvote_or_upvote_from_jawbone(random_show)
 
     def test_upvote_show_from_show_preview(self):
@@ -276,13 +276,13 @@ class HomePageTests(unittest.TestCase):
             condition=test_condition,
             condition_bool='false'
         )
-        # Find a random show that is not already upvoted
+        # Find a random show that is not already upvoted.
 
         show_tools.upvote_from_show_preview(random_show)
 
         self.assertTrue(show_tools.is_upvoted_from_show_preview(random_show))
 
-        # CLEANUP
+        # TEST CLEANUP
         show_tools.remove_downvote_or_upvote_from_show_preview(random_show)
 
     def test_downvote_show_from_show_preview(self):
@@ -297,13 +297,13 @@ class HomePageTests(unittest.TestCase):
             condition=test_condition,
             condition_bool='false'
         )
-        # Find a random show that is not already downvoted
+        # Find a random show that is not already downvoted.
 
         show_tools.downvote_from_show_preview(random_show)
 
         self.assertTrue(show_tools.is_downvoted_from_show_preview(random_show))
 
-        # CLEANUP
+        # TEST CLEANUP
         show_tools.remove_downvote_or_upvote_from_show_preview(random_show)
 
     # # # TESTS THAT DIDNT MAKE THE FIRST CUT
