@@ -23,14 +23,9 @@ import pagemodels.loginpage
 ##########################################################################
 
 
-# driver = browserconfig.driver_runner(
-#     executable_path=browserconfig.driver_path,
-#     options=browserconfig.current_options
-# )
-
 def pickled_login(driver):
-    """If stored cookies are still valid (less than 24 hours old), use them to log in. Else, log in
-    from https://netflix.com/login with credentials stored in secrets.py and save the newly created
+    """If stored cookies(in pickledcookies.pkl) are still valid (less than 24 hours old), use them
+    to bipass logging in. Else, log in from https://netflix.com/login and save the newly created
     cookies.
     """
     with open(
@@ -39,16 +34,16 @@ def pickled_login(driver):
     ) as pickledcookies:
         browser_settings = pickle.load(pickledcookies)
 
-        driver.delete_all_cookies()  # precaution in case anything is stored before we start
+        driver.delete_all_cookies()  # Precaution in case anything is stored before we start.
 
         driver.get('https://netflix.com/login')
 
         if browser_settings['last_updated'] == datetime.date.today():
-            # add all of the cookies from the previous login
+            # Add all of the cookies from the previous login.
             for cookie in browser_settings['stored_cookies']:
                 driver.add_cookie({k: v for k, v in cookie.items() if k != 'expiry'})
             driver.refresh()
-            # refreshing the login page, with valid cookies, sends a user to the home page
+            # Refreshing the login page, with valid cookies, sends a user to the home page.
         else:
             login_page = pagemodels.loginpage.LoginPage(driver)
             login_page.user_login(

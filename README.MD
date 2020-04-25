@@ -1,4 +1,7 @@
 # NetflixSelenium
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 An automated test suite to test the core functionality of https://netflix.com , as well as
 add additional functionality for users(video tools, random show picker, etc.).
 
