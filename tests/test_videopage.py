@@ -400,7 +400,7 @@ class VideoPageTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    with open(r'C:\Users\mavri\Desktop\projects\netflixselenium\xmltestresults\pretestresults.xml', 'wb') as output:
+    with open(r'xmltestresults\pretestresults.xml', 'wb') as output:
         unittest.main(
             testRunner=xmlrunner.XMLTestRunner(output=output),
             failfast=False, buffer=False, catchbreak=False)

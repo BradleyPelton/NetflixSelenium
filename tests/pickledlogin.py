@@ -14,24 +14,23 @@ import pagemodels.loginpage
 # browser_settings['last_updated'] = datetime.date(1980,1,1)
 # browser_settings['stored_cookies'] = 1234567890
 # with open(
-#     r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
+#     r'tests\pickledcookies.pkl',
 #     'wb'
 # ) as pickledcookies:
 #     pickle.dump(browser_settings, pickledcookies)
 ##########################################################################
 ##########################################################################
 ##########################################################################
+import os
 
+print(os.getcwd())
 
 def pickled_login(driver):
     """If stored cookies(in pickledcookies.pkl) are still valid (less than 24 hours old), use them
     to bipass logging in. Else, log in from https://netflix.com/login and save the newly created
     cookies.
     """
-    with open(
-        r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
-        'rb'
-    ) as pickledcookies:
+    with open(r'tests\pickledcookies.pkl', 'rb') as pickledcookies:
         browser_settings = pickle.load(pickledcookies)
 
         driver.delete_all_cookies()  # Precaution in case anything is stored before we start.
@@ -53,15 +52,12 @@ def pickled_login(driver):
             browser_settings = dict()
             browser_settings['last_updated'] = datetime.date.today()
             browser_settings['stored_cookies'] = driver.get_cookies()
-            with open(
-                r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
-                'wb'
-            ) as pickledcookies:
+            with open(r'tests\pickledcookies.pkl', 'wb') as pickledcookies:
                 pickle.dump(browser_settings, pickledcookies)
 
 # Print current cookies
 # with open(
-#     r'C:\Users\mavri\Desktop\Projects\netflixselenium\tests\pickledcookies.pkl',
+#     r'tests\pickledcookies.pkl',
 #     'rb'
 # ) as pickledcookies:
     # browser_settings = pickle.load(pickledcookies)

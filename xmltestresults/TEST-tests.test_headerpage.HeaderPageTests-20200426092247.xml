@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.test_headerpage.HeaderPageTests-20200426092247" tests="5" file="tests/test_headerpage.py" time="28.117" timestamp="2020-04-26T09:23:26" failures="0" errors="0" skipped="0">
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_click_top_notification" time="3.968" timestamp="2020-04-26T09:23:02" file="tests\test_headerpage.py" line="91">
+		<!--Click the top notification and assert that the page has changed.-->
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_logout_from_header" time="12.230" timestamp="2020-04-26T09:23:14" file="tests\test_headerpage.py" line="47">
+		<!--Logout from the header.-->
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_navigate_home_from_my_list" time="4.320" timestamp="2020-04-26T09:23:19" file="tests\test_headerpage.py" line="60">
+		<!--Using the giant Netflix logo in the top left, navigate to the home page /browse/
+        from the my-list page.-->
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_navigate_to_manage_profile" time="3.708" timestamp="2020-04-26T09:23:23" file="tests\test_headerpage.py" line="70">
+		<!--Using the header account dropdown, navigate to the manage profile page.-->
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+	<testcase classname="tests.test_headerpage.HeaderPageTests" name="test_search_for_shawshank" time="3.891" timestamp="2020-04-26T09:23:26" file="tests\test_headerpage.py" line="79">
+		<!--Using the search field, search for 'shawshank' and assert that shawshank was found.-->
+		<system-out><![CDATA[]]></system-out>
+		<system-err><![CDATA[]]></system-err>
+	</testcase>
+</testsuite>

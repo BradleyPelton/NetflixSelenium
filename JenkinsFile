@@ -6,6 +6,6 @@ node('master') {
     }
     
     stage('Run tests') {
-        python -m xmlrunner tests/test_headerpage.py -o xmltestresults
+        python -m xmlrunner discover -o xmltestresults
     }
 }
