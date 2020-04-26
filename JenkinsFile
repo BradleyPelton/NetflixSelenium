@@ -1,0 +1,11 @@
+#!groovy
+
+node('master') {
+    stage('Checkout') {
+        checkout scm
+    }
+    
+    stage('Run tests') {
+        python -m xmlrunner tests/test_headerpage.py -o xmltestresults
+    }
+}
