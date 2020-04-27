@@ -75,8 +75,14 @@ class HeaderPage(BasePage):
 
         notifications = self.driver.find_elements(*self.NOTIFICATIONS)
 
-        top_notification = notifications[0]
-        top_notification.click()
+        try:
+            top_notification = notifications[0]
+            top_notification.click()
+        except IndexError:
+            # No notifications found, could be empty
+            print("NO NOTIFIATIONS FOUND, ARE THERE NOTIFICATINOS?(there are not always some)")
+            self.driver.get('https://www.netflix.com/title/80219127')
+            return
 
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.staleness_of(top_notification))
