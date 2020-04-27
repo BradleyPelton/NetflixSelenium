@@ -21,9 +21,6 @@ import pagemodels.loginpage
 ##########################################################################
 ##########################################################################
 ##########################################################################
-import os
-
-print(os.getcwd())
 
 def pickled_login(driver):
     """If stored cookies(in pickledcookies.pkl) are still valid (less than 24 hours old), use them

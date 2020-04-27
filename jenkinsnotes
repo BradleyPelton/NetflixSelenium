@@ -1,0 +1,18 @@
+START JENKINS
+cd C:\Program Files (x86)\Jenkins
+java -jar jenkins.war
+
+
+
+# MISSING A FILE?????
+python --version
+XCOPY "C:\Users\bradleypelton\Desktop\projects\NetflixSelenium\secrets.py"
+cd tests
+XCOPY "C:\Users\bradleypelton\Desktop\projects\NetflixSelenium\tests\pickledcookies.pkl"
+cd ..
+python -m unittest tests/test_headerpage.py
+
+
+
+# MAIN
+python -m xmlrunner discover -o xmltestresults
