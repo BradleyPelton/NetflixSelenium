@@ -1,7 +1,6 @@
 # NetflixSelenium
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+[![Jenkins: Build](https://img.shields.io/jenkins/build?jobUrl=http%3A%2F%2Flocalhost%3A8080%2Fjob%2Fmastertest%2F&style=plastic)](https://www.jenkins.io/)
 
 An automated test suite to test the core functionality of https://netflix.com , as well as
 add additional functionality for users(video tools, random show picker, etc.). Key features include:
