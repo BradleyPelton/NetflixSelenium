@@ -46,4 +46,14 @@ add a show to my list, scrape genre/tag/actor lists, etc.) and within 6 days I h
 homepage, and the videopage. The first results were littered with suboptimal waits, there wasnt a
 single class anywhere, and the only way I could run a test was from the interactive prompt. Only 
 after this point, when I knew it was possible to automate everything, was I comfortable rewritting
-everything into a Page-Object-Model design. 
+everything into a Page-Object-Model design.
+
+### Funny Jenkins setup story- GCP blocking traffic by default
+Spent hours debugging why Jenkins wasnt triggering new builds. The rabbit hole started:
+
+THINGS I LEARNED:
+- How to manually open ports
+- How to set github webhooks for ci/cd 
+- How to add ingress/egress rules for GCP
+- The solution was to enable traffic through the specific port. GCP: "By default, incoming traffic
+from outside your network is blocked"
