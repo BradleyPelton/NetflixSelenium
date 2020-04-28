@@ -94,7 +94,7 @@ class HeaderPageTests(unittest.TestCase):
 
         header_page.click_top_notification()
 
-        # assert that we navigated to a notification page or a title page(only 2 options)
+        # Assert that we navigated to a notification page or a title page(only 2 options)
         self.assertTrue(
             'title' in self.driver.current_url or 'notification' in self.driver.current_url
         )
