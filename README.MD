@@ -5,6 +5,7 @@
 An automated test suite to test the core functionality of https://netflix.com , as well as
 add additional functionality for users(video tools, random show picker, etc.). Key features include:
 - Optimized for speed(no time.sleep() or implicit waits anywhere)
+- Fully integrated into CI/CD pipeline with Jenkins
 - POM design to minimize maintenance costs(in time)
 - Elegant report generation with unittest/xmlrunner
 

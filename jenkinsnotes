@@ -3,6 +3,8 @@ cd C:\Program Files (x86)\Jenkins
 java -jar jenkins.war
 
 
+ae8d97712df896c4aa8610fd7d0e4380082f0566
+
 
 # MISSING A FILE?????
 python --version
@@ -14,5 +16,40 @@ python -m unittest tests/test_headerpage.py
 
 
 
+JENKINS FRESH INSTALL:
+1.) configure jenkins url(and test that it works)
+2.) Add Python to the path
+3.) Allow jenkins to interact with desktop from windows/SERVICES
+4.) CREATE JOB(first build has to xcopy secrets)
+5.) edit job 
+6.) configure webhook
+7.) configure github build statuses
+
+
 # MAIN
 python -m xmlrunner discover -o xmltestresults
+
+
+
+
+https://stackoverflow.com/questions/14274293/show-current-state-of-jenkins-build-on-github-repo
+https://github.com/jenkinsci/embeddable-build-status-plugin
+
+https://stackoverflow.com/questions/11241781/python-unittests-in-jenkins
+https://www.blazemeter.com/blog/how-automate-testing-using-selenium-webdriver-jenkins-and-allure
+
+#!groovy
+
+// Jenkins currently configured with the UI
+// TODO- Move it to this file for increased visiblity 
+
+
+// node('mastertest') {
+//     stage('Checkout') {
+//         checkout scm
+//     }
+    
+//     stage('Run tests') {
+//         cmd_exec(python -m xmlrunner discover -o xmltestresults)
+//     }
+// }
