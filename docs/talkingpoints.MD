@@ -57,3 +57,4 @@ THINGS I LEARNED:
 - How to add ingress/egress rules for GCP
 - The solution was to enable traffic through the specific port. GCP: "By default, incoming traffic
 from outside your network is blocked"
+  
