@@ -3,8 +3,12 @@ cd C:\Program Files (x86)\Jenkins
 java -jar jenkins.war
 
 
-ae8d97712df896c4aa8610fd7d0e4380082f0566
 
+############################################
+NEW VM INSTANCE MEANS A NEW IP ADDRESS. BEFORE A NEW BUILD:
+- CHANGE JENKINS URL(and test it works)
+- CHANGE GITHUB WEB-HOOK(from github)
+###################################################
 
 # MISSING A FILE?????
 python --version
@@ -14,17 +18,14 @@ XCOPY "C:\Users\bradleypelton\Desktop\projects\NetflixSelenium\tests\pickledcook
 cd ..
 python -m unittest tests/test_headerpage.py
 
-
-
 JENKINS FRESH INSTALL:
 1.) configure jenkins url(and test that it works)
 2.) Add Python to the path
-3.) Allow jenkins to interact with desktop from windows/SERVICES
-4.) CREATE JOB(first build has to xcopy secrets)
+3.) Allow jenkins to interact with desktop from windows settings/SERVICES
+4.) CREATE JOB(first build has to xcopy secrets.py)
 5.) edit job 
 6.) configure webhook
 7.) configure github build statuses
-
 
 # MAIN
 python -m xmlrunner discover -o xmltestresults

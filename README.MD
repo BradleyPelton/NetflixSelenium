@@ -1,11 +1,11 @@
 # NetflixSelenium
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Jenkins: Build](https://img.shields.io/jenkins/build?jobUrl=http%3A%2F%2Flocalhost%3A8080%2Fjob%2Fmastertest%2F&style=plastic)](https://www.jenkins.io/)
+[![Jenkins: Build](https://img.shields.io/badge/build-passing-brightgreen)](https://www.jenkins.io/)
 
 An automated test suite to test the core functionality of https://netflix.com , as well as
 add additional functionality for users(video tools, random show picker, etc.). Key features include:
-- Optimized for speed(no time.sleep() or implicit waits anywhere)
-- Fully integrated into CI/CD pipeline with Jenkins
+- Optimized speed(no time.sleep() or implicit waits anywhere)
+- Fully integrated into CI/CD pipeline with Jenkins(windows 10 VM in Google Cloud)
 - POM design to minimize maintenance costs(in time)
 - Elegant report generation with unittest/xmlrunner
 
@@ -43,11 +43,19 @@ Tests are executed using the standard unittest framework commands(or xmlrunner f
 - To execute all tests `$ python -m xmlrunner discover -o xmltestresults`
 - To execute a specific test module `$ python -m xmlrunner tests/test_headerpage.py -o xmltestresults`
 
+## Jenkins
+A Jenkins build will only trigger when the windows 10 VM instance is spun up in Google Cloud. To reduce
+costs, I will only spin up the VM when major changes are made. For the same reason, the Jenkins
+badge won't display live results. 
+
+Why a windows 10 VM? Great question. It helps to be able to watch the tests run in real time, thus a
+Desktop is required. Connecting with Remote Desktop is priceless for troublesome builds.
+
 
 ### DEAR NETFLIX DEVS:
 As fun as it was to automate your web app, please reopen the public API! I would love to be able to
 sort my shows by more than one category at a time, among other things, without having to build an 
-entire project to do so.  I know there are drawbacks to adding more complicated features, but 
+entire project to do so. I know there are drawbacks to adding more complicated features, but 
 reintroducing the public API would be an awesome alternative.
 
 Please kindly email me if you have any questions or concerns bradleypelton@gmail.com

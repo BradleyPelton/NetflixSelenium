@@ -22,6 +22,7 @@ import pagemodels.loginpage
 ##########################################################################
 ##########################################################################
 
+
 def pickled_login(driver):
     """If stored cookies(in pickledcookies.pkl) are still valid (less than 24 hours old), use them
     to bipass logging in. Else, log in from https://netflix.com/login and save the newly created

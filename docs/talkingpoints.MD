@@ -8,6 +8,7 @@ MAJOR PHASES OF DEVELOPMENT:
 - 2.) Converted everything to a POM design
 - 3.) Optimized for speed by removing time.sleep()
 - 4.) Converting 95% test accuracy to 99%+
+- 5.) Jenkins CI/CI integration
 
 ### Locating Elements in Netflix's DOM
 Less than 1 percent of Netflix's elements have "ID" attributes. This presents an interesting dilemma
