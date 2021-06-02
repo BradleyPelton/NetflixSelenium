@@ -1,4 +1,4 @@
 # LAST UPDATED 2020-04-28
 selenium==3.141.0
 unittest-xml-reporting==3.0.2
-urllib3==1.25.9
+urllib3==1.26.5
